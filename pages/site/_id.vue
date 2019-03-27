@@ -43,7 +43,7 @@
                 <v-subheader>Attached Files</v-subheader>
                 <template v-for="item in site.files">
                   <v-flex :key="item.file_id" md2 xs12>
-                    <v-btn dark :href="'http://10.11.152.34:8000/api/getSiteFile/'+item.filename">
+                    <v-btn dark :href="'http://196.189.44.14/api/getSiteFile/'+item.filename">
                       {{item.filename}}
                       <v-icon color="orange">insert_drive_file</v-icon>
                     </v-btn>
@@ -117,7 +117,7 @@
                               <v-flex :key="item.file_id" md4 xs12>
                                 <v-btn
                                   dark
-                                  :href="'http://10.11.152.34:8000/api/getMarketFile/'+item.filename"
+                                  :href="'http://196.189.44.14/api/getMarketFile/'+item.filename"
                                 >
                                   {{item.filename}}
                                   <v-icon color="orange">insert_drive_file</v-icon>
@@ -180,7 +180,7 @@
                 <v-subheader>Attached Files</v-subheader>
                 <template v-for="item in modalSite.files">
                   <v-flex :key="item.file_id" md2 xs12>
-                    <v-btn dark :href="'http://10.11.152.34:8000/api/getStatusFile/'+item.filename">
+                    <v-btn dark :href="'http://196.189.44.14/api/getStatusFile/'+item.filename">
                       {{item.filename}}
                       <v-icon color="orange">insert_drive_file</v-icon>
                     </v-btn>

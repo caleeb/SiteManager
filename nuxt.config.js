@@ -65,7 +65,7 @@ export default {
   ],
 
   axios: {
-    baseURL: "http://10.11.152.34:8000/api/"
+    baseURL: "http://196.189.44.14/api/"
   },
 
   auth: {
