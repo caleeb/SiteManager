@@ -26,6 +26,7 @@
                 </v-flex>
                 <v-flex>
                   <v-btn
+                    target="_blank"
                     :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
                   >open in google maps
                     <v-icon>url_launch</v-icon>

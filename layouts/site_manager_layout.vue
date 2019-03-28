@@ -222,7 +222,7 @@ export default {
         formdata.append("name", this.siteform.siteName);
         formdata.append("location", this.siteform.location);
         formdata.append("latitude", this.siteform.lat);
-        formdata.append("longitude", this.siteform.location);
+        formdata.append("longitude", this.siteform.longx);
         formdata.append("status", this.siteform.siteStat);
         formdata.append("description", this.siteform.description);
         for (var i = 0; i < this.siteform.files.length; i++) {
