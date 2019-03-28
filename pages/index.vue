@@ -13,13 +13,13 @@
               <v-layout row>
                 <v-flex
                   md4
-                  v-if="(props.item.market_analysis_done == 1 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'view')"
+                  v-if="(props.item.market_analysis_done == 1 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'Marketing')"
                 >
                   <v-btn color="teal lighten-2" dark @click="openDialog(props.item)">Update Status</v-btn>
                 </v-flex>
                 <v-flex
                   md4
-                  v-if="(props.item.market_analysis_done == 0 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'view')"
+                  v-if="(props.item.market_analysis_done == 0 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'Deployment')"
                 >
                   <v-btn
                     color="teal lighten-2"
