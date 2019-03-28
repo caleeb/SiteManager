@@ -7,8 +7,7 @@
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat v-if="isAuthenticated" href="/">
-          home
+        <v-btn flat v-if="isAuthenticated" href="/">home
           <v-icon color="orange">home</v-icon>
         </v-btn>
         <v-dialog v-model="dialog" fullscreen>
@@ -23,22 +22,21 @@
           </template>
           <v-card>
             <v-toolbar dark>
-              <v-toolbar dark>
-                <v-toolbar-side-icon>
-                  <v-icon @click="dialog = false" color="white">close</v-icon>
-                </v-toolbar-side-icon>
-                <v-toolbar-title class="white--text">New Site</v-toolbar-title>
-                <v-spacer/>
-                <v-toolbar-items class="hidden-xs-only">
-                  <v-btn flat color="white" @click="submitFiles">save
-                    <v-icon>save</v-icon>
-                  </v-btn>
-                </v-toolbar-items>
-              </v-toolbar>
+              <v-toolbar-side-icon>
+                <v-icon @click="dialog = false" color="white">close</v-icon>
+              </v-toolbar-side-icon>
+              <v-toolbar-title class="white--text">New Site</v-toolbar-title>
+              <v-spacer/>
+              <v-toolbar-items class="hidden-xs-only">
+                <v-btn flat color="white" @click="submitFiles">save
+                  <v-icon>save</v-icon>
+                </v-btn>
+              </v-toolbar-items>
             </v-toolbar>
-            <v-layout row justify-center>
-              <v-card-text>
-                <v-flex md7>
+            <v-progress-linear indeterminate color="orange" height="2" :hidden="saveProgressHidden"></v-progress-linear>
+            <v-layout row justify-start>
+              <v-flex md7>
+                <v-card-text>
                   <v-form ref="siteForm">
                     <v-layout row wrap>
                       <v-flex xs6 md6>
@@ -143,8 +141,8 @@
                       </v-flex>
                     </v-layout>
                   </v-form>
-                </v-flex>
-              </v-card-text>
+                </v-card-text>
+              </v-flex>
             </v-layout>
           </v-card>
         </v-dialog>
@@ -156,6 +154,10 @@
     <v-content>
       <v-container fluid fill-height>
         <nuxt/>
+        <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
+          {{snaackbar_message}}
+          <v-btn dark flat @click="snackbar = false">Close</v-btn>
+        </v-snackbar>
       </v-container>
     </v-content>
   </v-app>
@@ -166,13 +168,17 @@ import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["loggedInUser", "isAuthenticated"]),
-    
+    ...mapGetters(["loggedInUser", "isAuthenticated"])
   },
   data() {
     return {
       title: "Site Manager",
       dialog: false,
+      snackbar: false,
+      snackbar_type: "primary",
+      snaackbar_message:"",
+      timeout:3000,
+      saveProgressHidden: true,
       siteform: {
         potential: "",
         location: "",
@@ -223,12 +229,17 @@ export default {
           let file = this.siteform.files[i];
           formdata.append("files[" + i + "]", file);
         }
+        this.saveProgressHidden = false;
         try {
           await this.$axios.post("/create_site", formdata, {
             headers: {
               "Content-Type": "multipart/form-data"
             }
           });
+          this.saveProgressHidden = true;
+          this.snaackbar_message="Site created Succesfully";
+          this.snackbar_type="success";
+          this.snackbar=true;
           this.siteform = {
             potential: "",
             location: "",
@@ -240,7 +251,9 @@ export default {
             files: ""
           };
           this.dialog = false;
-        } catch (e) {}
+        } catch (e) {
+          this.saveProgressHidden = true;
+        }
       }
     },
     handleFileUploads() {

@@ -5,7 +5,7 @@
         <v-toolbar-title>Site:{{site.name}}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <v-container fluid>
+        <v-container>
           <v-layout column wrap>
             <v-flex>
               <v-subheader>Site Description</v-subheader>
@@ -13,15 +13,16 @@
             <v-flex class="text-xs-left pl-3 pt-3 elevation-3">
               <p>{{site.description}}</p>
             </v-flex>
+            <v-flex class="mt-3">
+              <v-divider class="indigo"></v-divider>
+            </v-flex>
             <v-flex>
               <v-subheader>Site Location</v-subheader>
             </v-flex>
             <v-flex class="text-xs-left">
               <v-layout column>
                 <v-flex>
-                  <v-btn dark>
-                    {{site.location}}
-                  </v-btn>
+                  <v-btn dark>{{site.location}}</v-btn>
                 </v-flex>
                 <v-flex>
                   <v-btn
@@ -31,6 +32,9 @@
                   </v-btn>
                 </v-flex>
               </v-layout>
+            </v-flex>
+            <v-flex class="mt-3">
+              <v-divider class="indigo"></v-divider>
             </v-flex>
             <v-flex>
               <v-layout
@@ -42,14 +46,25 @@
               >
                 <v-subheader>Attached Files</v-subheader>
                 <template v-for="item in site.files">
-                  <v-flex :key="item.file_id" md2 xs12>
-                    <v-btn dark :href="'http://196.189.44.14/api/getSiteFile/'+item.filename">
-                      {{item.filename}}
-                      <v-icon color="orange">insert_drive_file</v-icon>
-                    </v-btn>
+                  <v-flex :key="item.file_id" md1 xs12>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{on}">
+                        <v-btn
+                          v-on="on"
+                          dark
+                          :href="'http://196.189.44.14/api/getSiteFile/'+item.filename"
+                        >file
+                          <v-icon color="orange">insert_drive_file</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>{{item.filename}}</span>
+                    </v-tooltip>
                   </v-flex>
                 </template>
               </v-layout>
+            </v-flex>
+            <v-flex class="mt-3">
+              <v-divider class="indigo"></v-divider>
             </v-flex>
             <v-flex v-if="site.market_analysis_done==1 && loggedInUser.organization != 'EthioTel'">
               <v-subheader>Marketing Analysis Report</v-subheader>
@@ -78,7 +93,7 @@
                                     solo
                                     label="Potential Customers"
                                     disabled
-                                    :value="marketingReport.no_potential_customers"
+                                    v-model="marketingReport.no_potential_customers"
                                   ></v-text-field>
                                 </v-flex>
                               </v-layout>
@@ -132,6 +147,9 @@
                 </v-card>
               </v-expansion-panel-content>
             </v-expansion-panel>
+            <v-flex class="mt-3">
+              <v-divider class="indigo"></v-divider>
+            </v-flex>
             <v-flex>
               <v-subheader>Site status History</v-subheader>
             </v-flex>
@@ -157,70 +175,76 @@
     </v-card>
     <v-dialog v-model="dialog" fullscreen>
       <v-card>
-        <v-toolbar dark>
+        <v-toolbar class="white elevation-12">
           <v-toolbar-side-icon>
             <v-icon @click="closeDialog">close</v-icon>
           </v-toolbar-side-icon>
           <v-toolbar-title>{{site.name}}|{{modalSite.status}}</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-layout column>
-            <v-flex>
-              <v-layout row wrap>
-                <v-flex xs12 md1>
-                  <v-subheader>Detailed Status Description</v-subheader>
-                </v-flex>
-                <v-flex xs12 md7>
-                  <v-textarea box disabled v-model="modalSite.description"></v-textarea>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-            <v-flex>
-              <v-layout row wrap justify-start v-if="loggedInUser.organization !='EthioTel'">
-                <v-subheader>Attached Files</v-subheader>
-                <template v-for="item in modalSite.files">
-                  <v-flex :key="item.file_id" md2 xs12>
-                    <v-btn dark :href="'http://196.189.44.14/api/getStatusFile/'+item.filename">
-                      {{item.filename}}
-                      <v-icon color="orange">insert_drive_file</v-icon>
-                    </v-btn>
+          <v-container grid-list-lg fluid>
+            <v-layout row wrap>
+              <v-flex xs12 md6 class="elevation-3">
+                <v-layout column>
+                  <v-flex>
+                    <v-layout row wrap>
+                      <v-flex xs12 md4>
+                        <v-subheader>Detailed Status Description</v-subheader>
+                      </v-flex>
+                      <v-flex xs12 md7>
+                        <v-textarea box disabled v-model="modalSite.description"></v-textarea>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
-                </template>
-              </v-layout>
-            </v-flex>
-            <!-- Post A Comment -->
-            <v-layout justify-end column>
-              <v-flex>
-                <v-form class="elevation-10" v-if="loggedInUser.organization !='EthioTel'">
-                  <v-subheader>Post Comment</v-subheader>
-                  <v-layout column>
-                    <v-flex>
-                      <v-layout row wrap>
-                        <v-flex md1>
-                          <v-subheader>comment</v-subheader>
+                  <v-flex>
+                    <v-layout row wrap justify-start v-if="loggedInUser.organization !='EthioTel'">
+                      <v-subheader>Attached Files</v-subheader>
+                      <template v-for="item in modalSite.files">
+                        <v-flex :key="item.file_id" md1 xs12>
+                          <v-btn
+                            dark
+                            :href="'http://196.189.44.14/api/getStatusFile/'+item.filename"
+                          >
+                            {{item.filename}}
+                            <v-icon color="orange">insert_drive_file</v-icon>
+                          </v-btn>
                         </v-flex>
-                        <v-flex md7>
-                          <v-textarea box v-model="commentForm.comments"></v-textarea>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex justify-center>
-                      <v-layout row wrap>
-                        <v-flex xs6 md1 mt-2>
-                          <v-subheader>Flag Comment</v-subheader>
-                        </v-flex>
-                        <v-flex md3 xs6>
-                          <v-checkbox label="WebSprix Only!" v-model="commentForm.flagged"></v-checkbox>
-                          <v-btn dark @click.stop="postComments(modalSite.status)">submit</v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-form>
+                      </template>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
               </v-flex>
-              <v-flex md10>
-                <v-layout row wrap>
-                  <v-flex md6>
+              <v-flex xs12 md6 class="elevation-5">
+                <v-layout column>
+                  <v-flex>
+                    <v-form class="elevation-5" v-if="loggedInUser.organization !='EthioTel'">
+                      <v-subheader>Post Comment</v-subheader>
+                      <v-layout column>
+                        <v-flex>
+                          <v-layout row wrap>
+                            <v-flex md2>
+                              <v-subheader>comment</v-subheader>
+                            </v-flex>
+                            <v-flex md9>
+                              <v-textarea box v-model="commentForm.comments"></v-textarea>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex justify-center>
+                          <v-layout row wrap>
+                            <v-flex xs6 md2>
+                              <v-subheader>Flag Comment</v-subheader>
+                            </v-flex>
+                            <v-flex md6 xs6>
+                              <v-checkbox label="WebSprix Only!" v-model="commentForm.flagged"></v-checkbox>
+                              <v-btn dark @click.stop="postComments(modalSite.status)">submit</v-btn>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-form>
+                  </v-flex>
+                  <v-flex>
                     <v-subheader>previous Comments</v-subheader>
                     <v-list two-line v-if="comments.length>0">
                       <template v-for="(item) in comments">
@@ -230,7 +254,7 @@
                             class="white--text"
                           >{{item.username.charAt(0)}}</v-list-tile-avatar>
                           <v-list-tile-content>
-                            <v-list-tile-title v-html="item.comment"></v-list-tile-title>
+                            <v-list-tile v-html="item.comment"></v-list-tile>
                             <v-list-tile-sub-title v-html="item.username+':-\t'+item.created_at"></v-list-tile-sub-title>
                           </v-list-tile-content>
                         </v-list-tile>
@@ -245,7 +269,7 @@
                 </v-layout>
               </v-flex>
             </v-layout>
-          </v-layout>
+          </v-container>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -310,28 +334,69 @@ export default {
         .humanize(true);
     },
     calcTimeElapsed(siteinfo) {
+      console.log(siteinfo);
       switch (siteinfo.status) {
         case "Site Identified":
           return moment
-            .duration(moment(new Date()).diff(moment(siteinfo.dateVal)))
-            .humanize(true);
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
           break;
         case "Site Survey Requested":
           return moment
-            .duration(moment(new Date()).diff(moment(siteinfo.dateVal)))
-            .humanize(true);
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
           break;
         case "Site Survey Completed":
           return moment
-            .duration(moment(new Date()).diff(moment(siteinfo.dateVal)))
-            .humanize(true);
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
           break;
-        case "Payment Processed":
+        case "Site Payment Made":
           return moment
-            .duration(moment(new Date()).diff(moment(siteinfo.dateVal)))
-            .humanize(true);
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
           break;
-        case "Activated":
+        case "Ethio Telecom Provision":
+          return moment
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Site Configuration":
+          return moment
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Site Activated":
           return moment(siteinfo.dateVal).format();
           break;
         default:
@@ -339,7 +404,6 @@ export default {
           break;
       }
     },
-    async getComments(siteId, status) {},
     async postComments(status) {
       try {
         await this.$axios.post("comment", {
@@ -371,6 +435,53 @@ export default {
       };
       this.modalSite = site;
       this.dialog = true;
+    },
+    getComaprisonDate(status, Allstats) {
+      console.log("Requested status" + status);
+      console.log("Array before Filter", Allstats);
+      let filtered_array = Allstats.filter(sites => {
+        return sites.status === this.getNextStatus(status);
+      });
+      console.log("Filtered Array", filtered_array);
+      if (filtered_array.length > 0) {
+        return filtered_array[0].dateVal;
+        console.log(
+          "Got status: " +
+            status +
+            " returned Data: " +
+            filtered_array[0].dateVal
+        );
+      } else {
+        return moment(new Date());
+      }
+    },
+    getNextStatus(siteStatus) {
+      switch (siteStatus) {
+        case "Site Identified":
+          return "Site Survey Requested";
+          break;
+        case "Site Survey Requested":
+          return "Site Survey Completed";
+          break;
+        case "Site Survey Completed":
+          return "Site Payment Made";
+          break;
+        case "Site Payment Made":
+          return "Ethio Telecom Provision";
+          break;
+        case "Ethio Telecom Provision":
+          return "Site Configuration";
+          break;
+        case "Site Configuration":
+          return "Site Activated";
+          break;
+        case "Site Activated":
+          return "";
+          break;
+        default:
+          return "";
+          break;
+      }
     }
   }
 };

@@ -10,21 +10,28 @@
             <td class="text-xs-left">{{ props.item.status }}</td>
             <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
-              <v-layout>
-                <v-btn
+              <v-layout row>
+                <v-flex
+                  md4
                   v-if="(props.item.market_analysis_done == 1 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'view')"
-                  color="teal lighten-2"
-                  dark
-                  @click="openDialog(props.item)"
-                >Update Status</v-btn>
-                <v-btn
-                  color="teal lighten-2"
-                  dark
+                >
+                  <v-btn color="teal lighten-2" dark @click="openDialog(props.item)">Update Status</v-btn>
+                </v-flex>
+                <v-flex
+                  md4
                   v-if="(props.item.market_analysis_done == 0 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'view')"
-                  @click="openDialog(props.item)"
-                >Marketing Analysis</v-btn>
-                <v-flex md1>
-                  <v-btn dark @click="getRoute(props.item.site_id)">open</v-btn>
+                >
+                  <v-btn
+                    color="teal lighten-2"
+                    dark
+                    @click="openDialog(props.item)"
+                  >Marketing Analysis</v-btn>
+                </v-flex>
+                <v-flex md4>
+                  <v-btn dark @click="getRoute(props.item.site_id)">open site</v-btn>
+                </v-flex>
+                <v-flex md2>
+                  <v-btn dark :href="'/siteReport/'+props.item.site_id">Site Report</v-btn>
                 </v-flex>
               </v-layout>
             </td>
@@ -48,8 +55,14 @@
           </v-toolbar>
           <v-layout row justify-center>
             <v-card-text>
+              <v-progress-linear
+                indeterminate
+                color="orange"
+                height="2"
+                :hidden="saveProgressHidden"
+              ></v-progress-linear>
               <v-flex md7>
-                <v-form>
+                <v-form ref="siteStatusForm">
                   <v-layout row wrap>
                     <v-flex xs6 md6>
                       <v-subheader>Status</v-subheader>
@@ -79,6 +92,7 @@
                         box
                         v-model="siteStatusUpdateForm.description"
                         label="Site status Description"
+                        :rules="siteStatusUpdateFormRules.descriptionRules"
                       ></v-textarea>
                     </v-flex>
                   </v-layout>
@@ -124,8 +138,14 @@
           </v-toolbar>
           <v-layout row justify-center>
             <v-card-text>
+              <v-progress-linear
+                indeterminate
+                color="orange"
+                height="2"
+                :hidden="saveProgressHidden"
+              ></v-progress-linear>
               <v-flex md7>
-                <v-form>
+                <v-form ref="marketingForm">
                   <v-layout row wrap>
                     <v-flex xs6 md6>
                       <v-subheader>Site Name</v-subheader>
@@ -165,6 +185,7 @@
                         box
                         v-model="marketingForm.description"
                         label="Site status Description"
+                        :rules="marketingFormRules.descriptionRules"
                       ></v-textarea>
                     </v-flex>
                   </v-layout>
@@ -190,9 +211,14 @@
             </v-card-text>
           </v-layout>
         </v-card>
+
         <!-- End[marketing analysis] -->
       </v-dialog>
     </v-flex>
+    <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
+      {{snaackbar_message}}
+      <v-btn dark flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 -----
@@ -223,8 +249,23 @@ export default {
         { text: "Time Elapsed", value: "", sortable: false }
       ],
       dialog: false,
+      snackbar: false,
+      snackbar_type: "primary",
+      snaackbar_message: "",
+      timeout: 3000,
+      saveProgressHidden: true,
       items: [],
       files: "",
+      siteStatusUpdateFormRules: {
+        descriptionRules: [
+          v => v.length > 0 || "Site description can't be empty"
+        ]
+      },
+      marketingFormRules: {
+        descriptionRules: [
+          v => v.length > 0 || "Marketing Description can't empty"
+        ]
+      },
       siteStatusUpdateForm: {
         nextStat: "",
         description: "",
@@ -269,7 +310,7 @@ export default {
             .humanize(true)
             .replace("ago", "");
           break;
-        case "Payment Processed":
+        case "Site Payment Made":
           return moment
             .duration(
               moment(siteinfo.payment_processed_date).diff(moment(new Date()))
@@ -277,7 +318,24 @@ export default {
             .humanize(true)
             .replace("ago", "");
           break;
-        case "Activated":
+        case "Ethio Telecom Provision":
+          return moment
+            .duration(
+              moment(siteinfo.ethio_telecom_pro_date).diff(moment(new Date()))
+            )
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Site Configuration":
+          return moment
+            .duration(
+              moment(siteinfo.site_configuration_date).diff(moment(new Date()))
+            )
+            .humanize(true)
+            .replace("ago", "");
+          break;
+
+        case "Site Activated":
           return moment(siteinfo.activation_date).format();
           break;
         default:
@@ -305,6 +363,9 @@ export default {
         case "Ethio Telecom Provision":
           this.siteStatusUpdateForm.nextStat = "Site Configuration";
           break;
+        case "Site Configuration":
+          this.siteStatusUpdateForm.nextStat = "Site Activated";
+          break;
         case "Site Activated":
           this.siteStatusUpdateForm.nextStat = "";
           break;
@@ -313,68 +374,85 @@ export default {
           break;
       }
     },
-    submitFiles(site) {
-      let formData = new FormData();
-      formData.append("site_id", site.site_id);
-      formData.append("status", this.siteStatusUpdateForm.nextStat);
-      formData.append("createDate", this.siteStatusUpdateForm.statusUpdateDate);
-      formData.append("description", this.siteStatusUpdateForm.description);
-      for (var i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-        formData.append("files[" + i + "]", file);
-      }
-      this.$axios
-        .post("/create_status", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(function() {
-          this.dialog = false;
+    async submitFiles(site) {
+      if (this.$refs.siteStatusForm.validate()) {
+        let formData = new FormData();
+        formData.append("site_id", site.site_id);
+        formData.append("status", this.siteStatusUpdateForm.nextStat);
+        formData.append(
+          "createDate",
+          this.siteStatusUpdateForm.statusUpdateDate
+        );
+        formData.append("description", this.siteStatusUpdateForm.description);
+        for (var i = 0; i < this.files.length; i++) {
+          let file = this.files[i];
+          formData.append("files[" + i + "]", file);
+        }
+        this.saveProgressHidden = false;
+        try {
+          await this.$axios.post("/create_status", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          });
+          this.saveProgressHidden = true;
+          this.snaackbar_message = "Site Status updated Succesfully";
+          this.snackbar_type = "success";
+          this.snackbar = true;
           this.siteStatusUpdateForm = {
             nextStat: "",
             description: "",
             statusUpdateDate: new Date().toISOString().substr(0, 10)
           };
-        })
-        .catch(function() {
-          console.log("FAILURE!!");
-        });
+          this.dialog = false;
+        } catch (e) {
+          this.saveProgressHidden = true;
+          this.snaackbar_message = "Oops there was some error";
+          this.snackbar_type = "error";
+          this.snackbar = true;
+        }
+      }
     },
     handleFileUploads() {
       this.files = this.$refs.files.files;
     },
-    submitMarketingFiles(site) {
-      let formData = new FormData();
-      formData.append("name", site.name);
-      formData.append("potential", this.marketingForm.potential);
-      formData.append(
-        "is_feasible",
-        this.marketingForm.is_feasible == true ? 0 : 1
-      );
-      formData.append("description", this.marketingForm.description);
-      for (var i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-        formData.append("files[" + i + "]", file);
-      }
-
-      this.$axios
-        .post("/create_market", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(function() {
-          this.dialog = false;
-          this.marketingForm = {
-            potential: "",
-            is_feasible: "",
-            description: ""
+    async submitMarketingFiles(site) {
+      if (this.$refs.marketingForm.validate()) {
+        let formData = new FormData();
+        formData.append("name", site.name);
+        formData.append("potential", this.marketingForm.potential);
+        formData.append(
+          "is_feasible",
+          this.marketingForm.is_feasible == true ? 0 : 1
+        );
+        formData.append("description", this.marketingForm.description);
+        for (var i = 0; i < this.files.length; i++) {
+          let file = this.files[i];
+          formData.append("files[" + i + "]", file);
+        }
+        this.saveProgressHidden = false;
+        try {
+          await this.$axios.post("/create_market", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          });
+          this.saveProgressHidden = true;
+          this.snaackbar_message = "Marketing analsyis completed Succesfully";
+          this.snackbar_type = "success";
+          this.snackbar = true;
+          this.siteStatusUpdateForm = {
+            nextStat: "",
+            description: "",
+            statusUpdateDate: new Date().toISOString().substr(0, 10)
           };
-        })
-        .catch(function() {
-          console.log("FAILURE!!");
-        });
+          this.dialog = false;
+        } catch (e) {
+          this.snaackbar_message = "Oops there was some error";
+          this.snackbar_type = "error";
+          this.snackbar = true;
+        }
+      }
     },
     openDialog(site) {
       this.currentModalSite = site;
