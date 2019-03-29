@@ -93,7 +93,7 @@ export default {
 </script>
 <style scoped>
 .Chart {
-  background: #212733;
+  background: #f7f7f7;
   border-radius: 15px;
   box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
 }
@@ -101,7 +101,7 @@ export default {
 .Chart h2 {
   margin-top: 0;
   padding: 15px 0;
-  color: white;
+  color: black;
   border-bottom: 1px solid #323d54;
 }
 

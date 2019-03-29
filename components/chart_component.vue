@@ -24,9 +24,9 @@ export default {
       .getContext("2d")
       .createLinearGradient(0, 0, 0, 450);
 
-    this.gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
-    this.gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
-    this.gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
+    this.gradient.addColorStop(0, "rgba(25, 25,0, 0.5)");
+    this.gradient.addColorStop(0.5, "rgba(56, 25, 0, 1.25)");
+    this.gradient.addColorStop(1, "rgba(56, 0, 25, .8)");
 
     this.gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
     this.gradient2.addColorStop(0.5, "rgba(0, 231, 255, 0.25)");
@@ -36,10 +36,11 @@ export default {
       datasets: [
         {
           label: this.siteName,
-          borderColor: "#FC2525",
-          pointBackgroundColor: "white",
+          borderColor: "#000",
+          pointBackgroundColor: "black",
           borderWidth: 1,
-          pointBorderColor: "white",
+          hoverBorderColor: "#fbe631",
+          pointBorderColor: "#fbe631",
           backgroundColor: this.gradient,
           data: this.siteArray
         }
@@ -51,20 +52,36 @@ export default {
     return {
       gradient: null,
       gradient2: null,
+      scaleFontColor: 'red',
       options: {
+        scaleFontColor: 'red',
+        legend: {
+          labels: {
+            fontColor: "#fbe631",
+            fontSize: 18
+          }
+        },
         scales: {
           yAxes: [
             {
               ticks: {
+                fontColor: "#fbe631",
+                fontSize: 18,
                 beginAtZero: true
               },
               gridLines: {
-                display: true
+                display: true,
+                color: "#fbe631"
               }
             }
           ],
           xAxes: [
             {
+              ticks: {
+                fontColor: "#fbe631",
+                color: "fbe631",
+                fontSize: 18
+              },
               gridLines: {
                 display: false
               }
@@ -81,3 +98,6 @@ export default {
   }
 };
 </script>
+<style>
+
+</style>

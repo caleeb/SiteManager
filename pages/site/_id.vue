@@ -2,24 +2,39 @@
   <v-layout justify-center column>
     <v-card>
       <v-toolbar dense prominent class="white">
-        <v-toolbar-title>Site:{{site.name}}</v-toolbar-title>
+        <v-toolbar-title>{{site.name}}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn dark>{{site.location}}</v-btn>
+          <!-- <v-flex xs12 sm3> -->
+          <v-btn
+            icon
+            large
+            target="_blank"
+            :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
+          >
+
+            <v-icon>launch</v-icon>
+          </v-btn>
+          <!-- </v-flex> -->
+        </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
           <v-layout column wrap>
-            <v-flex>
+            <!-- <v-flex>
               <v-subheader>Site Description</v-subheader>
-            </v-flex>
+            </v-flex>-->
             <v-flex class="text-xs-left pl-3 pt-3 elevation-3">
               <p>{{site.description}}</p>
             </v-flex>
-            <v-flex class="mt-3">
+            <!-- <v-flex class="mt-3">
               <v-divider class="indigo"></v-divider>
-            </v-flex>
-            <v-flex>
+            </v-flex>-->
+            <!-- <v-flex>
               <v-subheader>Site Location</v-subheader>
-            </v-flex>
-            <v-flex class="text-xs-left">
+            </v-flex>-->
+            <!-- <v-flex class="text-xs-left">
               <v-layout column>
                 <v-flex>
                   <v-btn dark>{{site.location}}</v-btn>
@@ -33,7 +48,7 @@
                   </v-btn>
                 </v-flex>
               </v-layout>
-            </v-flex>
+            </v-flex>-->
             <v-flex class="mt-3">
               <v-divider class="indigo"></v-divider>
             </v-flex>
@@ -55,8 +70,9 @@
                           dark
                           :href="'http://196.189.44.14/api/getSiteFile/'+item.filename"
                           target="_blank"
-                        >file
-                          <v-icon color="orange">insert_drive_file</v-icon>
+                        >
+                          file
+                          <v-icon color="#fbe631">insert_drive_file</v-icon>
                         </v-btn>
                       </template>
                       <span>{{item.filename}}</span>
@@ -100,7 +116,7 @@
                               <v-flex>
                                 <v-layout row>
                                   <v-flex xs12 md2>
-                                    <v-subheader class="black--text">Is Site Feasible</v-subheader>
+                                    <v-subheader class="black--text">Is Site Feasible?</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-checkbox disabled v-model="marketingReport.is_feasible"/>
@@ -109,10 +125,10 @@
                               </v-flex>
                               <v-flex>
                                 <v-layout row>
-                                  <v-flex xs12 md2>
+                                  <!-- <v-flex xs12 md2>
                                     <v-subheader class="black--text">Description</v-subheader>
-                                  </v-flex>
-                                  <v-flex xs12 md4>
+                                  </v-flex> -->
+                                  <v-flex xs12 md6>
                                     <v-textarea
                                       solo
                                       label="Potential Customers"
@@ -135,7 +151,7 @@
                                     target="_blank"
                                   >
                                     {{item.filename}}
-                                    <v-icon color="orange">insert_drive_file</v-icon>
+                                    <v-icon color="#fbe631">insert_drive_file</v-icon>
                                   </v-btn>
                                 </v-flex>
                               </template>
@@ -158,7 +174,7 @@
               <v-data-table :headers="headers" :items="items" class="elevation-5">
                 <template v-slot:items="props">
                   <td>{{site.name }}</td>
-                  <td class="text-xs-left">{{ props.item.status }}</td>                  
+                  <td class="text-xs-left">{{ props.item.status }}</td>
                   <td class="text-xs-left">{{ props.item.description }}</td>
                   <td class="text-xs-left">{{ props.item.username }}</td>
                   <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
@@ -209,7 +225,7 @@
                             target="_blank"
                           >
                             {{item.filename}}
-                            <v-icon color="orange">insert_drive_file</v-icon>
+                            <v-icon color="#fbe631">insert_drive_file</v-icon>
                           </v-btn>
                         </v-flex>
                       </template>
@@ -490,4 +506,3 @@ export default {
   }
 };
 </script>
-

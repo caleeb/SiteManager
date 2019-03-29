@@ -2,13 +2,13 @@
   <v-app light>
     <v-toolbar fixed app dark>
       <v-toolbar-side-icon>
-        <v-icon color="orange">web</v-icon>
+        <v-icon color="#fbe631">web</v-icon>
       </v-toolbar-side-icon>
       <v-toolbar-title v-text="title"/>
       <v-spacer/>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat v-if="isAuthenticated" href="/">home
-          <v-icon color="orange">home</v-icon>
+          <v-icon color="#fbe631">home</v-icon>
         </v-btn>
         <v-dialog v-model="dialog" fullscreen>
           <template v-slot:activator="{ on }">
@@ -17,7 +17,7 @@
               flat
               v-if="isAuthenticated && loggedInUser.organization=='Websprix'"
             >newsite
-              <v-icon color="orange">add</v-icon>
+              <v-icon color="#fbe631">add</v-icon>
             </v-btn>
           </template>
           <v-card>
@@ -33,7 +33,7 @@
                 </v-btn>
               </v-toolbar-items>
             </v-toolbar>
-            <v-progress-linear indeterminate color="orange" height="2" :hidden="saveProgressHidden"></v-progress-linear>
+            <v-progress-linear indeterminate color="#fbe631" height="2" :hidden="saveProgressHidden"></v-progress-linear>
             <v-layout row justify-start>
               <v-flex md7>
                 <v-card-text>
@@ -147,7 +147,7 @@
           </v-card>
         </v-dialog>
         <v-btn flat v-if="isAuthenticated" @click="logout">Signout
-          <v-icon color="orange">person</v-icon>
+          <v-icon color="#fbe631">person</v-icon>
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
