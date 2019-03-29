@@ -10,27 +10,17 @@
             <td class="text-xs-left">{{ props.item.status }}</td>
             <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
-              <v-layout row>
-                <v-flex
-                  md4
-                  v-if="(props.item.market_analysis_done == 1 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'Marketing')"
-                >
-                  <v-btn color="teal lighten-2" dark @click="openDialog(props.item)">Update Status</v-btn>
-                </v-flex>
-                <v-flex
-                  md4
-                  v-if="(props.item.market_analysis_done == 0 && loggedInUser.organization !='EthioTel' && loggedInUser.role != 'Deployment')"
-                >
-                  <v-btn
-                    color="teal lighten-2"
-                    dark
-                    @click="openDialog(props.item)"
-                  >Marketing Analysis</v-btn>
+              <v-layout row wrap justify-space-between>
+                <v-flex md4 v-if="checkAuthorization(props.item)">
+                  <v-btn color="teal lighten-2" dark @click="openDialog(props.item)">
+                    <span v-if="props.item.market_analysis_done==1">Update Status</span>
+                    <span v-else>submit report</span>
+                  </v-btn>
                 </v-flex>
                 <v-flex md4>
                   <v-btn dark @click="getRoute(props.item.site_id)">open site</v-btn>
                 </v-flex>
-                <v-flex md2>
+                <v-flex md4 v-if="(loggedInUser.organization !='EthioTel')">
                   <v-btn dark :href="'/siteReport/'+props.item.site_id">Site Report</v-btn>
                 </v-flex>
               </v-layout>
@@ -456,7 +446,10 @@ export default {
     },
     openDialog(site) {
       this.currentModalSite = site;
-      if (site.market_analysis_done != 0) this.getNextStatus(site.status);
+      if (site.market_analysis_done != 0) {
+        this.getNextStatus(site.status);
+        this.dialog = true;
+      }
       this.dialog = true;
     },
     closeDialog() {
@@ -471,6 +464,27 @@ export default {
         description: ""
       };
       this.dialog = false;
+    },
+    checkAuthorization(site) {
+      let authorizationResult;
+      if (this.loggedInUser.organization === "EthioTel") {
+        authorizationResult= false;
+      } else if (
+        site.market_analysis_done == 0 &&
+        this.loggedInUser.role != "Marketing" &&
+        this.loggedInUser.role != "admin"
+      ) {
+        authorizationResult= false;
+      } else if (
+        site.market_analysis_done == 1 &&
+        this.loggedInUser.role != "Deployment" &&
+        this.loggedInUser.role != "admin"
+      ) {
+        authorizationResult= false;
+      } else {
+        authorizationResult= true;
+      }
+      return authorizationResult;
     }
   }
 };

@@ -54,6 +54,7 @@
                           v-on="on"
                           dark
                           :href="'http://196.189.44.14/api/getSiteFile/'+item.filename"
+                          target="_blank"
                         >file
                           <v-icon color="orange">insert_drive_file</v-icon>
                         </v-btn>
@@ -62,94 +63,93 @@
                     </v-tooltip>
                   </v-flex>
                 </template>
+                <v-flex md12>
+                  <v-divider class="indigo mt-3"></v-divider>
+                </v-flex>
               </v-layout>
-            </v-flex>
-            <v-flex class="mt-3">
-              <v-divider class="indigo"></v-divider>
             </v-flex>
             <v-flex v-if="site.market_analysis_done==1 && loggedInUser.organization != 'EthioTel'">
               <v-subheader>Marketing Analysis Report</v-subheader>
-            </v-flex>
-            <v-expansion-panel
-              v-if="site.market_analysis_done==1 && loggedInUser.organization != 'EthioTel'"
-            >
-              <v-expansion-panel-content>
-                <template v-slot:header>
-                  <div>Report</div>
-                </template>
-                <v-card>
-                  <v-card-text>
-                    <v-flex>
-                      <v-layout row class="elevation-3 pa-2" wrap>
-                        <v-flex md6 xs12>
-                          <v-subheader>Report Data</v-subheader>
-                          <v-layout column>
-                            <v-flex>
-                              <v-layout row>
-                                <v-flex xs12 md2>
-                                  <v-subheader class="black--text">No of Potential Customers</v-subheader>
-                                </v-flex>
-                                <v-flex xs12 md2>
-                                  <v-text-field
-                                    solo
-                                    label="Potential Customers"
-                                    disabled
-                                    v-model="marketingReport.no_potential_customers"
-                                  ></v-text-field>
-                                </v-flex>
-                              </v-layout>
-                            </v-flex>
-                            <v-flex>
-                              <v-layout row>
-                                <v-flex xs12 md2>
-                                  <v-subheader class="black--text">Is Site Feasible</v-subheader>
-                                </v-flex>
-                                <v-flex xs12 md2>
-                                  <v-checkbox disabled v-model="marketingReport.is_feasible"/>
-                                </v-flex>
-                              </v-layout>
-                            </v-flex>
-                            <v-flex>
-                              <v-layout row>
-                                <v-flex xs12 md2>
-                                  <v-subheader class="black--text">Description</v-subheader>
-                                </v-flex>
-                                <v-flex xs12 md4>
-                                  <v-textarea
-                                    solo
-                                    label="Potential Customers"
-                                    disabled
-                                    :value="marketingReport.description"
-                                  ></v-textarea>
-                                </v-flex>
-                              </v-layout>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex md6 class="mr-auto" xs12>
-                          <v-subheader>Attached Files</v-subheader>
-                          <v-layout row wrap>
-                            <template v-for="item in marketingReport.files">
-                              <v-flex :key="item.file_id" md4 xs12>
-                                <v-btn
-                                  dark
-                                  :href="'http://196.189.44.14/api/getMarketFile/'+item.filename"
-                                >
-                                  {{item.filename}}
-                                  <v-icon color="orange">insert_drive_file</v-icon>
-                                </v-btn>
+              <v-expansion-panel>
+                <v-expansion-panel-content>
+                  <template v-slot:header>
+                    <div>Report</div>
+                  </template>
+                  <v-card>
+                    <v-card-text>
+                      <v-flex>
+                        <v-layout row class="elevation-3 pa-2" wrap>
+                          <v-flex md6 xs12>
+                            <v-subheader>Report Data</v-subheader>
+                            <v-layout column>
+                              <v-flex>
+                                <v-layout row>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">No of Potential Customers</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field
+                                      solo
+                                      label="Potential Customers"
+                                      disabled
+                                      v-model="marketingReport.no_potential_customers"
+                                    ></v-text-field>
+                                  </v-flex>
+                                </v-layout>
                               </v-flex>
-                            </template>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-card-text>
-                </v-card>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-flex class="mt-3">
-              <v-divider class="indigo"></v-divider>
+                              <v-flex>
+                                <v-layout row>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Is Site Feasible</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-checkbox disabled v-model="marketingReport.is_feasible"/>
+                                  </v-flex>
+                                </v-layout>
+                              </v-flex>
+                              <v-flex>
+                                <v-layout row>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Description</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md4>
+                                    <v-textarea
+                                      solo
+                                      label="Potential Customers"
+                                      disabled
+                                      :value="marketingReport.description"
+                                    ></v-textarea>
+                                  </v-flex>
+                                </v-layout>
+                              </v-flex>
+                            </v-layout>
+                          </v-flex>
+                          <v-flex md6 class="mr-auto" xs12>
+                            <v-subheader>Attached Files</v-subheader>
+                            <v-layout row wrap>
+                              <template v-for="item in marketingReport.files">
+                                <v-flex :key="item.file_id" md4 xs12>
+                                  <v-btn
+                                    dark
+                                    :href="'http://196.189.44.14/api/getMarketFile/'+item.filename"
+                                    target="_blank"
+                                  >
+                                    {{item.filename}}
+                                    <v-icon color="orange">insert_drive_file</v-icon>
+                                  </v-btn>
+                                </v-flex>
+                              </template>
+                            </v-layout>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-flex md12>
+                <v-divider class="indigo mt-3"></v-divider>
+              </v-flex>
             </v-flex>
             <v-flex>
               <v-subheader>Site status History</v-subheader>
@@ -158,6 +158,7 @@
               <v-data-table :headers="headers" :items="items" class="elevation-5">
                 <template v-slot:items="props">
                   <td>{{site.name }}</td>
+                  <td class="text-xs-left">{{ props.item.status }}</td>                  
                   <td class="text-xs-left">{{ props.item.description }}</td>
                   <td class="text-xs-left">{{ props.item.username }}</td>
                   <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
@@ -180,7 +181,7 @@
           <v-toolbar-side-icon>
             <v-icon @click="closeDialog">close</v-icon>
           </v-toolbar-side-icon>
-          <v-toolbar-title>{{site.name}}|{{modalSite.status}}</v-toolbar-title>
+          <v-toolbar-title>{{'Site name:-'+ site.name+' '}}| {{'Status:- '+ modalSite.status}}</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-container grid-list-lg fluid>
@@ -205,6 +206,7 @@
                           <v-btn
                             dark
                             :href="'http://196.189.44.14/api/getStatusFile/'+item.filename"
+                            target="_blank"
                           >
                             {{item.filename}}
                             <v-icon color="orange">insert_drive_file</v-icon>
@@ -297,6 +299,7 @@ export default {
           align: "left",
           sortable: false
         },
+        { text: "Status", value: "status" },
         { text: "Status Description", value: "description" },
         { text: "Created By", value: "username" },
         { text: "Time Elapsed", value: "", sortable: false },
