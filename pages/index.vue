@@ -157,7 +157,7 @@
                       <v-subheader>No of Potential Customers</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.potential"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.potential"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -173,7 +173,7 @@
                       <v-subheader>No of Blocks</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.blocks"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.blocks"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -181,7 +181,7 @@
                       <v-subheader>Percentage of Business Units</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.business"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.business"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -189,7 +189,7 @@
                       <v-subheader>Occupancy Rate</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.occupancy"></v-text-field>
+                      <v-text-field type="number"  :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.occupancy"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -197,7 +197,7 @@
                       <v-subheader>No of Units</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.units"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.units"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -205,7 +205,7 @@
                       <v-subheader>Average Rental</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.rental"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.rental"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -213,7 +213,7 @@
                       <v-subheader>Is Duct Available?</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-checkbox label="yes" value="1" v-model="marketingForm.duct"></v-checkbox>
+                      <v-checkbox label="yes" value="1" :disabled="loggedInUser.role=='Marketing'" v-model="marketingForm.duct"></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -221,7 +221,7 @@
                       <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.ftth"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role == 'Marketing'" solo v-model="marketingForm.ftth"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -229,7 +229,7 @@
                       <v-subheader>Average Density (Units per Square KM.)</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" solo v-model="marketingForm.density"></v-text-field>
+                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.density"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -237,7 +237,7 @@
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-checkbox label="yes" value="1" v-model="marketingForm.is_feasible"></v-checkbox>
+                      <v-checkbox v-if="loggedInUser.is_admin == 1 && loggedInUser.role == 'Marketing'" value="1" v-model="marketingForm.is_feasible"></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -247,6 +247,7 @@
                     <v-flex xs6 md6>
                       <v-textarea
                         box
+                        :disabled="loggedInUser.role=='Deployment'"
                         v-model="marketingForm.description"
                         label="Site status Description"
                         :rules="marketingFormRules.descriptionRules"
@@ -589,6 +590,7 @@ export default {
       } else if (
         site.market_analysis_done == 0 &&
         this.loggedInUser.role != "Marketing" &&
+        this.loggedInUser.role != "Deployment" &&
         this.loggedInUser.role != "admin"
       ) {
         authorizationResult = false;
