@@ -167,7 +167,7 @@
                                     <v-subheader class="black--text">Average Rental</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.rental + '\n Houses Rented'"/>
+                                    <v-text-field disabled :value="marketingReport.rental + '\n Birr'"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Suitability for FTTH Rating</v-subheader>
