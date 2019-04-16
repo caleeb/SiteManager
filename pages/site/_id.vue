@@ -104,10 +104,10 @@
                             <v-layout column>
                               <v-flex>
                                 <v-layout row>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 sm12>
                                     <v-subheader class="black--text">No of Potential Customers</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 sm12>
                                     <v-text-field
                                       solo
                                       label="Potential Customers"
@@ -138,13 +138,13 @@
                                  <v-flex xs12 md2>
                                     <v-subheader class="black--text">Blocks</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.blocks + '\n Blocks'"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Units</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.units +' Per Block'"/>
                                   </v-flex>
                                 </v-layout>
@@ -152,13 +152,13 @@
                                  <v-flex xs12 md2>
                                     <v-subheader class="black--text">Occupancy Rate</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.occupancy + '\n Houses Occupied'"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Mobile Coverage</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.mobile"/>
                                   </v-flex>
                                 </v-layout>
@@ -166,13 +166,13 @@
                                  <v-flex xs12 md2>
                                     <v-subheader class="black--text">Average Rental</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.rental + '\n Houses Rented'"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Suitability for FTTH Rating</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.ftth + ' out of 10.'"/>
                                   </v-flex>
                                 </v-layout>
@@ -180,18 +180,18 @@
                                  <v-flex xs12 md2>
                                     <v-subheader class="black--text">Percentage of Business Units</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.business + '%'"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Average Density - (Units Per Km)</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md2 lg6>
                                     <v-text-field disabled :value="marketingReport.density + ' units/km.'"/>
                                   </v-flex>
                                 </v-layout>
                                 <v-layout row>
-                                  <v-flex xs12 md6>
+                                  <v-flex xs12 md6 lg6>
                                     <v-textarea
                                       solo
                                       label="Potential Customers"
@@ -203,11 +203,11 @@
                               </v-flex>
                             </v-layout>
                           </v-flex>
-                          <v-flex md6 class="mr-auto" xs12>
+                          <v-flex md6 lg6 class="mr-auto" xs12>
                             <v-subheader>Attached Files</v-subheader>
                             <v-layout row wrap>
                               <template v-for="item in marketingReport.files">
-                                <v-flex :key="item.file_id" md4 xs12>
+                                <v-flex :key="item.file_id" md4 xs12 lg12>
                                   <v-btn
                                     dark
                                     :href="'http://196.189.44.14/api/getMarketFile/'+item.filename"
