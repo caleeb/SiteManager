@@ -13,7 +13,6 @@
             target="_blank"
             :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
           >
-
             <v-icon>launch</v-icon>
           </v-btn>
           <!-- </v-flex> -->
@@ -84,7 +83,8 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex v-if="site.market_analysis_done==1 && loggedInUser.organization != 'EthioTel'">
+            <!-- site.market_analysis_done==1 &&  -->
+            <v-flex v-if="loggedInUser.organization != 'EthioTel'">
               <v-subheader>Marketing Analysis Report</v-subheader>
               <v-expansion-panel>
                 <v-expansion-panel-content>
@@ -97,6 +97,10 @@
                         <v-layout row class="elevation-3 pa-2" wrap>
                           <v-flex md6 xs12>
                             <v-subheader>Report Data</v-subheader>
+                            <!-- <v-btn
+                              dark
+                              @click="openModal2(site.name)"
+                            >Update</v-btn> -->
                             <v-layout column>
                               <v-flex>
                                 <v-layout row>
@@ -108,7 +112,7 @@
                                       solo
                                       label="Potential Customers"
                                       disabled
-                                      v-model="marketingReport.no_potential_customers"
+                                      :value="marketingReport.no_potential_customers + ' Potential Customers'"
                                     ></v-text-field>
                                   </v-flex>
                                 </v-layout>
@@ -121,13 +125,72 @@
                                   <v-flex xs12 md2>
                                     <v-checkbox disabled v-model="marketingReport.is_feasible"/>
                                   </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Is Duct Available?</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-checkbox disabled v-model="marketingReport.duct"/>
+                                  </v-flex>
                                 </v-layout>
                               </v-flex>
                               <v-flex>
                                 <v-layout row>
-                                  <!-- <v-flex xs12 md2>
-                                    <v-subheader class="black--text">Description</v-subheader>
-                                  </v-flex> -->
+                                 <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Blocks</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.blocks + '\n Blocks'"/>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Units</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.units +' Per Block'"/>
+                                  </v-flex>
+                                </v-layout>
+                                 <v-layout row>
+                                 <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Occupancy Rate</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.occupancy + '\n Houses Occupied'"/>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Mobile Coverage</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.mobile"/>
+                                  </v-flex>
+                                </v-layout>
+                                 <v-layout row>
+                                 <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Average Rental</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.rental + '\n Houses Rented'"/>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Suitability for FTTH Rating</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.ftth + ' out of 10.'"/>
+                                  </v-flex>
+                                </v-layout>
+                                <v-layout row>
+                                 <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Percentage of Business Units</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.business + '%'"/>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-subheader class="black--text">Average Density - (Units Per Km)</v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md2>
+                                    <v-text-field disabled :value="marketingReport.density + ' units/km.'"/>
+                                  </v-flex>
+                                </v-layout>
+                                <v-layout row>
                                   <v-flex xs12 md6>
                                     <v-textarea
                                       solo
@@ -191,6 +254,7 @@
         </v-container>
       </v-card-text>
     </v-card>
+
     <v-dialog v-model="dialog" fullscreen>
       <v-card>
         <v-toolbar class="white elevation-12">

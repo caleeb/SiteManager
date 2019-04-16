@@ -38,7 +38,8 @@
             <v-toolbar-title class="white--text" v-text="currentModalSite.name"/>
             <v-spacer/>
             <v-toolbar-items class="hidden-xs-only">
-              <v-btn flat color="white" @click="submitFiles(currentModalSite)">save
+              <v-btn flat color="white" @click="submitFiles(currentModalSite)">
+                save
                 <v-icon>save</v-icon>
               </v-btn>
             </v-toolbar-items>
@@ -121,7 +122,8 @@
             />
             <v-spacer/>
             <v-toolbar-items class="hidden-xs-only">
-              <v-btn flat color="white" @click="submitMarketingFiles(currentModalSite)">save
+              <v-btn flat color="white" @click="submitMarketingFiles(currentModalSite)">
+                save
                 <v-icon>save</v-icon>
               </v-btn>
             </v-toolbar-items>
@@ -160,10 +162,82 @@
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs6 md6>
+                      <v-subheader>Mobile Connection</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field solo v-model="marketingForm.mobile"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>No of Blocks</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.blocks"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Percentage of Business Units</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.business"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Occupancy Rate</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.occupancy"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>No of Units</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.units"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Average Rental</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.rental"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Is Duct Available?</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-checkbox label="yes" value="1" v-model="marketingForm.duct"></v-checkbox>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.ftth"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
+                      <v-subheader>Average Density (Units per Square KM.)</v-subheader>
+                    </v-flex>
+                    <v-flex xs6 md6>
+                      <v-text-field type="number" solo v-model="marketingForm.density"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs6 md6>
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-checkbox label="yes" :value="marketingForm.is_feasible"></v-checkbox>
+                      <v-checkbox label="yes" value="1" v-model="marketingForm.is_feasible"></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -239,6 +313,7 @@ export default {
         { text: "Time Elapsed", value: "", sortable: false }
       ],
       dialog: false,
+
       snackbar: false,
       snackbar_type: "primary",
       snaackbar_message: "",
@@ -262,10 +337,20 @@ export default {
         statusUpdateDate: new Date().toISOString().substr(0, 10)
       },
       marketingForm: {
-        potential: "",
+        potential: 0,
         is_feasible: "",
-        description: ""
+        description: "",
+        blocks: 0,
+        units: 0,
+        business: 0,
+        duct: "",
+        density: 0,
+        mobile: "",
+        rental: 0,
+        ftth: 0,
+        occupancy: 0
       },
+      curMar: {},
       currentModalSite: {}
     };
   },
@@ -409,12 +494,20 @@ export default {
     async submitMarketingFiles(site) {
       if (this.$refs.marketingForm.validate()) {
         let formData = new FormData();
+        console.log("duct", this.marketingForm.is_feasible);
         formData.append("name", site.name);
         formData.append("potential", this.marketingForm.potential);
-        formData.append(
-          "is_feasible",
-          this.marketingForm.is_feasible == true ? 0 : 1
-        );
+        formData.append("blocks", this.marketingForm.blocks);
+        formData.append("units", this.marketingForm.units);
+        formData.append("business", this.marketingForm.business);
+        formData.append("mobile", this.marketingForm.mobile);
+        formData.append("density", this.marketingForm.density);
+        formData.append("rental", this.marketingForm.rental);
+        formData.append("duct", this.marketingForm.duct  == true ? 1 : 0);
+
+        formData.append("occupancy", this.marketingForm.occupancy);
+        formData.append("ftth", this.marketingForm.ftth);
+        formData.append("is_feasible", this.marketingForm.is_feasible == true ? 1 : 0);
         formData.append("description", this.marketingForm.description);
         for (var i = 0; i < this.files.length; i++) {
           let file = this.files[i];
@@ -428,7 +521,7 @@ export default {
             }
           });
           this.saveProgressHidden = true;
-          this.snaackbar_message = "Marketing analsyis completed Succesfully";
+          this.snaackbar_message = "Marketing analysis completed Succesfully";
           this.snackbar_type = "success";
           this.snackbar = true;
           this.siteStatusUpdateForm = {
@@ -444,8 +537,23 @@ export default {
         }
       }
     },
-    openDialog(site) {
+    async openDialog(site) {
       this.currentModalSite = site;
+      let { data } = await this.$axios.post("get_market_analysis/" + site.name);
+      if (data.length == 1) {
+        this.marketingForm.potential = data[0].no_potential_customers;
+        this.marketingForm.is_feasible = data[0].is_feasible;
+        this.marketingForm.description = data[0].description;
+        this.marketingForm.blocks = data[0].blocks;
+        this.marketingForm.units = data[0].units;
+        this.marketingForm.business = data[0].business;
+        this.marketingForm.duct = data[0].duct;
+        this.marketingForm.density = data[0].density;
+        this.marketingForm.mobile = data[0].mobile;
+        this.marketingForm.rental = data[0].rental;
+        this.marketingForm.ftth = data[0].ftth;
+        this.marketingForm.occupancy = data[0].occupancy;
+      }
       if (site.market_analysis_done != 0) {
         this.getNextStatus(site.status);
         this.dialog = true;
@@ -461,28 +569,37 @@ export default {
       this.marketingForm = {
         potential: "",
         is_feasible: "",
-        description: ""
+        description: "",
+        blocks: 0,
+        units: 0,
+        business: 0,
+        duct: "",
+        density: 0,
+        mobile: "",
+        rental: 0,
+        ftth: 0,
+        occupancy: 0
       };
       this.dialog = false;
     },
     checkAuthorization(site) {
       let authorizationResult;
       if (this.loggedInUser.organization === "EthioTel") {
-        authorizationResult= false;
+        authorizationResult = false;
       } else if (
         site.market_analysis_done == 0 &&
         this.loggedInUser.role != "Marketing" &&
         this.loggedInUser.role != "admin"
       ) {
-        authorizationResult= false;
+        authorizationResult = false;
       } else if (
         site.market_analysis_done == 1 &&
         this.loggedInUser.role != "Deployment" &&
         this.loggedInUser.role != "admin"
       ) {
-        authorizationResult= false;
+        authorizationResult = false;
       } else {
-        authorizationResult= true;
+        authorizationResult = true;
       }
       return authorizationResult;
     }
