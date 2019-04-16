@@ -25,7 +25,7 @@ export default {
     link: [{
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/img/ws.png'
+        href: '/ws.png'
       },
       {
         rel: 'stylesheet',

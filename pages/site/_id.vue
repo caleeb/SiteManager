@@ -107,7 +107,7 @@
                                   <v-flex xs12 md2 sm12>
                                     <v-subheader class="black--text">No of Potential Customers</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 sm12>
+                                  <v-flex xs12 md6>
                                     <v-text-field
                                       solo
                                       label="Potential Customers"
