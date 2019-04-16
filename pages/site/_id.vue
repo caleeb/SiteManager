@@ -123,13 +123,13 @@
                                     <v-subheader class="black--text">Is Site Feasible?</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md2>
-                                    <v-checkbox disabled v-model="marketingReport.is_feasible"/>
+                                    <v-checkbox disabled :value="1==marketingReport.is_feasible"/>
                                   </v-flex>
                                   <v-flex xs12 md2>
                                     <v-subheader class="black--text">Is Duct Available?</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md2>
-                                    <v-checkbox disabled v-model="marketingReport.duct"/>
+                                    <v-checkbox disabled :value="1==marketingReport.duct"/>
                                   </v-flex>
                                 </v-layout>
                               </v-flex>
