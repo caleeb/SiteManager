@@ -397,14 +397,14 @@ export default {
   mounted() {
     this.$axios.post("single_site/" + this.id).then(result => {
       this.site = result.data[0];
-      if (this.site.market_analysis_done == 1) {
+      // if (this.site.market_analysis_done == 1) {
         this.$axios
           .post("get_market_analysis/" + this.site.name.split(" ").join("_"))
           .then(data => {
             this.marketingReport = data.data[0];
             console.log(this.marketingReport);
           });
-      }
+      // }
     });
     this.$axios.post("site_status/" + this.id).then(result => {
       this.items = result.data;
