@@ -33,7 +33,12 @@
                 </v-btn>
               </v-toolbar-items>
             </v-toolbar>
-            <v-progress-linear indeterminate color="#fbe631" height="2" :hidden="saveProgressHidden"></v-progress-linear>
+            <v-progress-linear
+              indeterminate
+              color="#fbe631"
+              height="2"
+              :hidden="saveProgressHidden"
+            ></v-progress-linear>
             <v-layout row justify-start>
               <v-flex md7>
                 <v-card-text>
@@ -149,6 +154,12 @@
         <v-btn flat v-if="isAuthenticated" @click="logout">Signout
           <v-icon color="#fbe631">person</v-icon>
         </v-btn>
+        <v-btn flat v-if="isAuthenticated && loggedInUser.role === 'admin'" @click="manageUsers">
+          Manage Users
+          <v-icon color="#fbe631">
+            supervisor_account
+          </v-icon>
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
@@ -165,6 +176,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { async } from 'q';
 
 export default {
   computed: {
@@ -176,8 +188,8 @@ export default {
       dialog: false,
       snackbar: false,
       snackbar_type: "primary",
-      snaackbar_message:"",
-      timeout:3000,
+      snaackbar_message: "",
+      timeout: 3000,
       saveProgressHidden: true,
       siteform: {
         potential: "",
@@ -237,9 +249,9 @@ export default {
             }
           });
           this.saveProgressHidden = true;
-          this.snaackbar_message="Site created Succesfully";
-          this.snackbar_type="success";
-          this.snackbar=true;
+          this.snaackbar_message = "Site created Succesfully";
+          this.snackbar_type = "success";
+          this.snackbar = true;
           this.siteform = {
             potential: "",
             location: "",
@@ -258,6 +270,9 @@ export default {
     },
     handleFileUploads() {
       this.siteform.files = this.$refs.files.files;
+    },
+    manageUsers(){
+      this.$router.push("/iam");
     }
   }
 };
