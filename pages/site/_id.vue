@@ -7,6 +7,12 @@
         <v-toolbar-items>
           <v-btn dark>{{site.location}}</v-btn>
         </v-toolbar-items>
+        <v-toolbar-side-icon
+          target="_blank"
+          :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
+        >
+          <v-icon>launch</v-icon>
+        </v-toolbar-side-icon>
       </v-toolbar>
       <v-card-text>
         <v-container>
@@ -174,9 +180,7 @@
                                 </v-layout>
                                 <v-layout row wrap>
                                   <v-flex xs12 md6>
-                                    <v-subheader class="black--text">
-                                      Marketing Status Description
-                                    </v-subheader>
+                                    <v-subheader class="black--text">Marketing Status Description</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md6>
                                     <v-textarea
