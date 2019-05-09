@@ -1,53 +1,19 @@
 <template>
   <v-layout justify-center column>
     <v-card>
-      <v-toolbar dense prominent class="white">
+      <v-toolbar dense class="white">
         <v-toolbar-title>{{site.name}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn dark>{{site.location}}</v-btn>
-          <!-- <v-flex xs12 sm3> -->
-          <v-btn
-            icon
-            large
-            target="_blank"
-            :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
-          >
-            <v-icon>launch</v-icon>
-          </v-btn>
-          <!-- </v-flex> -->
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <v-container>
           <v-layout column wrap>
-            <!-- <v-flex>
-              <v-subheader>Site Description</v-subheader>
-            </v-flex>-->
             <v-flex class="text-xs-left pl-3 pt-3 elevation-3">
               <p>{{site.description}}</p>
             </v-flex>
-            <!-- <v-flex class="mt-3">
-              <v-divider class="indigo"></v-divider>
-            </v-flex>-->
-            <!-- <v-flex>
-              <v-subheader>Site Location</v-subheader>
-            </v-flex>-->
-            <!-- <v-flex class="text-xs-left">
-              <v-layout column>
-                <v-flex>
-                  <v-btn dark>{{site.location}}</v-btn>
-                </v-flex>
-                <v-flex>
-                  <v-btn
-                    target="_blank"
-                    :href="'https://google.com/maps/search/?api=1&query='+site.latitude+','+site.longitude"
-                  >open in google maps
-                    <v-icon>url_launch</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-flex>-->
             <v-flex class="mt-3">
               <v-divider class="indigo"></v-divider>
             </v-flex>
@@ -97,14 +63,10 @@
                         <v-layout row class="elevation-3 pa-2" wrap>
                           <v-flex md6 xs12>
                             <v-subheader>Report Data</v-subheader>
-                            <!-- <v-btn
-                              dark
-                              @click="openModal2(site.name)"
-                            >Update</v-btn> -->
                             <v-layout column>
                               <v-flex>
-                                <v-layout row>
-                                  <v-flex xs12 md2 sm12>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md6>
                                     <v-subheader class="black--text">No of Potential Customers</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md6>
@@ -118,83 +80,108 @@
                                 </v-layout>
                               </v-flex>
                               <v-flex>
-                                <v-layout row>
-                                  <v-flex xs12 md2>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Is Site Feasible?</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-checkbox disabled :value="1==marketingReport.is_feasible"/>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Is Duct Available?</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-checkbox disabled :value="1==marketingReport.duct"/>
                                   </v-flex>
                                 </v-layout>
                               </v-flex>
                               <v-flex>
-                                <v-layout row>
-                                 <v-flex xs12 md2>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Blocks</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.blocks + '\n Blocks'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.blocks + '\n Blocks'"
+                                    />
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Units</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.units +' Per Block'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.units +' Per Block'"
+                                    />
                                   </v-flex>
                                 </v-layout>
-                                 <v-layout row>
-                                 <v-flex xs12 md2>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Occupancy Rate</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.occupancy + '\n Houses Occupied'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.occupancy + '\n Houses Occupied'"
+                                    />
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Mobile Coverage</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
+                                  <v-flex xs12 md3>
                                     <v-text-field disabled :value="marketingReport.mobile"/>
                                   </v-flex>
                                 </v-layout>
-                                 <v-layout row>
-                                 <v-flex xs12 md2>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Average Rental</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.rental + '\n Birr'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.rental + '\n Birr'"
+                                    />
                                   </v-flex>
-                                  <v-flex xs12 md2>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Suitability for FTTH Rating</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.ftth + ' out of 10.'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.ftth + ' out of 10.'"
+                                    />
                                   </v-flex>
                                 </v-layout>
-                                <v-layout row>
-                                 <v-flex xs12 md2>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md3>
                                     <v-subheader class="black--text">Percentage of Business Units</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
+                                  <v-flex xs12 md3>
                                     <v-text-field disabled :value="marketingReport.business + '%'"/>
                                   </v-flex>
-                                  <v-flex xs12 md2>
-                                    <v-subheader class="black--text">Average Density - (Units Per Km)</v-subheader>
+                                  <v-flex xs12 md3>
+                                    <v-subheader
+                                      class="black--text"
+                                    >Average Density - (Units Per Km)</v-subheader>
                                   </v-flex>
-                                  <v-flex xs12 md2 lg6>
-                                    <v-text-field disabled :value="marketingReport.density + ' units/km.'"/>
+                                  <v-flex xs12 md3>
+                                    <v-text-field
+                                      disabled
+                                      :value="marketingReport.density + ' units/km.'"
+                                    />
                                   </v-flex>
                                 </v-layout>
-                                <v-layout row>
-                                  <v-flex xs12 md6 lg6>
+                                <v-layout row wrap>
+                                  <v-flex xs12 md6>
+                                    <v-subheader class="black--text">
+                                      Marketing Status Description
+                                    </v-subheader>
+                                  </v-flex>
+                                  <v-flex xs12 md6>
                                     <v-textarea
                                       solo
-                                      label="Potential Customers"
+                                      label="Description"
                                       disabled
                                       :value="marketingReport.description"
                                     ></v-textarea>
@@ -203,7 +190,7 @@
                               </v-flex>
                             </v-layout>
                           </v-flex>
-                          <v-flex md6 lg6 class="mr-auto" xs12>
+                          <v-flex md6 class="mr-auto" xs12>
                             <v-subheader>Attached Files</v-subheader>
                             <v-layout row wrap>
                               <template v-for="item in marketingReport.files">
@@ -398,12 +385,11 @@ export default {
     this.$axios.post("single_site/" + this.id).then(result => {
       this.site = result.data[0];
       // if (this.site.market_analysis_done == 1) {
-        this.$axios
-          .post("get_market_analysis/" + this.site.name.split(" ").join("_"))
-          .then(data => {
-            this.marketingReport = data.data[0];
-            console.log(this.marketingReport);
-          });
+      this.$axios
+        .post("get_market_analysis/" + this.site.name.split(" ").join("_"))
+        .then(data => {
+          this.marketingReport = data.data[0];
+        });
       // }
     });
     this.$axios.post("site_status/" + this.id).then(result => {
@@ -418,7 +404,6 @@ export default {
         .humanize(true);
     },
     calcTimeElapsed(siteinfo) {
-      console.log(siteinfo);
       switch (siteinfo.status) {
         case "Site Identified":
           return moment
@@ -481,7 +466,14 @@ export default {
             .replace("ago", "");
           break;
         case "Site Activated":
-          return moment(siteinfo.dateVal).format();
+          return moment
+            .duration(
+              moment(siteinfo.dateVal).diff(
+                this.getComaprisonDate(siteinfo.status, this.items)
+              )
+            )
+            .humanize(true)
+            .replace("ago", "");
           break;
         default:
           return moment.duration(1, "second").humanize(true);
@@ -521,20 +513,11 @@ export default {
       this.dialog = true;
     },
     getComaprisonDate(status, Allstats) {
-      console.log("Requested status" + status);
-      console.log("Array before Filter", Allstats);
       let filtered_array = Allstats.filter(sites => {
         return sites.status === this.getNextStatus(status);
       });
-      console.log("Filtered Array", filtered_array);
       if (filtered_array.length > 0) {
         return filtered_array[0].dateVal;
-        console.log(
-          "Got status: " +
-            status +
-            " returned Data: " +
-            filtered_array[0].dateVal
-        );
       } else {
         return moment(new Date());
       }

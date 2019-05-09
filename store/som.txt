@@ -1,0 +1,70 @@
+
+$messages_query = 'SELECT friends_list.* , users.first_name,users.last_name,users.username,users.profile_picture,users.ID as userid from 
+friends_list inner join users on friends_list.receiver=users.ID OR friends_list.sender = users.ID
+where ((friends_list.sender= "' .$_SESSION['user_id']. '" and confirmed=1 and deleted=0) OR (friends_list.receiver="'.$_SESSION['user_id'].'" and confirmed=1 and deleted=0)) 
+and (users.ID !="'.$_SESSION['user_id'].'") order by date_request_sent asc limit ' . $offset . ', ' . $limit;
+    $check_messages = mysqli_query($con, $messages_query) or die(mysqli_error($con));
+	
+	
+
+    while($messages_info = mysqli_fetch_array( $check_messages, MYSQLI_ASSOC ))
+    {
+	
+	
+	
+$_SESSION['user_id'] 
+        //	}?>
+		
+        
+		
+		
+		
+		
+		
+		
+			<tr> 
+			
+                   
+					 
+                    
+				   
+				   
+				    <td width="15%" valign="middle" style="vertical-align:middle"> 
+					  <a style="vertical-align:top; white-space: nowrap;" class="text-black" href="../profile.php?user_id=<?php echo $messages_info['receiver'];?>">
+					  <?php echo stripslashes( $messages_info ['first_name']);?> 
+						<?php $lastname_cut =  substr($messages_info['last_name'], 0, 1).".";?> 
+						<?php echo stripslashes($lastname_cut);?>
+					  </a>
+					 
+					 
+					
+				
+						</td>
+						
+						
+						
+				
+				
+						
+                   
+				
+
+
+
+				
+				    </tr>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    <?php }

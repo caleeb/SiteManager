@@ -2,19 +2,32 @@
   <v-layout>
     <v-flex align-start>
       <v-subheader>All sites</v-subheader>
-      <v-data-table :headers="headers" :items="filteredIems" light class="elevation-11">
+      <v-data-table
+        :headers="headers"
+        :items="filteredIems"
+        dark
+        class="elevation-11"
+        :rows-per-page-items="rows_per_page_items"
+      >
         <template v-slot:items="props">
           <tr>
-            <td>{{ props.item.name }}</td>
-            <td class="text-xs-left">{{ props.item.location}}</td>
-            <td class="text-xs-left">{{ props.item.status }}</td>
-            <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
+            <td style="max-width:150px;">{{ props.item.name }}</td>
+            <td class="text-xs-left" style="max-width:380px;">{{ props.item.location}}</td>
+            <td class="text-xs-left" style="max-width:50px;">{{ props.item.status }}</td>
+            <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
-              <v-layout row wrap justify-space-between>
+              <v-layout row wrap>
                 <v-flex md4 v-if="checkAuthorization(props.item)">
-                  <v-btn color="teal lighten-2" dark @click="openDialog(props.item)">
-                    <span v-if="props.item.market_analysis_done==1">Update Status</span>
-                    <span v-else>submit report</span>
+                  <v-btn
+                    v-if="buttonAuth(props.item,'update')"
+                    color="teal lighten-2"
+                    dark
+                    @click="openDialog(props.item)"
+                  >
+                    <span>Update Status</span>
+                  </v-btn>
+                  <v-btn v-if="buttonAuth(props.item,'mark')" color="teal lighten-2" dark @click="openDialog(props.item, true)">
+                    <span>Update Report</span>
                   </v-btn>
                 </v-flex>
                 <v-flex md4>
@@ -30,7 +43,7 @@
       </v-data-table>
       <v-dialog v-model="dialog" fullscreen>
         <!-- Site update Form -->
-        <v-card v-if="currentModalSite.market_analysis_done != 0">
+        <v-card v-if="currentModalSite.market_analysis_done != 0 && !na">
           <v-toolbar dark>
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
@@ -157,7 +170,12 @@
                       <v-subheader>No of Potential Customers</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.potential"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.potential"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -173,7 +191,12 @@
                       <v-subheader>No of Blocks</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.blocks"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.blocks"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -181,7 +204,12 @@
                       <v-subheader>Percentage of Business Units</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.business"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.business"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -189,7 +217,12 @@
                       <v-subheader>Occupancy Rate</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number"  :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.occupancy"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.occupancy"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -197,7 +230,12 @@
                       <v-subheader>No of Units</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.units"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.units"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -205,7 +243,12 @@
                       <v-subheader>Average Rental</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.rental"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.rental"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -213,7 +256,12 @@
                       <v-subheader>Is Duct Available?</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-checkbox label="yes" value="1" :disabled="loggedInUser.role=='Marketing'" v-model="marketingForm.duct"></v-checkbox>
+                      <v-checkbox
+                        label="yes"
+                        value="1"
+                        :disabled="loggedInUser.role=='Marketing'"
+                        v-model="marketingForm.duct"
+                      ></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -221,7 +269,12 @@
                       <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role == 'Marketing'" solo v-model="marketingForm.ftth"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role == 'Marketing'"
+                        solo
+                        v-model="marketingForm.ftth"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -229,7 +282,12 @@
                       <v-subheader>Average Density (Units per Square KM.)</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-text-field type="number" :disabled="loggedInUser.role=='Deployment'" solo v-model="marketingForm.density"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :disabled="loggedInUser.role=='Deployment'"
+                        solo
+                        v-model="marketingForm.density"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -237,7 +295,11 @@
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
                     <v-flex xs6 md6>
-                      <v-checkbox v-if="loggedInUser.is_admin == 1 && loggedInUser.role == 'Marketing'" value="1" v-model="marketingForm.is_feasible"></v-checkbox>
+                      <v-checkbox
+                        v-if="loggedInUser.is_admin == 1 && loggedInUser.role == 'Marketing'"
+                        value="1"
+                        v-model="marketingForm.is_feasible"
+                      ></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -313,8 +375,14 @@ export default {
         { text: "Recent Site Status", value: "status" },
         { text: "Time Elapsed", value: "", sortable: false }
       ],
+      rows_per_page_items: [
+        10,
+        25,
+        5,
+        { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }
+      ],
       dialog: false,
-
+      na: false,
       snackbar: false,
       snackbar_type: "primary",
       snaackbar_message: "",
@@ -412,7 +480,10 @@ export default {
           break;
 
         case "Site Activated":
-          return moment(siteinfo.activation_date).format();
+          return moment
+            .duration(moment(siteinfo.activation_date).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
           break;
         default:
           return moment.duration(1, "second").humanize(true);
@@ -504,11 +575,14 @@ export default {
         formData.append("mobile", this.marketingForm.mobile);
         formData.append("density", this.marketingForm.density);
         formData.append("rental", this.marketingForm.rental);
-        formData.append("duct", this.marketingForm.duct  == true ? 1 : 0);
+        formData.append("duct", this.marketingForm.duct == true ? 1 : 0);
 
         formData.append("occupancy", this.marketingForm.occupancy);
         formData.append("ftth", this.marketingForm.ftth);
-        formData.append("is_feasible", this.marketingForm.is_feasible == true ? 1 : 0);
+        formData.append(
+          "is_feasible",
+          this.marketingForm.is_feasible == true ? 1 : 0
+        );
         formData.append("description", this.marketingForm.description);
         for (var i = 0; i < this.files.length; i++) {
           let file = this.files[i];
@@ -538,9 +612,10 @@ export default {
         }
       }
     },
-    async openDialog(site) {
+    async openDialog(site, na = false) {
       this.currentModalSite = site;
       let { data } = await this.$axios.post("get_market_analysis/" + site.name);
+      this.na = na;
       if (data.length == 1) {
         this.marketingForm.potential = data[0].no_potential_customers;
         this.marketingForm.is_feasible = data[0].is_feasible;
@@ -584,26 +659,33 @@ export default {
       this.dialog = false;
     },
     checkAuthorization(site) {
-      let authorizationResult;
+      let authorizationResult = false;
       if (this.loggedInUser.organization === "EthioTel") {
-        authorizationResult = false;
-      } else if (
-        site.market_analysis_done == 0 &&
-        this.loggedInUser.role != "Marketing" &&
-        this.loggedInUser.role != "Deployment" &&
-        this.loggedInUser.role != "admin"
-      ) {
-        authorizationResult = false;
-      } else if (
-        site.market_analysis_done == 1 &&
-        this.loggedInUser.role != "Deployment" &&
-        this.loggedInUser.role != "admin"
-      ) {
         authorizationResult = false;
       } else {
         authorizationResult = true;
       }
       return authorizationResult;
+    },
+    buttonAuth(site, button_type = "update") {
+      let auth_result = true;
+      if (this.loggedInUser.role == "admin") auth_result = true;
+      else if (this.loggedInUser.role == "Marketing") {
+        switch (button_type) {
+          case "update":
+            auth_result = false;
+            break;
+          case "mark":
+            auth_result = true;
+            break;
+          default:
+            auth_result = false;
+            break;
+        }
+      } else if (this.loggedInUser.role == "Deployment") {
+         site.market_analysis_done != 1 ? auth_result = false : auth_result = true;
+      }
+      return auth_result;
     }
   }
 };
