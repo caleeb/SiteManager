@@ -826,8 +826,11 @@ export default {
     },
     buttonAuth(site, button_type = "update") {
       let auth_result = true;
-      if (this.loggedInUser.role == "admin") auth_result = true;
-      else if (this.loggedInUser.role == "Marketing") {
+      if (this.loggedInUser.role == "admin") {
+        site.market_analysis_done != 1
+          ? (auth_result = false)
+          : (auth_result = true);
+      } else if (this.loggedInUser.role == "Marketing") {
         switch (button_type) {
           case "update":
             auth_result = false;
@@ -879,7 +882,7 @@ export default {
       this.site = site;
       this.edit_Dialog = true;
     },
-     async submitFiles() {
+    async submitFiles() {
       if (this.$refs.editSite.validate()) {
         console.log(this.site);
         let formdata = new FormData();
@@ -909,7 +912,7 @@ export default {
           this.snackbar = true;
           this.edit_Dialog = false;
         } catch (e) {
-           this.snaackbar_message = "There was some error";
+          this.snaackbar_message = "There was some error";
           this.snackbar_type = "error";
           this.snackbar = true;
           console.log(e);
