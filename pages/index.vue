@@ -827,9 +827,19 @@ export default {
     buttonAuth(site, button_type = "update") {
       let auth_result = true;
       if (this.loggedInUser.role == "admin") {
-        site.market_analysis_done != 1
-          ? (auth_result = false)
-          : (auth_result = true);
+        switch (button_type) {
+          case "update":
+            site.market_analysis_done != 1 || site.is_dead == 0
+              ? (auth_result = false)
+              : (auth_result = true);
+            break;
+          case "mark":
+            auth_result = true;
+            break;
+          default:
+            auth_result = false;
+            break;
+        }
       } else if (this.loggedInUser.role == "Marketing") {
         switch (button_type) {
           case "update":
