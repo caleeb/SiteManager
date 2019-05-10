@@ -13,7 +13,11 @@
           <tr>
             <td style="max-width:150px;">{{ props.item.name }}</td>
             <td class="text-xs-left" style="max-width:380px;">{{ props.item.location}}</td>
-            <td class="text-xs-left" style="max-width:50px;">{{ props.item.status }}</td>
+            <td
+              class="text-xs-left font-weight-bold elevation-2"
+              style="max-width:50px;"
+              :class="getStatusColor(props.item.status)"
+            >{{ props.item.is_dead == 0 ? props.item.status+"- No Go" : props.item.status }}</td>
             <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
               <v-layout row wrap>
@@ -26,9 +30,15 @@
                   >
                     <span>Update Status</span>
                   </v-btn>
-                  <v-btn v-if="buttonAuth(props.item,'mark')" color="teal lighten-2" dark @click="openDialog(props.item, true)">
+                  <v-btn
+                    v-if="buttonAuth(props.item,'mark')"
+                    color="teal lighten-2"
+                    dark
+                    @click="openDialog(props.item, true)"
+                  >
                     <span>Update Report</span>
                   </v-btn>
+                  <v-btn @click="editSiteDialog(props.item)" dark color="teal">Edit Site</v-btn>
                 </v-flex>
                 <v-flex md4>
                   <v-btn dark @click="getRoute(props.item.site_id)">open site</v-btn>
@@ -41,23 +51,22 @@
           </tr>
         </template>
       </v-data-table>
+      <!-- Update Status/ Report Dialog -->
       <v-dialog v-model="dialog" fullscreen>
         <!-- Site update Form -->
         <v-card v-if="currentModalSite.market_analysis_done != 0 && !na">
-          <v-toolbar dark>
+          <v-toolbar dark dense fixed>
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
             <v-toolbar-title class="white--text" v-text="currentModalSite.name"/>
             <v-spacer/>
-            <v-toolbar-items class="hidden-xs-only">
-              <v-btn flat color="white" @click="submitFiles(currentModalSite)">
-                save
-                <v-icon>save</v-icon>
-              </v-btn>
-            </v-toolbar-items>
+            <v-toolbar-side-icon>
+              <span class="hidden-xs-only">save</span>
+              <v-icon>save</v-icon>
+            </v-toolbar-side-icon>
           </v-toolbar>
-          <v-layout row justify-center>
+          <v-layout row justify-center class="mt-5">
             <v-card-text>
               <v-progress-linear
                 indeterminate
@@ -68,30 +77,26 @@
               <v-flex md7>
                 <v-form ref="siteStatusForm">
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Status</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field solo disabled :value="siteStatusUpdateForm.nextStat"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Status Update Date</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
-                      <v-date-picker
-                        landscape
-                        reactive
-                        v-model="siteStatusUpdateForm.statusUpdateDate"
-                      ></v-date-picker>
+                    <v-flex xs12 md6>
+                      <v-date-picker reactive v-model="siteStatusUpdateForm.statusUpdateDate"></v-date-picker>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Site Status Description</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-textarea
                         box
                         v-model="siteStatusUpdateForm.description"
@@ -101,10 +106,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Choose Files</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-input class="mt-2 elevation-2">
                         <input
                           class="d-block"
@@ -125,7 +130,7 @@
         <!-- End[Site Update Form] -->
         <!-- Marketing analsyis form -->
         <v-card v-else>
-          <v-toolbar dark>
+          <v-toolbar dark fixed>
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
@@ -134,15 +139,12 @@
               v-text="currentModalSite.name+'\t :- Marketing Analysis'"
             />
             <v-spacer/>
-            <v-toolbar-items class="hidden-xs-only">
-              <v-btn flat color="white" @click="submitMarketingFiles(currentModalSite)">
-                save
-                <v-icon>save</v-icon>
-              </v-btn>
-            </v-toolbar-items>
+            <v-toolbar-side-icon @click="submitMarketingFiles(currentModalSite)">
+              <v-icon>save</v-icon>
+            </v-toolbar-side-icon>
           </v-toolbar>
-          <v-layout row justify-center>
-            <v-card-text>
+          <v-layout row justify-center class="mt-5">
+            <v-card-text class="mt-3">
               <v-progress-linear
                 indeterminate
                 color="orange"
@@ -152,10 +154,10 @@
               <v-flex md7>
                 <v-form ref="marketingForm">
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Site Name</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         dark
                         class="white--text"
@@ -166,10 +168,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>No of Potential Customers</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -179,18 +181,18 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field solo v-model="marketingForm.mobile"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>No of Blocks</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -200,10 +202,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Percentage of Business Units</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -213,10 +215,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Occupancy Rate</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -226,10 +228,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>No of Units</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -239,10 +241,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Average Rental</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -252,10 +254,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Is Duct Available?</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-checkbox
                         label="yes"
                         value="1"
@@ -265,10 +267,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role == 'Marketing'"
@@ -278,10 +280,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Average Density (Units per Square KM.)</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-text-field
                         type="number"
                         :disabled="loggedInUser.role=='Deployment'"
@@ -291,10 +293,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-checkbox
                         v-if="loggedInUser.is_admin == 1 && loggedInUser.role == 'Marketing'"
                         value="1"
@@ -303,10 +305,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Site Status Description</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-textarea
                         box
                         :disabled="loggedInUser.role=='Deployment'"
@@ -317,10 +319,10 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-subheader>Choose Files</v-subheader>
                     </v-flex>
-                    <v-flex xs6 md6>
+                    <v-flex xs12 md6>
                       <v-input class="mt-2 elevation-2">
                         <input
                           class="d-block"
@@ -338,9 +340,117 @@
             </v-card-text>
           </v-layout>
         </v-card>
-
         <!-- End[marketing analysis] -->
       </v-dialog>
+      <!-- End of Dialog -->
+      <!-- Update Site -->
+      <v-dialog v-model="edit_Dialog">
+        <v-card>
+          <v-card-text>
+            <v-form ref="editSite">
+              <v-layout column>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Site Name</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-text-field
+                      label="Site Name"
+                      outline
+                      v-model="site.name"
+                      :rules="rules.nameRules"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Site Location</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-textarea
+                      label="Site Location"
+                      outline
+                      placeholder="general site location"
+                      :rules="rules.locationRules"
+                      v-model="site.location"
+                      :value="siteStat"
+                    ></v-textarea>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Location Latitude</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-text-field
+                      type="number"
+                      outline
+                      label="Latitude"
+                      placeholder=" 9.005401"
+                      v-model="site.latitude"
+                      :rules="rules.latRules"
+                      :value="site.latitide"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Location Longtitude</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-textarea
+                      type="number"
+                      label="longitude"
+                      placeholder="38.763611"
+                      outline
+                      v-model="site.longitude"
+                      :rules="rules.latRules"
+                      :value="site.longitude"
+                    ></v-textarea>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>is Site Ongoing</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-checkbox label value="1" v-model="site.is_dead"></v-checkbox>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Site Description</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-textarea box v-model="site.description" label="Site status Description"></v-textarea>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 md3>
+                    <v-subheader>Choose Files</v-subheader>
+                  </v-flex>
+                  <v-flex xs6 md3>
+                    <v-input class="mt-2 elevation-2">
+                      <input
+                        class="d-block"
+                        type="file"
+                        @change="handleFileUploads()"
+                        ref="files"
+                        id="files"
+                        multiple
+                      >
+                    </v-input>
+                  </v-flex>
+                </v-layout>
+              </v-layout>
+              <v-flex xs12 md3 class="ml-auto mr-auto">
+                <v-btn @click="submitFiles">Update</v-btn>
+              </v-flex>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <!-- End of Update Site -->
     </v-flex>
     <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
       {{snaackbar_message}}
@@ -359,8 +469,11 @@ export default {
     ...mapGetters(["isAuthenticated", "loggedInUser"]),
     filteredIems() {
       if (this.loggedInUser.organization == "EthioTel")
-        return this.items.filter(data => data.status != "Site Identified");
-      else return this.items;
+        return this.items.filter(
+          data =>
+            data.status != "Site Identified" && data.status != "Site Activated"
+        );
+      else return this.items.filter(data => data.status != "Site Activated");
     }
   },
   data() {
@@ -382,6 +495,7 @@ export default {
         { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }
       ],
       dialog: false,
+      edit_Dialog: false,
       na: false,
       snackbar: false,
       snackbar_type: "primary",
@@ -405,6 +519,26 @@ export default {
         description: "",
         statusUpdateDate: new Date().toISOString().substr(0, 10)
       },
+      rules: {
+        nameRules: [
+          value =>
+            (value.length > 0 && value.length <= 40) ||
+            "Site name must not empty or no more than 20 characters"
+        ],
+        locationRules: [
+          value =>
+            value.length > 0 ||
+            "Site Location must not empty or no more than 20 characters"
+        ],
+        latRules: [
+          value =>
+            (value.length > 0 && parseInt(value) > 0) ||
+            "Latitude value can't be less than zero or empty"
+        ],
+        descriptionRules: [
+          value => value.length > 0 || "Site Description must not empty"
+        ]
+      },
       marketingForm: {
         potential: 0,
         is_feasible: "",
@@ -420,7 +554,30 @@ export default {
         occupancy: 0
       },
       curMar: {},
-      currentModalSite: {}
+      currentModalSite: {},
+      site: {
+        activation_date: null,
+        created_at: "",
+        description: "",
+        ethio_telecom_pro_date: null,
+        is_dead: "1",
+        latitude: "",
+        location: "",
+        longitude: "",
+        market_analysis_done: "1",
+        msag_id: null,
+        name: "",
+        olt_id: null,
+        payment_processed_date: null,
+        site_configuration_date: null,
+        site_id: "",
+        status: "",
+        survey_completed_date: null,
+        survey_request_date: null,
+        ucrm_id: null,
+        unms_id: null,
+        updated_at: ""
+      }
     };
   },
   mounted() {
@@ -683,9 +840,81 @@ export default {
             break;
         }
       } else if (this.loggedInUser.role == "Deployment") {
-         site.market_analysis_done != 1 ? auth_result = false : auth_result = true;
+        site.market_analysis_done != 1
+          ? (auth_result = false)
+          : (auth_result = true);
       }
       return auth_result;
+    },
+    getStatusColor(siteStatus) {
+      let status_color = "pink darken-2";
+      switch (siteStatus) {
+        case "Site Identified":
+          status_color = "red darken-4";
+          break;
+        case "Site Survey Requested":
+          status_color = "lime darken-2";
+          break;
+        case "Site Survey Completed":
+          status_color = "deep-purple";
+          break;
+        case "Site Payment Made":
+          status_color = "cyan darken-2";
+          break;
+        case "Ethio Telecom Provision":
+          status_color = "amber darken-2";
+          break;
+        case "Site Configuration":
+          status_color = "blue-grey darken-2";
+          break;
+        case "Site Activated":
+          status_color = "teal darken-2";
+          break;
+        default:
+          break;
+      }
+      return status_color;
+    },
+    editSiteDialog(site) {
+      this.site = site;
+      this.edit_Dialog = true;
+    },
+     async submitFiles() {
+      if (this.$refs.editSite.validate()) {
+        console.log(this.site);
+        let formdata = new FormData();
+        formdata.append("name", this.site.name);
+        formdata.append("location", this.site.location);
+        formdata.append("latitude", this.site.latitude);
+        formdata.append("longitude", this.site.longitude);
+        formdata.append("is_dead", this.site.is_dead == true ? 1 : 0);
+        formdata.append("description", this.site.description);
+        for (var i = 0; i < this.files.length; i++) {
+          let file = this.files[i];
+          formdata.append("files[" + i + "]", file);
+        }
+        this.saveProgressHidden = false;
+        try {
+          await this.$axios.post(
+            "/update_site/" + this.site.site_id,
+            formdata,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          );
+          this.snaackbar_message = "Site Updated Succesfully";
+          this.snackbar_type = "success";
+          this.snackbar = true;
+          this.edit_Dialog = false;
+        } catch (e) {
+           this.snaackbar_message = "There was some error";
+          this.snackbar_type = "error";
+          this.snackbar = true;
+          console.log(e);
+        }
+      }
     }
   }
 };

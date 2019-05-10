@@ -4,7 +4,7 @@
       <v-toolbar dense class="white">
         <v-toolbar-title>{{site.name}}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items>
+        <v-toolbar-items class="hidden-xs-only">
           <v-btn dark>{{site.location}}</v-btn>
         </v-toolbar-items>
         <v-toolbar-side-icon
@@ -17,11 +17,14 @@
       <v-card-text>
         <v-container>
           <v-layout column wrap>
+            <v-flex>
+              <v-subheader>Recent Site Description</v-subheader>
+            </v-flex>
             <v-flex class="text-xs-left pl-3 pt-3 elevation-3">
               <p>{{site.description}}</p>
             </v-flex>
-            <v-flex class="mt-3">
-              <v-divider class="indigo"></v-divider>
+            <v-flex md12>
+              <v-divider class="indigo mt-3"></v-divider>
             </v-flex>
             <v-flex>
               <v-layout
@@ -50,10 +53,13 @@
                     </v-tooltip>
                   </v-flex>
                 </template>
-                <v-flex md12>
-                  <v-divider class="indigo mt-3"></v-divider>
-                </v-flex>
               </v-layout>
+              <div class="text-xs-center" v-if="site.files==0">
+                <span class="grey--text body-2">No attached files</span>
+              </div>
+            </v-flex>
+            <v-flex md12>
+              <v-divider class="indigo mt-3"></v-divider>
             </v-flex>
             <!-- site.market_analysis_done==1 &&  -->
             <v-flex v-if="loggedInUser.organization != 'EthioTel'">
@@ -227,11 +233,11 @@
             <v-flex>
               <v-data-table :headers="headers" :items="items" class="elevation-5">
                 <template v-slot:items="props">
+                  <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
+                   <td class="text-xs-left">{{ props.item.status }}</td>
                   <td>{{site.name }}</td>
-                  <td class="text-xs-left">{{ props.item.status }}</td>
                   <td class="text-xs-left">{{ props.item.description }}</td>
                   <td class="text-xs-left">{{ props.item.username }}</td>
-                  <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
                   <td class="text-xs-center">
                     <v-btn
                       dark
@@ -365,15 +371,15 @@ export default {
       dialog: false,
       comments: [],
       headers: [
+        { text: "Created At", value: "dateVal",sortable:true},
+        { text: "Status", value: "status" },
         {
           text: "Site Name",
           align: "left",
           sortable: false
         },
-        { text: "Status", value: "status" },
         { text: "Status Description", value: "description" },
         { text: "Created By", value: "username" },
-        { text: "Time Elapsed", value: "", sortable: false },
         { text: "", value: "", sortable: false }
       ],
       modalSite: {},
@@ -388,7 +394,7 @@ export default {
   mounted() {
     this.$axios.post("single_site/" + this.id).then(result => {
       this.site = result.data[0];
-      // if (this.site.market_analysis_done == 1) {
+
       this.$axios
         .post("get_market_analysis/" + this.site.name.split(" ").join("_"))
         .then(data => {
@@ -397,7 +403,13 @@ export default {
       // }
     });
     this.$axios.post("site_status/" + this.id).then(result => {
-      this.items = result.data;
+      let temp_data = result.data;
+      temp_data.sort((obj1, obj2) => {
+        if(moment(obj1.dateVal) > moment(obj2.dateVal))  return 1;
+        if(moment(obj1.dateVal) < moment(obj2.dateVal)) return -1;
+        return 0;
+      });
+      this.items = temp_data;
     });
   },
 
@@ -408,81 +420,7 @@ export default {
         .humanize(true);
     },
     calcTimeElapsed(siteinfo) {
-      switch (siteinfo.status) {
-        case "Site Identified":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Site Survey Requested":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Site Survey Completed":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Site Payment Made":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Ethio Telecom Provision":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Site Configuration":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        case "Site Activated":
-          return moment
-            .duration(
-              moment(siteinfo.dateVal).diff(
-                this.getComaprisonDate(siteinfo.status, this.items)
-              )
-            )
-            .humanize(true)
-            .replace("ago", "");
-          break;
-        default:
-          return moment.duration(1, "second").humanize(true);
-          break;
-      }
+      return moment(siteinfo.dateVal).format('LL');
     },
     async postComments(status) {
       try {

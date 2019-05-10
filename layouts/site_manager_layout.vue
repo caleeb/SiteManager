@@ -179,18 +179,16 @@
             </v-btn>
           </template>
           <v-card>
-            <v-toolbar dark>
+            <v-toolbar dark fixed>
               <v-toolbar-side-icon>
                 <v-icon @click="dialog = false" color="white">close</v-icon>
               </v-toolbar-side-icon>
               <v-toolbar-title class="white--text">New Site</v-toolbar-title>
               <v-spacer/>
-              <v-toolbar-items>
-                <v-btn flat color="white" @click="submitFiles">
-                  save
-                  <v-icon>save</v-icon>
-                </v-btn>
-              </v-toolbar-items>
+              <v-toolbar-side-icon @click="submitFiles">
+                <span class="hidden-xs-only">save</span>
+                <v-icon>save</v-icon>
+              </v-toolbar-side-icon>
             </v-toolbar>
             <v-progress-linear
               indeterminate
@@ -198,15 +196,15 @@
               height="2"
               :hidden="saveProgressHidden"
             ></v-progress-linear>
-            <v-layout row justify-start>
+            <v-layout row justify-start class="mt-5">
               <v-flex md7>
                 <v-card-text>
                   <v-form ref="siteForm">
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Site Name</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-text-field
                           label="Site Name"
                           outline
@@ -216,10 +214,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Site Status</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-text-field
                           solo
                           v-model="siteform.siteStat"
@@ -229,10 +227,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Site Location</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-text-field
                           label="Site Location"
                           outline
@@ -244,10 +242,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Location Latitude</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-text-field
                           type="number"
                           outline
@@ -260,10 +258,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Location Longtitude</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-text-field
                           type="number"
                           label="longitude"
@@ -276,10 +274,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap class="mt-3">
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Site Status Description</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-textarea
                           box
                           v-model="siteform.description"
@@ -288,10 +286,10 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-subheader>Choose Files</v-subheader>
                       </v-flex>
-                      <v-flex xs6 md6>
+                      <v-flex xs12 md6>
                         <v-input class="mt-2 elevation-2">
                           <input
                             class="d-block"

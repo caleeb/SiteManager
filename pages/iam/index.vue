@@ -203,7 +203,7 @@
                 </v-layout>
               </v-flex>
             </v-layout>
-            <v-flex xs6 class="ml-auto mr-5">
+          <v-flex xs12 md6 class="ml-auto mr-5">
               <v-btn color="red" dark @click="createUser">Create</v-btn>
             </v-flex>
           </v-form>
@@ -244,7 +244,7 @@ export default {
         organization: "EthioTel",
         created_at: null,
         updated_at: null,
-        password: "^nDroid1x"
+        password: "^nDr0id1x"
       },
       snackbar: false,
       snackbar_type: "primary",
@@ -307,7 +307,7 @@ export default {
         organization: "EthioTel",
         created_at: null,
         updated_at: null,
-        password: "^nDroid1x"
+        password: "^nDr0id1x"
       };
       this.userDialog = true;
     },
