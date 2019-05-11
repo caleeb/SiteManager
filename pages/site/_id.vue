@@ -234,7 +234,7 @@
               <v-data-table :headers="headers" :items="items" class="elevation-5">
                 <template v-slot:items="props">
                   <td class="text-xs-left">{{ calcTimeElapsed(props.item)}}</td>
-                   <td class="text-xs-left">{{ props.item.status }}</td>
+                  <td class="text-xs-left">{{ props.item.status }}</td>
                   <td>{{site.name }}</td>
                   <td class="text-xs-left">{{ props.item.description }}</td>
                   <td class="text-xs-left">{{ props.item.username }}</td>
@@ -353,6 +353,10 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
+      {{snaackbar_message}}
+      <v-btn dark flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -369,9 +373,14 @@ export default {
       id: params.id,
       site: {},
       dialog: false,
+      snackbar: false,
+      snackbar_type: "primary",
+      snaackbar_message: "",
+      timeout: 3000,
+      saveProgressHidden: true,
       comments: [],
       headers: [
-        { text: "Created At", value: "dateVal",sortable:true},
+        { text: "Created At", value: "dateVal", sortable: true },
         { text: "Status", value: "status" },
         {
           text: "Site Name",
@@ -405,8 +414,8 @@ export default {
     this.$axios.post("site_status/" + this.id).then(result => {
       let temp_data = result.data;
       temp_data.sort((obj1, obj2) => {
-        if(moment(obj1.dateVal) > moment(obj2.dateVal))  return 1;
-        if(moment(obj1.dateVal) < moment(obj2.dateVal)) return -1;
+        if (moment(obj1.dateVal) > moment(obj2.dateVal)) return 1;
+        if (moment(obj1.dateVal) < moment(obj2.dateVal)) return -1;
         return 0;
       });
       this.items = temp_data;
@@ -420,7 +429,7 @@ export default {
         .humanize(true);
     },
     calcTimeElapsed(siteinfo) {
-      return moment(siteinfo.dateVal).format('LL');
+      return moment(siteinfo.dateVal).format("LL");
     },
     async postComments(status) {
       try {
@@ -430,8 +439,16 @@ export default {
           comment: this.commentForm.comments,
           flagged: this.commentForm.flagged == true ? 1 : 0
         });
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Comment Posted Succesfully";
+        this.snackbar_type = "success";
+        this.snackbar = true;
+        this.dialog = false;
       } catch (e) {
-        console.log(e);
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Oops there was some error";
+        this.snackbar_type = "error";
+        this.snackbar = true;
       }
     },
     closeDialog() {
