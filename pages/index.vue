@@ -1,7 +1,19 @@
 <template>
   <v-layout>
     <v-flex align-start>
-      <v-subheader>All sites</v-subheader>
+      <v-subheader>
+        <span> All sites</span>
+        <v-spacer></v-spacer>
+        
+         <v-flex xs12 sm4 d-flex>
+        <v-select
+          :items="selects"
+          label="Filter Sites"
+          v-model = "selectedCategory"
+        ></v-select>
+      </v-flex>
+       
+      </v-subheader>
       <v-data-table
         :headers="headers"
         :items="filteredIems"
@@ -23,7 +35,7 @@
               <v-layout row wrap>
                 <v-flex md4 v-if="checkAuthorization(props.item)">
                   <v-btn
-                    v-if="buttonAuth(props.item,'update')"
+                    v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
                     color="teal lighten-2"
                     dark
                     @click="openDialog(props.item)"
@@ -472,7 +484,55 @@ export default {
           data =>
             data.status != "Site Identified" && data.status != "Site Activated"
         );
-      else return this.items.filter(data => data.status != "Site Activated");
+         if(this.selectedCategory == "All Sites"){
+        return this.items.filter(
+          data =>
+            data.is_dead == 1 && data.status != "Site Activated"
+        );
+      }
+      else if(this.selectedCategory == "No-Go Sites"){
+        return this.items.filter(
+          data =>
+            data.is_dead != 1 && data.status != "Site Activated"
+        );
+      }
+      else if(this.selectedCategory == "Activated Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Site Activated"
+        );
+      }
+      else if(this.selectedCategory == "Survey Requested Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Site Survey Requested"
+        );
+      }
+      else if(this.selectedCategory == "Payment Made Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Site Payment Made"
+        );
+      }
+      else if(this.selectedCategory == "Survey Completed Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Site Survey Completed"
+        );
+      }
+      else if(this.selectedCategory == "EthioTel Provisioned Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Ethio Telecom Provision"
+        );
+      }
+      else if(this.selectedCategory == "Configured Sites"){
+        return this.items.filter(
+          data =>
+            data.status == "Site Configuration"
+        );
+      }
+      else return this.items.filter(data => data.status != "Site Activated" && data.is_dead == 1);
     }
   },
   data() {
@@ -486,6 +546,9 @@ export default {
         { text: "Site Location", value: "location" },
         { text: "Recent Site Status", value: "status" },
         { text: "Time Elapsed", value: "", sortable: false }
+      ],
+      selects: ['All Sites', 'Activated Sites', 'No-Go Sites', 'Survey Requested Sites',
+        'Payment Made Sites', 'Survey Completed Sites', 'EthioTel Provisioned Sites', 'Configured Sites' 
       ],
       rows_per_page_items: [
         10,
@@ -504,6 +567,7 @@ export default {
       items: [],
       files: "",
       siteStat:"",
+      selectedCategory: "All Sites",
       siteStatusUpdateFormRules: {
         descriptionRules: [
           v => v.length > 0 || "Site description can't be empty"
@@ -585,8 +649,9 @@ export default {
       this.items = [...result.data];
       console.log(this.items);
     });
+
   },
-  methods: {
+  methods: {  
     calcTimeElapsed(siteinfo) {
       switch (siteinfo.status) {
         case "Site Identified":
