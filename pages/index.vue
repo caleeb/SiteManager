@@ -55,14 +55,13 @@
       <v-dialog v-model="dialog" fullscreen>
         <!-- Site update Form -->
         <v-card v-if="currentModalSite.market_analysis_done != 0 && !na">
-          <v-toolbar dark dense fixed>
+          <v-toolbar dark fixed>
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
             <v-toolbar-title class="white--text" v-text="currentModalSite.name"/>
             <v-spacer/>
-            <v-toolbar-side-icon>
-              <span class="hidden-xs-only">save</span>
+            <v-toolbar-side-icon @click="submitFiles(currentModalSite)">
               <v-icon>save</v-icon>
             </v-toolbar-side-icon>
           </v-toolbar>
@@ -444,7 +443,7 @@
                 </v-layout>
               </v-layout>
               <v-flex xs12 md3 class="ml-auto mr-auto">
-                <v-btn @click="submitFiles">Update</v-btn>
+                <v-btn @click="submitEditedFiles">Update</v-btn>
               </v-flex>
             </v-form>
           </v-card-text>
@@ -504,6 +503,7 @@ export default {
       saveProgressHidden: true,
       items: [],
       files: "",
+      siteStat:"",
       siteStatusUpdateFormRules: {
         descriptionRules: [
           v => v.length > 0 || "Site description can't be empty"
@@ -528,7 +528,7 @@ export default {
         locationRules: [
           value =>
             value.length > 0 ||
-            "Site Location must not empty or no more than 20 characters"
+            "Site Location must not empty"
         ],
         latRules: [
           value =>
@@ -679,6 +679,7 @@ export default {
       }
     },
     async submitFiles(site) {
+      console.log("clicked");
       if (this.$refs.siteStatusForm.validate()) {
         let formData = new FormData();
         formData.append("site_id", site.site_id);
@@ -892,7 +893,7 @@ export default {
       this.site = site;
       this.edit_Dialog = true;
     },
-    async submitFiles() {
+    async submitEditedFiles() {
       if (this.$refs.editSite.validate()) {
         console.log(this.site);
         let formdata = new FormData();
