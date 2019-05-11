@@ -1,6 +1,6 @@
 <template>
   <v-app light>
-    <v-navigation-drawer fixed app dark clipped :value="drawer" mobile-break-point="1240">
+    <v-navigation-drawer fixed app dark clipped :value="drawer">
       <v-list>
         <v-list-tile>
           <v-btn flat v-if="isAuthenticated" to="/">

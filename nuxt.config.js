@@ -65,7 +65,7 @@ export default {
   ],
 
   axios: {
-    baseURL: "http://196.189.44.14/api/"
+    baseURL: "https://vispsites.websprix.com/api/"
   },
 
   auth: {
