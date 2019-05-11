@@ -361,13 +361,13 @@ export default {
       rules: {
         nameRules: [
           value =>
-            (value.length > 0 && value.length <= 20) ||
-            "Site name must not empty or no more than 20 characters"
+            (value.length > 0) ||
+            "Site name must not empty"
         ],
         locationRules: [
           value =>
-            (value.length > 0 && value.length <= 20) ||
-            "Site Location must not empty or no more than 20 characters"
+            (value.length > 0) ||
+            "Site Location must not empty"
         ],
         latRules: [
           value =>
