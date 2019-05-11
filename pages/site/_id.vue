@@ -326,15 +326,19 @@
                   </v-flex>
                   <v-flex>
                     <v-subheader>previous Comments</v-subheader>
-                    <v-list two-line v-if="comments.length>0">
+                    <v-list three-line v-if="comments.length>0">
                       <template v-for="(item) in comments">
-                        <v-list-tile :key="item.com_id">
+                        <v-list-tile :key="item.com_id" class="mt-3">
                           <v-list-tile-avatar
                             color="indigo lighten-2"
                             class="white--text"
                           >{{item.username.charAt(0)}}</v-list-tile-avatar>
                           <v-list-tile-content>
-                            <v-list-tile v-html="item.comment"></v-list-tile>
+                            <v-list-tile
+                              style="max-height: 100px"
+                              class="scroll-y"
+                              v-html="item.comment"
+                            ></v-list-tile>
                             <v-list-tile-sub-title v-html="item.username+':-\t'+item.created_at"></v-list-tile-sub-title>
                           </v-list-tile-content>
                         </v-list-tile>
