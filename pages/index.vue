@@ -5,7 +5,7 @@
         <span> All sites</span>
         <v-spacer></v-spacer>
         
-         <v-flex xs12 sm4 d-flex>
+         <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization !='EthioTel'">
         <v-select
           :items="selects"
           label="Filter Sites"
