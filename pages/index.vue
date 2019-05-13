@@ -2,19 +2,15 @@
   <v-layout>
     <v-flex align-start>
       <v-subheader>
-        <span> All sites</span>
+        <span>All sites</span>
         <v-spacer></v-spacer>
-        
-         <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization !='EthioTel'">
-        <v-select
-          :items="selects"
-          label="Filter Sites"
-          v-model = "selectedCategory"
-        ></v-select>
-      </v-flex>
-       
+
+        <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization !='EthioTel'">
+          <v-select :items="selects" label="Filter Sites" v-model="selectedCategory"></v-select>
+        </v-flex>
       </v-subheader>
       <v-data-table
+        :pagination.sync="pagination"
         :headers="headers"
         :items="filteredIems"
         dark
@@ -32,31 +28,76 @@
             >{{ props.item.is_dead == 0 ? props.item.status+"- No Go" : props.item.status }}</td>
             <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
-              <v-layout row wrap>
-                <v-flex md4 v-if="checkAuthorization(props.item)">
+              <v-layout row wrap justify-space-around class="mb-2">
+                <v-flex md2 v-if="checkAuthorization(props.item)">
+                  <v-tooltip slot="append" bottom>
+                    <v-btn
+                      v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
+                      slot="activator"
+                      @click="openDialog(props.item)"
+                    >
+                      <v-icon color="teal lighten-2" dark>list</v-icon>
+                    </v-btn>
+                    <span>Update Status</span>
+                  </v-tooltip>
+                </v-flex>
+                <v-flex md2 v-if="checkAuthorization(props.item)">
+                  <v-tooltip slot="append" bottom>
+                    <v-btn
+                      slot="activator"
+                      @click="editSiteDialog(props.item)"
+                      dark
+                      color="orange darken-2"
+                    >
+                      <v-icon color="darken-2">edit</v-icon>
+                    </v-btn>
+                    <span>Edit Site</span>
+                  </v-tooltip>
+                </v-flex>
+                <!-- <v-flex md2 v-if="checkAuthorization(props.item)">
                   <v-btn
                     v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
                     color="teal lighten-2"
                     dark
                     @click="openDialog(props.item)"
                   >
-                    <span>Update Status</span>
+                    <v-icon>list</v-icon>
                   </v-btn>
-                  <v-btn
-                    v-if="buttonAuth(props.item,'mark')"
-                    color="teal lighten-2"
-                    dark
-                    @click="openDialog(props.item, true)"
-                  >
+                </v-flex>-->
+                <v-flex md2>
+                  <v-tooltip slot="append" bottom>
+                    <v-btn
+                      slot="activator"
+                      color="purple darken-2"
+                      dark
+                      @click="getRoute(props.item.site_id)"
+                    >
+                      <v-icon>info</v-icon>
+                    </v-btn>
+                    <span>Open Site</span>
+                  </v-tooltip>
+                </v-flex>
+                <v-flex md2 v-if="checkAuthorization(props.item)">
+                  <v-tooltip slot="append" bottom>
+                    <v-btn
+                      slot="activator"
+                      v-if="buttonAuth(props.item,'mark')"
+                      @click="openDialog(props.item, true)"
+                    >
+                      <v-icon>widgets</v-icon>
+                    </v-btn>
+
                     <span>Update Report</span>
-                  </v-btn>
-                  <v-btn @click="editSiteDialog(props.item)" dark color="teal">Edit Site</v-btn>
+                  </v-tooltip>
                 </v-flex>
-                <v-flex md4>
-                  <v-btn dark @click="getRoute(props.item.site_id)">open site</v-btn>
-                </v-flex>
-                <v-flex md4 v-if="(loggedInUser.organization !='EthioTel')">
-                  <v-btn dark :href="'/siteReport/'+props.item.site_id">Site Report</v-btn>
+
+                <v-flex md2 v-if="(loggedInUser.organization !='EthioTel')">
+                  <v-tooltip bottom slot="append">
+                    <v-btn slot="activator" dark :href="'/siteReport/'+props.item.site_id">
+                      <v-icon color="blue darken-2" dark>business</v-icon>
+                    </v-btn>
+                    <span>Site Report</span>
+                  </v-tooltip>
                 </v-flex>
               </v-layout>
             </td>
@@ -484,55 +525,38 @@ export default {
           data =>
             data.status != "Site Identified" && data.status != "Site Activated"
         );
-         if(this.selectedCategory == "All Sites"){
+      if (this.selectedCategory == "All Sites") {
         return this.items.filter(
-          data =>
-            data.is_dead == 1 && data.status != "Site Activated"
+          data => data.is_dead == 1 && data.status != "Site Activated"
         );
-      }
-      else if(this.selectedCategory == "No-Go Sites"){
+      } else if (this.selectedCategory == "No-Go Sites") {
         return this.items.filter(
-          data =>
-            data.is_dead != 1 && data.status != "Site Activated"
+          data => data.is_dead != 1 && data.status != "Site Activated"
         );
-      }
-      else if(this.selectedCategory == "Activated Sites"){
+      } else if (this.selectedCategory == "Activated Sites") {
+        return this.items.filter(data => data.status == "Site Activated");
+      } else if (this.selectedCategory == "Survey Requested Sites") {
         return this.items.filter(
-          data =>
-            data.status == "Site Activated"
+          data => data.status == "Site Survey Requested"
         );
-      }
-      else if(this.selectedCategory == "Survey Requested Sites"){
+      } else if (this.selectedCategory == "Payment Made Sites") {
+        return this.items.filter(data => data.status == "Site Payment Made");
+      } else if (this.selectedCategory == "Survey Completed Sites") {
         return this.items.filter(
-          data =>
-            data.status == "Site Survey Requested"
+          data => data.status == "Site Survey Completed"
         );
-      }
-      else if(this.selectedCategory == "Payment Made Sites"){
+      } else if (this.selectedCategory == "EthioTel Provisioned Sites") {
         return this.items.filter(
-          data =>
-            data.status == "Site Payment Made"
+          data => data.status == "Ethio Telecom Provision"
         );
-      }
-      else if(this.selectedCategory == "Survey Completed Sites"){
+      } else if (this.selectedCategory == "Configured Sites") {
+        return this.items.filter(data => data.status == "Site Configuration");
+      } else if (this.selectedCategory == "Identified Sites") {
+        return this.items.filter(data => data.status == "Site Identified");
+      } else
         return this.items.filter(
-          data =>
-            data.status == "Site Survey Completed"
+          data => data.status != "Site Activated" && data.is_dead == 1
         );
-      }
-      else if(this.selectedCategory == "EthioTel Provisioned Sites"){
-        return this.items.filter(
-          data =>
-            data.status == "Ethio Telecom Provision"
-        );
-      }
-      else if(this.selectedCategory == "Configured Sites"){
-        return this.items.filter(
-          data =>
-            data.status == "Site Configuration"
-        );
-      }
-      else return this.items.filter(data => data.status != "Site Activated" && data.is_dead == 1);
     }
   },
   data() {
@@ -541,14 +565,26 @@ export default {
         {
           text: "Site Name",
           align: "left",
-          value: "name"
+          value: "name",
+          ascending: "true"
         },
         { text: "Site Location", value: "location" },
-        { text: "Recent Site Status", value: "status" },
+        { text: "Recent Site Status", value: "stat_id" },
         { text: "Time Elapsed", value: "", sortable: false }
       ],
-      selects: ['All Sites', 'Activated Sites', 'No-Go Sites', 'Survey Requested Sites',
-        'Payment Made Sites', 'Survey Completed Sites', 'EthioTel Provisioned Sites', 'Configured Sites' 
+      pagination: {
+        sortBy: "stat_id"
+      },
+      selects: [
+        "All Sites",
+        "Identified Sites",
+        "Activated Sites",
+        "No-Go Sites",
+        "Survey Requested Sites",
+        "Payment Made Sites",
+        "Survey Completed Sites",
+        "EthioTel Provisioned Sites",
+        "Configured Sites"
       ],
       rows_per_page_items: [
         10,
@@ -566,7 +602,7 @@ export default {
       saveProgressHidden: true,
       items: [],
       files: "",
-      siteStat:"",
+      siteStat: "",
       selectedCategory: "All Sites",
       siteStatusUpdateFormRules: {
         descriptionRules: [
@@ -590,9 +626,7 @@ export default {
             "Site name must not empty or no more than 20 characters"
         ],
         locationRules: [
-          value =>
-            value.length > 0 ||
-            "Site Location must not empty"
+          value => value.length > 0 || "Site Location must not empty"
         ],
         latRules: [
           value =>
@@ -649,9 +683,8 @@ export default {
       this.items = [...result.data];
       console.log(this.items);
     });
-
   },
-  methods: {  
+  methods: {
     calcTimeElapsed(siteinfo) {
       switch (siteinfo.status) {
         case "Site Identified":
