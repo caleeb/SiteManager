@@ -36,7 +36,7 @@
                       slot="activator"
                       @click="openDialog(props.item)"
                     >
-                      <v-icon color="teal lighten-2" dark>list</v-icon>
+                      <v-icon color="teal lighten-2" dark>update</v-icon>
                     </v-btn>
                     <span>Update Status</span>
                   </v-tooltip>
@@ -49,7 +49,7 @@
                       dark
                       color="orange darken-2"
                     >
-                      <v-icon color="darken-2">edit</v-icon>
+                      <v-icon color="black darken-2">edit</v-icon>
                     </v-btn>
                     <span>Edit Site</span>
                   </v-tooltip>
@@ -68,11 +68,11 @@
                   <v-tooltip slot="append" bottom>
                     <v-btn
                       slot="activator"
-                      color="purple darken-2"
+                      color="grey darken-2"
                       dark
                       @click="getRoute(props.item.site_id)"
                     >
-                      <v-icon>info</v-icon>
+                      <v-icon color="white">info</v-icon>
                     </v-btn>
                     <span>Open Site</span>
                   </v-tooltip>
@@ -80,11 +80,12 @@
                 <v-flex md2 v-if="checkAuthorization(props.item)">
                   <v-tooltip slot="append" bottom>
                     <v-btn
+                      color="blue lighten-2"
                       slot="activator"
                       v-if="buttonAuth(props.item,'mark')"
                       @click="openDialog(props.item, true)"
                     >
-                      <v-icon>widgets</v-icon>
+                      <v-icon color="black">widgets</v-icon>
                     </v-btn>
 
                     <span>Update Report</span>
@@ -94,7 +95,7 @@
                 <v-flex md2 v-if="(loggedInUser.organization !='EthioTel')">
                   <v-tooltip bottom slot="append">
                     <v-btn slot="activator" dark :href="'/siteReport/'+props.item.site_id">
-                      <v-icon color="blue darken-2" dark>business</v-icon>
+                      <v-icon color="yellow darken-2" dark>assessment</v-icon>
                     </v-btn>
                     <span>Site Report</span>
                   </v-tooltip>
