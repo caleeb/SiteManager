@@ -25,32 +25,39 @@
               class="text-xs-left font-weight-bold elevation-2"
               style="max-width:50px;"
               :class="getStatusColor(props.item.status)"
-            >{{ props.item.is_dead == 0 ? props.item.status+"- No Go" : props.item.status }}</td>
+            >{{ props.item.is_dead == 0 ? props.item.status+" - No Go" : props.item.status + " - Go" }}</td>
             <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
-                <v-flex md2 v-if="checkAuthorization(props.item) && props.item.status != 'Site Activated'">
+                <v-flex
+                  sm2 xs12
+                  v-if="checkAuthorization(props.item) && 
+                  props.item.status != 'Site Activated'
+                  "
+                >
                   <v-tooltip slot="append" bottom>
-                    <v-btn
+                    <v-icon
+                      small
                       v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
                       slot="activator"
                       @click="openDialog(props.item)"
-                    >
-                      <v-icon color="teal lighten-2" dark>update</v-icon>
-                    </v-btn>
+                    >update
+                      <!-- <v-icon color="teal lighten-2" dark></v-icon> -->
+                    </v-icon>
                     <span>Update Status</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex md2 v-if="checkAuthorization(props.item)">
+                <v-flex sm2 v-if="checkAuthorization(props.item)">
                   <v-tooltip slot="append" bottom>
-                    <v-btn
+                    <v-icon
+                      small
                       slot="activator"
                       @click="editSiteDialog(props.item)"
                       dark
                       color="orange darken-2"
-                    >
-                      <v-icon color="black darken-2">edit</v-icon>
-                    </v-btn>
+                    >edit
+                      <!-- <v-icon color="black darken-2"></v-icon> -->
+                    </v-icon>
                     <span>Edit Site</span>
                   </v-tooltip>
                 </v-flex>
@@ -64,39 +71,46 @@
                     <v-icon>list</v-icon>
                   </v-btn>
                 </v-flex>-->
-                <v-flex md2>
+                <v-flex sm2>
                   <v-tooltip slot="append" bottom>
-                    <v-btn
+                    <v-icon
+                      small
                       slot="activator"
-                      color="grey darken-2"
+                      color="blue darken-2"
                       dark
                       @click="getRoute(props.item.site_id)"
-                    >
-                      <v-icon color="white">info</v-icon>
-                    </v-btn>
+                    >info
+                      <!-- <v-icon color="white"></v-icon> -->
+                    </v-icon>
                     <span>Open Site</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex md2 v-if="checkAuthorization(props.item)">
+                <v-flex sm2 v-if="checkAuthorization(props.item)">
                   <v-tooltip slot="append" bottom>
-                    <v-btn
+                    <v-icon
+                      small
                       color="blue lighten-2"
                       slot="activator"
                       v-if="buttonAuth(props.item,'mark')"
                       @click="openDialog(props.item, true)"
-                    >
-                      <v-icon color="black">widgets</v-icon>
-                    </v-btn>
+                    >widgets
+                      <!-- <v-icon color="black"></v-icon> -->
+                    </v-icon>
 
                     <span>Update Report</span>
                   </v-tooltip>
                 </v-flex>
 
-                <v-flex md2 v-if="(loggedInUser.organization !='EthioTel')">
+                <v-flex sm2 v-if="(loggedInUser.organization !='EthioTel')">
                   <v-tooltip bottom slot="append">
-                    <v-btn slot="activator" dark :href="'/siteReport/'+props.item.site_id">
-                      <v-icon color="yellow darken-2" dark>assessment</v-icon>
-                    </v-btn>
+                    <a slot="activator" :href="'/siteReport/'+props.item.site_id">
+                    <v-icon small  dark >
+                      <!-- <v-icon color="yellow darken-2" dark></v-icon> -->
+                      assessment
+                    </v-icon>
+                    </a>
+                    
+
                     <span>Site Report</span>
                   </v-tooltip>
                 </v-flex>
@@ -511,7 +525,7 @@
     </v-snackbar>
   </v-layout>
 </template>
------
+
 <script>
 import moment from "moment";
 import { mapGetters } from "vuex";
@@ -524,7 +538,7 @@ export default {
       if (this.loggedInUser.organization == "EthioTel")
         return this.items.filter(
           data =>
-            data.status != "Site Identified" && data.status != "Site Activated"
+            data.status != "Site Identified" && data.status != "Site Activated" && data.is_dead == 1
         );
       if (this.selectedCategory == "All Sites") {
         return this.items.filter(
@@ -682,7 +696,7 @@ export default {
   mounted() {
     this.$axios.post("sites").then(result => {
       this.items = [...result.data];
-      console.log(this.items);
+      // console.log(this.items);
     });
   },
   methods: {
@@ -994,7 +1008,7 @@ export default {
     },
     async submitEditedFiles() {
       if (this.$refs.editSite.validate()) {
-        console.log(this.site);
+        // console.log(this.site);
         let formdata = new FormData();
         formdata.append("name", this.site.name);
         formdata.append("location", this.site.location);
@@ -1025,11 +1039,15 @@ export default {
           this.snaackbar_message = "There was some error";
           this.snackbar_type = "error";
           this.snackbar = true;
-          console.log(e);
+          // console.log(e);
         }
       }
     }
   }
 };
 </script>
-
+<style>
+  .icon {
+  font-size: 20px;
+}
+</style>
