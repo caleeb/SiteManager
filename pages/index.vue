@@ -29,7 +29,7 @@
             <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
-                <v-flex md2 v-if="checkAuthorization(props.item)">
+                <v-flex md2 v-if="checkAuthorization(props.item) && props.item.status != 'Site Activated'">
                   <v-tooltip slot="append" bottom>
                     <v-btn
                       v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
