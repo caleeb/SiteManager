@@ -156,6 +156,53 @@
           </v-btn>
         </v-list-tile>
         <v-list-tile>
+          <v-btn flat v-if="isAuthenticated" @click="this.dialog2 = true">
+            <v-badge right>
+              <template v-slot:badge>
+                <span>{{new_coms}}</span>
+              </template>
+              Notifications
+              <v-icon color="#fbe631">mail</v-icon>
+            </v-badge>
+          </v-btn>
+        </v-list-tile>
+        <v-dialog v-model="dialog2" max-width="500px">
+          <!-- <v-layout row>
+          <v-flex xs12 sm8 offset-sm8>-->
+          <v-card>
+            <v-card-title>New Notifications</v-card-title>
+            <v-card-text>
+              <v-list two-line>
+
+                <template v-for="(item, index) in nots">
+                  <!-- <v-list-tile :key="index" avatar ripple @click="toggle(index)"></v-list-tile> -->
+                  <a style = "text-decoration: none;" :href="'/site/' + item.site_name['0'].site_id"  :key="index">
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      <span style="font-weight: bold; color: teal">{{item.username}}</span> 
+                      Commented On
+                      <span
+                        style="font-weight: bold; color: blue"
+                      >{{item.site_name["0"].name}}</span>
+                      on {{item.status}}
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title class="text--primary bold"><span style="font-weight: bold; color: grey darken-4">
+                      {{item.comment["0"].comment}}
+                      </span></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-divider v-if="index + 1 < nots.length"></v-divider>
+                  </a>
+                </template>
+              </v-list>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+          <!-- </v-flex>
+          </v-layout>-->
+        </v-dialog>
+        <v-list-tile>
           <v-btn flat v-if="isAuthenticated" @click="logout">
             Signout
             <v-icon color="#fbe631">person</v-icon>
@@ -316,6 +363,15 @@
           Manage Users
           <v-icon color="#fbe631">supervisor_account</v-icon>
         </v-btn>
+        <v-btn flat v-if="isAuthenticated" @click="dialog2 = true">
+          <v-badge right>
+            <template v-slot:badge>
+              <span>{{new_coms}}</span>
+            </template>
+            Notifications
+            <v-icon color="#fbe631">mail</v-icon>
+          </v-badge>
+        </v-btn>
       </v-toolbar-items>
       <v-toolbar-side-icon class="hidden-sm-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
     </v-toolbar>
@@ -341,12 +397,15 @@ export default {
   },
   data() {
     return {
+      nots: [],
       title: "Site Manager",
       dialog: false,
+      dialog2: false,
       snackbar: false,
       snackbar_type: "primary",
       snaackbar_message: "",
       timeout: 3000,
+      new_coms: 0,
       saveProgressHidden: true,
       siteform: {
         potential: "",
@@ -359,15 +418,9 @@ export default {
         files: ""
       },
       rules: {
-        nameRules: [
-          value =>
-            (value.length > 0) ||
-            "Site name must not empty"
-        ],
+        nameRules: [value => value.length > 0 || "Site name must not empty"],
         locationRules: [
-          value =>
-            (value.length > 0) ||
-            "Site Location must not empty"
+          value => value.length > 0 || "Site Location must not empty"
         ],
         latRules: [
           value =>
@@ -381,10 +434,23 @@ export default {
       drawer: false
     };
   },
+  mounted() {
+    this.$axios.post("get_notification").then(result => {
+      this.nots = [...result.data];
+      this.new_coms = this.nots.length;
+      console.log(this.nots);
+    });
+  },
   methods: {
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
+    },
+    openNotDiag() {
+      this.dialog2 = true;
+      //    this.$axios.post("update_nots").then(result => {
+      //    console.log('seen')
+      // });
     },
     async submitFiles() {
       if (this.$refs.siteForm.validate()) {
