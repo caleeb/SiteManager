@@ -25,7 +25,8 @@
               class="text-xs-left font-weight-bold elevation-2"
               style="max-width:50px;"
               :class="getStatusColor(props.item.status)"
-            >{{ props.item.is_dead == 0 ? props.item.status+" - No Go" : props.item.status + " - Go" }}</td>
+            >{{ props.item.is_dead == 0 ? props.item.status+" - No Go" : props.item.status + " - Go" 
+            && props.item.status == "Ethio Telecom Provision" ? "ET Provision In Progress" : props.item.status }} </td>
             <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
