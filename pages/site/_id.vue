@@ -42,7 +42,7 @@
                         <v-btn
                           v-on="on"
                           dark
-                          :href="'https://vispsites.webpsrix.com/api/getSiteFile/'+item.filename"
+                          :href="'https://vispsites.websprix.com/api/getSiteFile/'+item.filename"
                           target="_blank"
                         >
                           file
@@ -207,7 +207,7 @@
                                 <v-flex :key="item.file_id" md4 xs12 lg12>
                                   <v-btn
                                     dark
-                                    :href="'https://vispsites.webpsrix.com/api/getMarketFile/'+item.filename"
+                                    :href="'https://vispsites.websprix.com/api/getMarketFile/'+item.filename"
                                     target="_blank"
                                   >
                                     {{item.filename}}
@@ -282,7 +282,7 @@
                         <v-flex :key="item.file_id" md1 xs12>
                           <v-btn
                             dark
-                            :href="'https://vispsites.webpsrix.com/api/getStatusFile/'+item.filename"
+                            :href="'https://vispsites.websprix.com/api/getStatusFile/'+item.filename"
                             target="_blank"
                           >
                             {{item.filename}}
