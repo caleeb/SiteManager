@@ -10,7 +10,7 @@
         <div class="text-xs-center hidde">
           <p class="font-italic text--darken-2 blue-grey--text line-count">WebSprix ONU Lookup</p>
         </div>
-        <v-card class="elevation-10">
+        <v-card>
           <v-card-title>
             <div class="flex-grow-1"></div>
             <v-layout row align="center">
@@ -20,18 +20,18 @@
               </v-btn>
             </v-layout>
           </v-card-title>
-          <v-data-table dark dense :headers="headers" :items="output">
-            <template v-slot:items="props">
-              <td class="text--accent-1">{{ props.item.onu_name }}</td>
-              <td>{{ props.item.site_name }}</td>
-              <td>{{ props.item.createdAt}}</td>
-              <td>{{ props.item.updatedAt}}</td>
-            </template>
-          </v-data-table>
           <v-card-actions v-if="!searchStat">
             <h3 class="red--text center">{{errorText}}</h3>
           </v-card-actions>
         </v-card>
+        <v-data-table dark dense :headers="headers" :items="output" class="elevation-10">
+          <template v-slot:items="props">
+            <td class="text--accent-1">{{ props.item.onu_name }}</td>
+            <td>{{ props.item.site_name }}</td>
+            <td>{{ props.item.createdAt}}</td>
+            <td>{{ props.item.updatedAt}}</td>
+          </template>
+        </v-data-table>
       </v-flex>
     </v-layout>
   </v-container>
@@ -67,13 +67,11 @@ export default {
           mac: this.mac
         })
         .then(function(response) {
-          if (typeof response.data == Array) {
-            response.data.forEach(element => {
-              let x = element.replace(/'/gi, '"');
-              let parsed = JSON.parse(x);
-              cur.output.push(parsed);
-            });
-          }
+          response.data.forEach(element => {
+            let x = element.replace(/'/gi, '"');
+            let parsed = JSON.parse(x);
+            cur.output.push(parsed);
+          });
         })
         .catch(function(error) {
           cur.searchStat = false;
