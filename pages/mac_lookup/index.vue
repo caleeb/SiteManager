@@ -1,56 +1,38 @@
 <template>
   <v-container fluid fill-height grid-list-xl>
     <v-layout align-start justify-center>
-      <v-flex xs12 sm8 md4>
+      <v-flex xs12 sm8 md6>
         <div class="text-xs-center mb-2">
           <v-avatar color="black" size="200px">
             <img src="https://www.websprix.com/img/logo/logo-small.png" alt="Avatar">
           </v-avatar>
         </div>
         <div class="text-xs-center hidde">
-          <p
-            class="font-italic text--darken-2 blue-grey--text line-count"
-          >WebSprix ONU Lookup</p>
+          <p class="font-italic text--darken-2 blue-grey--text line-count">WebSprix ONU Lookup</p>
         </div>
         <v-card class="elevation-10">
-          <v-card-text>
-              <v-text-field
-                prepend-icon="email"
-                v-model="mac"
-              />
-              <div class="text-xs-center">
-	 <v-progress-circular indeterminate :class="progressIndicatorState" color="orange"/>
-              </div>
-              <v-btn class="d-block ml-auto mr-auto orange--text mt-2" dark  @click ="formSubmit">Find Corresponding ONU</v-btn>
-          </v-card-text>
-<v-simple-table dark>
-        <template v-slot:default>
-        <thead>
-        <tr>
-          <th class="text-left">ONU Name</th>
-          <th class="text-left">Site Name</th>
-          <th class="text-left">First ARP Entry Created At</th>
-          <th class="text-left">ARP Entry Last Updated At</th>
-        </tr>
-      </thead>
-        <tbody>
-        <tr v-for="item in output" :key="item.ONU-Name">
-          <td>{{ item.ONU-Name }}</td>
-          <td>{{ item.Site-Name}}</td>
-          <td>{{ item.createdAt}}</td>
-          <td>{{ item.updatedAt}}</td>
-
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table>
-         
+          <v-card-title>
+            <div class="flex-grow-1"></div>
+            <v-layout row align="center">
+              <v-text-field v-model="mac" label="Search Mac Addres" single-line hide-details></v-text-field>
+              <v-btn class="ma-2" outlined fab color="black" @click="formSubmit">
+                <v-icon color="white">search</v-icon>
+              </v-btn>
+            </v-layout>
+          </v-card-title>
+          <v-data-table dark dense :headers="headers" :items="output">
+            <template v-slot:items="props">
+              <td class="text--accent-1">{{ props.item.onu_name }}</td>
+              <td>{{ props.item.site_name }}</td>
+              <td>{{ props.item.createdAt}}</td>
+              <td>{{ props.item.updatedAt}}</td>
+            </template>
+          </v-data-table>
+          <v-card-actions v-if="!searchStat">
+            <h3 class="red--text center">{{errorText}}</h3>
+          </v-card-actions>
         </v-card>
-          <strong>Output</strong>
-          <pre>
-              {{output}}
-         </pre>
-	  </v-flex>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -58,46 +40,46 @@
 
 <script>
 export default {
-data() {
-            return {
-              mac: '',
-              output: [],
-              progressIndicatorState: "hidden-sm-and-up hidden-sm-and-down",
-
-            };
+  data() {
+    return {
+      mac: "",
+      headers: [
+        {
+          text: "Onu Name",
+          align: "left",
+          value: "onu_name"
         },
-methods: {
-	formSubmit(e) {
-                let cur = this;
-                e.preventDefault();
-                this.$axios.post('/mac_lookup', {
-                    mac: this.mac
-                })
-                .then(function (response) {
-                    cur.output = response.data;
-                    //let x = JSON.parse(cur.output[0]);
-                    //console.log(x);
-		    //cur.output = x;
-                    console.log(cur.output);
-                })
-                .catch(function (error) {
-                    cur.output = error;
-                });
-            },
-
-   async formSubmit2() {
-        try {
-          this.progressIndicatorState = "";
-          this.output = await this.$axios.post("/mac_lookup", {
-            data: {
-              mac: this.mac
-            }
-          });
-          this.progressIndicatorState = "hidden-sm-and-up hidden-sm-and-down";
-        } catch (e) {
-          this.progressIndicatorState = "hidden-sm-and-up hidden-sm-and-down";
-          this.loginErrorMessages = "Incorrect MAC Address Format";
-      }
-     }
-}}
+        { text: "Site Name", value: "site_name" },
+        { text: "Date Identified", value: "createdAt" },
+        { text: "Last Updated", value: "updatedAt" }
+      ],
+      output: [],
+      searchStat: true,
+      errorText: ""
+    };
+  },
+  methods: {
+    formSubmit(e) {
+      let cur = this;
+      this.searchStat = true;
+      this.$axios
+        .post("/mac_lookup", {
+          mac: this.mac
+        })
+        .then(function(response) {
+          if (typeof response.data == Array) {
+            response.data.forEach(element => {
+              let x = element.replace(/'/gi, '"');
+              let parsed = JSON.parse(x);
+              cur.output.push(parsed);
+            });
+          }
+        })
+        .catch(function(error) {
+          cur.searchStat = false;
+          cur.errorText = "Mac address not found";
+        });
+    }
+  }
+};
 </script>
