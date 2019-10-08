@@ -62,6 +62,7 @@ export default {
     formSubmit(e) {
       let cur = this;
       this.searchStat = true;
+      cur.searchStat = [];
       this.$axios
         .post("/mac_lookup", {
           mac: this.mac
