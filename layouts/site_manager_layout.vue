@@ -156,7 +156,13 @@
           </v-btn>
         </v-list-tile>
         <v-list-tile>
-          <v-btn flat v-if="isAuthenticated" @click="this.dialog2 = true">
+          <v-btn flat v-if="isAuthenticated" to="/ucrmclients">
+            CPE Devices
+            <v-icon color="#fbe631">camera</v-icon>
+          </v-btn>
+        </v-list-tile>
+        <v-list-tile>
+          <v-btn flat v-if="isAuthenticated" @click="dialog2 = true">
             <v-badge right>
               <template v-slot:badge>
                 <span>{{new_coms}}</span>
@@ -359,10 +365,15 @@
           Signout
           <v-icon color="#fbe631">person</v-icon>
         </v-btn>
+        <v-btn flat v-if="isAuthenticated" to="/ucrmclients">
+          CPE Devices
+          <v-icon color="#fbe631">camera</v-icon>
+        </v-btn>
         <v-btn flat v-if="isAuthenticated && loggedInUser.role === 'admin'" to="/iam">
           Manage Users
           <v-icon color="#fbe631">supervisor_account</v-icon>
         </v-btn>
+
         <v-btn flat v-if="isAuthenticated" @click="dialog2 = true">
           <v-badge right>
             <template v-slot:badge>
