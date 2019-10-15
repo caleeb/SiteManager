@@ -9,7 +9,7 @@
             <td>{{props.item.activeTo}}</td>
             <td>{{props.item.ip}}</td>
             <td>{{props.item.technician}}</td>
-            <td>{{props.item.port ? "Yes" : "No"}}</td>
+            <td>{{props.item.port == "1" ? "Yes" : "No"}}</td>
             <td>{{props.item.cpe_status}}</td>
 
             <td>{{props.item.description}}</td>
@@ -259,7 +259,7 @@ export default {
         status: "",
         cpe_status: "",
         technician: "",
-        port: "",
+        port: "0",
         description: "",
         created_at: null,
         updated_at: null
@@ -291,7 +291,7 @@ export default {
             description: this.userForm.description,
             cpe_status: this.userForm.cpe_status,
             technician: this.userForm.technician,
-            port: this.userForm.port
+            port: this.userForm.port == true ? 1 : 0
           }
         );
         this.dialog = false;
