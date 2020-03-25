@@ -5,8 +5,12 @@
         <span>All sites</span>
         <v-spacer></v-spacer>
 
-        <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization !='EthioTel'">
-          <v-select :items="selects" label="Filter Sites" v-model="selectedCategory"></v-select>
+        <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization != 'EthioTel'">
+          <v-select
+            :items="selects"
+            label="Filter Sites"
+            v-model="selectedCategory"
+          ></v-select>
         </v-flex>
       </v-subheader>
       <v-data-table
@@ -20,29 +24,46 @@
         <template v-slot:items="props">
           <tr>
             <td style="max-width:150px;">{{ props.item.name }}</td>
-            <td class="text-xs-left" style="max-width:380px;">{{ props.item.location}}</td>
+            <td class="text-xs-left" style="max-width:380px;">
+              {{ props.item.location }}
+            </td>
             <td
               class="text-xs-left font-weight-bold elevation-2"
               style="max-width:50px;"
               :class="getStatusColor(props.item.status)"
-            >{{ props.item.is_dead == 0 ? props.item.status+" - No Go" : props.item.status + " - Go" 
-            && props.item.status == "Ethio Telecom Provision" ? "ET Provision In Progress" : props.item.status }} </td>
-            <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item)}}</td>
+            >
+              {{
+                props.item.is_dead == 0
+                  ? props.item.status + " - No Go"
+                  : props.item.status + " - Go" &&
+                    props.item.status == "Ethio Telecom Provision"
+                  ? "ET Provision In Progress"
+                  : props.item.status
+              }}
+            </td>
+            <td class="text-xs-left" style="max-width:100px;">
+              {{ calcTimeElapsed(props.item) }}
+            </td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
                 <v-flex
-                  sm2 xs12
-                  v-if="checkAuthorization(props.item) && 
-                  props.item.status != 'Site Activated'
+                  sm2
+                  xs12
+                  v-if="
+                    checkAuthorization(props.item) &&
+                      props.item.status != 'Site Activated'
                   "
                 >
                   <v-tooltip slot="append" bottom>
                     <v-icon
                       small
-                      v-if="buttonAuth(props.item,'update') && props.item.is_dead==1"
+                      v-if="
+                        buttonAuth(props.item, 'update') &&
+                          props.item.is_dead == 1
+                      "
                       slot="activator"
                       @click="openDialog(props.item)"
-                    >update
+                      >update
                       <!-- <v-icon color="teal lighten-2" dark></v-icon> -->
                     </v-icon>
                     <span>Update Status</span>
@@ -56,7 +77,7 @@
                       @click="editSiteDialog(props.item)"
                       dark
                       color="orange darken-2"
-                    >edit
+                      >edit
                       <!-- <v-icon color="black darken-2"></v-icon> -->
                     </v-icon>
                     <span>Edit Site</span>
@@ -80,7 +101,7 @@
                       color="blue darken-2"
                       dark
                       @click="getRoute(props.item.site_id)"
-                    >info
+                      >info
                       <!-- <v-icon color="white"></v-icon> -->
                     </v-icon>
                     <span>Open Site</span>
@@ -92,9 +113,9 @@
                       small
                       color="blue lighten-2"
                       slot="activator"
-                      v-if="buttonAuth(props.item,'mark')"
+                      v-if="buttonAuth(props.item, 'mark')"
                       @click="openDialog(props.item, true)"
-                    >widgets
+                      >widgets
                       <!-- <v-icon color="black"></v-icon> -->
                     </v-icon>
 
@@ -102,15 +123,17 @@
                   </v-tooltip>
                 </v-flex>
 
-                <v-flex sm2 v-if="(loggedInUser.organization !='EthioTel')">
+                <v-flex sm2 v-if="loggedInUser.organization != 'EthioTel'">
                   <v-tooltip bottom slot="append">
-                    <a slot="activator" :href="'/siteReport/'+props.item.site_id">
-                    <v-icon small  dark >
-                      <!-- <v-icon color="yellow darken-2" dark></v-icon> -->
-                      assessment
-                    </v-icon>
+                    <a
+                      slot="activator"
+                      :href="'/siteReport/' + props.item.site_id"
+                    >
+                      <v-icon small dark>
+                        <!-- <v-icon color="yellow darken-2" dark></v-icon> -->
+                        assessment
+                      </v-icon>
                     </a>
-                    
 
                     <span>Site Report</span>
                   </v-tooltip>
@@ -128,8 +151,11 @@
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
-            <v-toolbar-title class="white--text" v-text="currentModalSite.name"/>
-            <v-spacer/>
+            <v-toolbar-title
+              class="white--text"
+              v-text="currentModalSite.name"
+            />
+            <v-spacer />
             <v-toolbar-side-icon @click="submitFiles(currentModalSite)">
               <v-icon>save</v-icon>
             </v-toolbar-side-icon>
@@ -149,7 +175,11 @@
                       <v-subheader>Status</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field solo disabled :value="siteStatusUpdateForm.nextStat"></v-text-field>
+                      <v-text-field
+                        solo
+                        disabled
+                        :value="siteStatusUpdateForm.nextStat"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -157,7 +187,10 @@
                       <v-subheader>Status Update Date</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-date-picker reactive v-model="siteStatusUpdateForm.statusUpdateDate"></v-date-picker>
+                      <v-date-picker
+                        reactive
+                        v-model="siteStatusUpdateForm.statusUpdateDate"
+                      ></v-date-picker>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -186,7 +219,7 @@
                           ref="files"
                           id="files"
                           multiple
-                        >
+                        />
                       </v-input>
                     </v-flex>
                   </v-layout>
@@ -204,10 +237,12 @@
             </v-toolbar-side-icon>
             <v-toolbar-title
               class="white--text"
-              v-text="currentModalSite.name+'\t :- Marketing Analysis'"
+              v-text="currentModalSite.name + '\t :- Marketing Analysis'"
             />
-            <v-spacer/>
-            <v-toolbar-side-icon @click="submitMarketingFiles(currentModalSite)">
+            <v-spacer />
+            <v-toolbar-side-icon
+              @click="submitMarketingFiles(currentModalSite)"
+            >
               <v-icon>save</v-icon>
             </v-toolbar-side-icon>
           </v-toolbar>
@@ -242,7 +277,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.potential"
                       ></v-text-field>
@@ -253,7 +288,10 @@
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field solo v-model="marketingForm.mobile"></v-text-field>
+                      <v-text-field
+                        solo
+                        v-model="marketingForm.mobile"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -263,7 +301,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.blocks"
                       ></v-text-field>
@@ -276,7 +314,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.business"
                       ></v-text-field>
@@ -289,7 +327,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.occupancy"
                       ></v-text-field>
@@ -302,7 +340,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.units"
                       ></v-text-field>
@@ -315,7 +353,7 @@
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.rental"
                       ></v-text-field>
@@ -329,14 +367,16 @@
                       <v-checkbox
                         label="yes"
                         value="1"
-                        :disabled="loggedInUser.role=='Marketing'"
+                        :disabled="loggedInUser.role == 'Marketing'"
                         v-model="marketingForm.duct"
                       ></v-checkbox>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs12 md6>
-                      <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
+                      <v-subheader
+                        >Suitability for FTTH(Rating 1 - 10)</v-subheader
+                      >
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-text-field
@@ -349,12 +389,14 @@
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs12 md6>
-                      <v-subheader>Average Density (Units per Square KM.)</v-subheader>
+                      <v-subheader
+                        >Average Density (Units per Square KM.)</v-subheader
+                      >
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-text-field
                         type="number"
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         solo
                         v-model="marketingForm.density"
                       ></v-text-field>
@@ -366,7 +408,10 @@
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-checkbox
-                        v-if="loggedInUser.is_admin == 1 && loggedInUser.role == 'Marketing'"
+                        v-if="
+                          loggedInUser.is_admin == 1 &&
+                            loggedInUser.role == 'Marketing'
+                        "
                         value="1"
                         v-model="marketingForm.is_feasible"
                       ></v-checkbox>
@@ -379,7 +424,7 @@
                     <v-flex xs12 md6>
                       <v-textarea
                         box
-                        :disabled="loggedInUser.role=='Deployment'"
+                        :disabled="loggedInUser.role == 'Deployment'"
                         v-model="marketingForm.description"
                         label="Site status Description"
                         :rules="marketingFormRules.descriptionRules"
@@ -399,7 +444,7 @@
                           ref="files"
                           id="files"
                           multiple
-                        >
+                        />
                       </v-input>
                     </v-flex>
                   </v-layout>
@@ -482,7 +527,11 @@
                     <v-subheader>is Site Ongoing</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-checkbox label value="1" v-model="site.is_dead"></v-checkbox>
+                    <v-checkbox
+                      label
+                      value="1"
+                      v-model="site.is_dead"
+                    ></v-checkbox>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -490,7 +539,11 @@
                     <v-subheader>Site Description</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-textarea box v-model="site.description" label="Site status Description"></v-textarea>
+                    <v-textarea
+                      box
+                      v-model="site.description"
+                      label="Site status Description"
+                    ></v-textarea>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -506,7 +559,7 @@
                         ref="files"
                         id="files"
                         multiple
-                      >
+                      />
                     </v-input>
                   </v-flex>
                 </v-layout>
@@ -520,8 +573,13 @@
       </v-dialog>
       <!-- End of Update Site -->
     </v-flex>
-    <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
-      {{snaackbar_message}}
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbar_type"
+      :timeout="timeout"
+      :top="true"
+    >
+      {{ snaackbar_message }}
       <v-btn dark flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
   </v-layout>
@@ -534,12 +592,14 @@ export default {
   layout: "site_manager_layout",
   middleware: "authenticated",
   computed: {
-    ...mapGetters(["isAuthenticated", "loggedInUser"]),
+    ...mapGetters(["isAuthenticated", "loggedInUser", "userGroups"]),
     filteredIems() {
       if (this.loggedInUser.organization == "EthioTel")
         return this.items.filter(
           data =>
-            data.status != "Site Identified" && data.status != "Site Activated" && data.is_dead == 1
+            data.status != "Site Identified" &&
+            data.status != "Site Activated" &&
+            data.is_dead == 1
         );
       if (this.selectedCategory == "All Sites") {
         return this.items.filter(
@@ -955,7 +1015,10 @@ export default {
             auth_result = false;
             break;
         }
-      } else if (this.loggedInUser.role == "Marketing") {
+      } else if (
+        this.loggedInUser.role == "Marketing" ||
+        this.userGroups.includes("marketing")
+      ) {
         switch (button_type) {
           case "update":
             auth_result = false;
@@ -967,10 +1030,16 @@ export default {
             auth_result = false;
             break;
         }
-      } else if (this.loggedInUser.role == "Deployment") {
+      } else if (
+        this.loggedInUser.role == "Deployment" ||
+        this.userGroups.includes("deployment")
+      ) {
         site.market_analysis_done != 1
           ? (auth_result = false)
           : (auth_result = true);
+      }
+      else{
+        auth_result = false;
       }
       return auth_result;
     },
@@ -1048,7 +1117,7 @@ export default {
 };
 </script>
 <style>
-  .icon {
+.icon {
   font-size: 20px;
 }
 </style>

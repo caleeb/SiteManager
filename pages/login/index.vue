@@ -4,13 +4,17 @@
       <v-flex xs12 sm8 md4>
         <div class="text-xs-center mb-2">
           <v-avatar color="black" size="200px">
-            <img src="https://www.websprix.com/img/logo/logo-small.png" alt="Avatar">
+            <img
+              src="https://www.websprix.com/img/logo/logo-small.png"
+              alt="Avatar"
+            />
           </v-avatar>
         </div>
         <div class="text-xs-center hidde">
-          <p
-            class="font-italic text--darken-2 blue-grey--text line-count"
-          >Welcome Websprix's Site management Module</p>
+          <p class="font-italic text--darken-2 blue-grey--text line-count">
+            Welcome Websprix's Site management Module
+          </p>
+          <span>Sign in With You Active Directory Credentials</span>
         </div>
         <v-card class="elevation-10">
           <v-card-text>
@@ -36,9 +40,22 @@
                 :rules="rules.passwordRules"
               />
               <div class="text-xs-center">
-                <v-progress-circular indeterminate :class="progressIndicatorState" color="orange"/>
+                <v-progress-circular
+                  indeterminate
+                  :class="progressIndicatorState"
+                  color="orange"
+                />
               </div>
-              <v-btn class="d-block ml-auto mr-auto orange--text mt-2" dark  @click ="login">Login</v-btn>
+              <!-- <v-checkbox
+                :label="'Sign in With My Local Account Instead.' + localAcc"
+                v-model="localAcc"
+              ></v-checkbox> -->
+              <v-btn
+                class="d-block ml-auto mr-auto orange--text mt-2"
+                dark
+                @click="login"
+                >Login</v-btn
+              >
             </v-form>
           </v-card-text>
         </v-card>
@@ -53,12 +70,13 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"])
   },
-  middleware:'authenticated',
-  layout:'login',
+  middleware: "authenticated",
+  layout: "login",
   data() {
     return {
       email: "",
       password: "",
+      localAcc: false,
       progressIndicatorState: "hidden-sm-and-up hidden-sm-and-down",
       loginErrorMessages: "",
       rules: {
@@ -84,11 +102,12 @@ export default {
           await this.$auth.loginWith("local", {
             data: {
               email: this.email,
-              password: this.password
+              password: this.password,
+              localAcc: this.localAcc
             }
           });
           this.progressIndicatorState = "hidden-sm-and-up hidden-sm-and-down";
-          this.$router.push('/')
+          this.$router.push("/");
         } catch (e) {
           this.progressIndicatorState = "hidden-sm-and-up hidden-sm-and-down";
           this.password = "";
