@@ -744,7 +744,7 @@ export default {
       search: "",
       selects1: [
         "General",
-        "Condominuium",
+        "Condominium",
         "Bus Complex",
         "Real Estate",
         "Housing Agency",

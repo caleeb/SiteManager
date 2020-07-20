@@ -172,6 +172,12 @@
           </v-btn>
         </v-list-tile>
         <v-list-tile>
+          <v-btn flat v-if="isAuthenticated" to="/summary">
+            Summary
+            <v-icon color="#fbe631">camera</v-icon>
+          </v-btn>
+        </v-list-tile>
+        <v-list-tile>
           <v-btn flat v-if="isAuthenticated" to="/ucrmclients">
             CPE Devices
             <v-icon color="#fbe631">camera</v-icon>
@@ -458,7 +464,7 @@ export default {
       nots: [],
       selects: [
         "General",
-        "Condominuium",
+        "Condominium",
         "Bus Complex",
         "Real Estate",
         "Housing Agency",
