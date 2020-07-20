@@ -1,117 +1,135 @@
 <template>
   <v-layout>
-  
     <v-card class="whole-card">
-        <v-flex align-start>
+      <v-flex align-start>
         <v-subheader class="">
           <span
             style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
           >
             Overall Sites Summary
-
           </span>
         </v-subheader>
         <v-layout row wrap>
-        <v-flex md4>
-          
-        
-         <v-card max-width="400" class="mr-5 mt-2" flat style="background-color: white !important;">
-                <v-toolbar height="20px" color="#fbe631" dark>
-                  <v-toolbar-title class="nash black--text">Overall Summary</v-toolbar-title>
-                </v-toolbar>
-                <v-layout row wrap>
-                  <v-flex xs6 md9 mt-2 mb-2>
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
-                    >Total No. of Sites -  <strong
-                        style=" 
+          <v-flex md4>
+            <v-card
+              max-width="400"
+              class="mr-5 mt-2"
+              flat
+              style="background-color: white !important;"
+            >
+              <v-toolbar height="20px" color="#fbe631" dark>
+                <v-toolbar-title class="nash black--text"
+                  >Overall Summary</v-toolbar-title
+                >
+              </v-toolbar>
+              <v-layout row wrap>
+                <v-flex xs6 md9 mt-2 mb-2>
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
+                    >Total No. of Sites -
+                    <strong
+                      style=" 
                       background-color: #fbe631 !important;"
-                        >{{ overall.count }}</strong
-                      ></span>
-                    </v-flex>
-                      <v-flex xs6 md9 mt-2 mb-2>
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
-                    >No of Total Potential Customers - 
-                     <strong
-                        style=" 
+                      >{{ overall.count }}</strong
+                    ></span
+                  >
+                </v-flex>
+                <v-flex xs6 md9 mt-2 mb-2>
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
+                    >No of Total Potential Customers -
+                    <strong
+                      style=" 
                       background-color: #fbe631 !important;"
-                        >{{ overall.Customers }}</strong
-                      ></span>
-                    </v-flex>
-                      <v-flex xs6 md9 mt-2 mb-2>
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
-                    >  Total No. of Blocks - <strong
-                        style=" 
+                      >{{ overall.Customers }}</strong
+                    ></span
+                  >
+                </v-flex>
+                <v-flex xs6 md9 mt-2 mb-2>
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
+                  >
+                    Total No. of Blocks -
+                    <strong
+                      style=" 
                       background-color: #fbe631 !important;"
-                        >{{ overall.Blocks }}</strong
-                      ></span>
-                    </v-flex>
-                      <v-flex xs6 md9 mt-2 mb-2>
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
+                      >{{ overall.Blocks }}</strong
+                    ></span
+                  >
+                </v-flex>
+                <v-flex xs6 md9 mt-2 mb-2>
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
                     >Avg. Percentage of Business Units -
-                      <strong
-                        style=" 
+                    <strong
+                      style=" 
                       background-color: #fbe631 !important;"
-                        >{{ overall.Business + "%" }}</strong
-                      ></span>
-                    </v-flex>
-                     <v-flex xs6 md9 mt-2 mb-2>
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
+                      >{{ overall.Business + "%" }}</strong
+                    ></span
+                  >
+                </v-flex>
+                <v-flex xs6 md9 mt-2 mb-2>
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
+                  >
+                    Avg. Occupancy Rate -
+                    <strong
+                      style=" 
+                      background-color: #fbe631 !important;"
+                      >{{ overall.Occupancy + "%" }}</strong
                     >
-                      Avg. Occupancy Rate -
-                      <strong
-                        style=" 
+                  </span>
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+          <v-flex md8>
+            <v-card
+              max-width="400"
+              class="mr-5 mt-2"
+              flat
+              style="background-color: white !important;"
+            >
+              <v-toolbar height="20px" color="#fbe631" dark>
+                <v-toolbar-title class="nash black--text"
+                  >Identified Sites - This Week</v-toolbar-title
+                >
+              </v-toolbar>
+              <v-layout row wrap>
+                <v-flex xs6 md6 mt-2 mb-2 v-for="(item, i) in week" :key="i">
+                  <span
+                    depressed
+                    small
+                    class="nash2 black--text"
+                    style="font-weight: 1000 !important;"
+                  >
+                    *
+                    <strong
+                      style=" 
                       background-color: #fbe631 !important;"
-                        >{{ overall.Occupancy + "%" }}</strong
-                      >
-                    </span>
-                  </v-flex>
-                    </v-layout>
-                    </v-card>
-                    </v-flex>
-                      <v-flex md8>
- <v-card max-width="400" class="mr-5 mt-2" flat style="background-color: white !important;">
-                <v-toolbar height="20px" color="#fbe631" dark>
-                  <v-toolbar-title class="nash black--text">Identified Sites - This Week</v-toolbar-title>
-                </v-toolbar>
-                <v-layout row wrap>
-                  <v-flex xs6 md6 mt-2 mb-2 v-for="(item, i) in week" :key="i">
-                    <span
-                      depressed
-                      small
-                      class="nash2 black--text"
-                      style="font-weight: 1000 !important;"
-                    > *  <strong
-                        style=" 
-                      background-color: #fbe631 !important;"
-                        >{{item.name}}</strong
-                      ></span>
-                    </v-flex>
-                </v-layout>
- </v-card>
-                    </v-flex>
-                    </v-layout>
-                  
-                    
+                      >{{ item.name }}</strong
+                    ></span
+                  >
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
       <v-flex align-start>
         <v-subheader class="">

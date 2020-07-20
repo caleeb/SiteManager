@@ -948,6 +948,14 @@ export default {
             .humanize(true)
             .replace("ago", "");
           break;
+        case "Site Feasible":
+          return moment
+            .duration(
+              moment(siteinfo.feasible_date).diff(moment(new Date()))
+            )
+            .humanize(true)
+            .replace("ago", "");
+          break;
         case "Site Survey Requested":
           return moment
             .duration(
