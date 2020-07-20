@@ -9,9 +9,9 @@
           </v-btn>
         </v-list-tile>
         <v-list-tile v-if="addSiteAuth()">
-          <v-dialog v-model="dialog" fullscreen >
+          <v-dialog v-model="dialog" fullscreen>
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on" flat >
+              <v-btn v-on="on" flat>
                 newsite
                 <v-icon color="#fbe631">add</v-icon>
               </v-btn>
@@ -22,7 +22,7 @@
                   <v-icon @click="dialog = false" color="white">close</v-icon>
                 </v-toolbar-side-icon>
                 <v-toolbar-title class="white--text">New Site</v-toolbar-title>
-                <v-spacer/>
+                <v-spacer />
                 <v-toolbar-items class="hidden-xs-only">
                   <v-btn flat color="white" @click="submitFiles">
                     save
@@ -113,6 +113,18 @@
                           ></v-text-field>
                         </v-flex>
                       </v-layout>
+                      <v-layout row wrap>
+                        <v-flex xs6 md6>
+                          <v-subheader>Site Type</v-subheader>
+                        </v-flex>
+                        <v-flex xs6 md6>
+                          <v-select
+                            :items="selects"
+                            label="Site Type"
+                            v-model="siteform.site_type"
+                          ></v-select>
+                        </v-flex>
+                      </v-layout>
                       <v-layout row wrap class="mt-3">
                         <v-flex xs6 md6>
                           <v-subheader>Site Status Description</v-subheader>
@@ -138,7 +150,7 @@
                               ref="files"
                               id="files"
                               multiple
-                            >
+                            />
                           </v-input>
                         </v-flex>
                       </v-layout>
@@ -150,7 +162,11 @@
           </v-dialog>
         </v-list-tile>
         <v-list-tile>
-          <v-btn flat v-if="isAuthenticated && loggedInUser.role === 'admin'" to="/iam">
+          <v-btn
+            flat
+            v-if="isAuthenticated && loggedInUser.role === 'admin'"
+            to="/iam"
+          >
             Manage Users
             <v-icon color="#fbe631">supervisor_account</v-icon>
           </v-btn>
@@ -165,7 +181,7 @@
           <v-btn flat v-if="isAuthenticated" @click="dialog2 = true">
             <v-badge right>
               <template v-slot:badge>
-                <span>{{new_coms}}</span>
+                <span>{{ new_coms }}</span>
               </template>
               Notifications
               <v-icon color="#fbe631">mail</v-icon>
@@ -179,30 +195,37 @@
             <v-card-title>New Notifications</v-card-title>
             <v-card-text>
               <v-list two-line>
-
                 <template v-for="(item, index) in nots">
                   <!-- <v-list-tile :key="index" avatar ripple @click="toggle(index)"></v-list-tile> -->
-                  <a style = "text-decoration: none;" :href="'/site/' + item.site_name['0'].site_id"  :key="index">
-                  <v-list-tile-content>
-                    <v-list-tile-title>
-                      <span style="font-weight: bold; color: teal">{{item.username}}</span> 
-                      Commented On
-                      <span
-                        style="font-weight: bold; color: blue"
-                      >{{item.site_name["0"].name}}</span>
-                      on {{item.status}}
-                    </v-list-tile-title>
-                    <v-list-tile-sub-title class="text--primary bold"><span style="font-weight: bold; color: grey darken-4">
-                      {{item.comment["0"].comment}}
-                      </span></v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  <v-divider v-if="index + 1 < nots.length"></v-divider>
+                  <a
+                    style="text-decoration: none;"
+                    :href="'/site/' + item.site_name['0'].site_id"
+                    :key="index"
+                  >
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        <span style="font-weight: bold; color: teal">{{
+                          item.username
+                        }}</span>
+                        Commented On
+                        <span style="font-weight: bold; color: blue">{{
+                          item.site_name["0"].name
+                        }}</span>
+                        on {{ item.status }}
+                      </v-list-tile-title>
+                      <v-list-tile-sub-title class="text--primary bold"
+                        ><span style="font-weight: bold; color: grey darken-4">
+                          {{ item.comment["0"].comment }}
+                        </span></v-list-tile-sub-title
+                      >
+                    </v-list-tile-content>
+                    <v-divider v-if="index + 1 < nots.length"></v-divider>
                   </a>
                 </template>
               </v-list>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" flat @click="dialog2=false">Close</v-btn>
+              <v-btn color="primary" flat @click="dialog2 = false">Close</v-btn>
             </v-card-actions>
           </v-card>
           <!-- </v-flex>
@@ -217,20 +240,24 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar fixed app dark clipped-left dense>
-      <v-toolbar-title v-text="title"/>
-      <v-spacer/>
+      <v-toolbar-title v-text="title" />
+      <v-spacer />
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat v-if="isAuthenticated" to="/">
           home
           <v-icon color="#fbe631">home</v-icon>
         </v-btn>
-         <!-- <v-btn flat v-if="isAuthenticated" to="/summary">
+        <!-- <v-btn flat v-if="isAuthenticated" to="/summary">
           Summary
           <v-icon color="#fbe631">add</v-icon>
         </v-btn> -->
         <v-dialog v-model="dialog" fullscreen v-if="addSiteAuth()">
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" flat v-if="isAuthenticated && loggedInUser.organization=='Websprix'">
+            <v-btn
+              v-on="on"
+              flat
+              v-if="isAuthenticated && loggedInUser.organization == 'Websprix'"
+            >
               newsite
               <v-icon color="#fbe631">add</v-icon>
             </v-btn>
@@ -241,7 +268,7 @@
                 <v-icon @click="dialog = false" color="white">close</v-icon>
               </v-toolbar-side-icon>
               <v-toolbar-title class="white--text">New Site</v-toolbar-title>
-              <v-spacer/>
+              <v-spacer />
               <v-toolbar-side-icon @click="submitFiles">
                 <span class="hidden-xs-only">save</span>
                 <v-icon>save</v-icon>
@@ -355,7 +382,7 @@
                             ref="files"
                             id="files"
                             multiple
-                          >
+                          />
                         </v-input>
                       </v-flex>
                     </v-layout>
@@ -365,7 +392,7 @@
             </v-layout>
           </v-card>
         </v-dialog>
-         <v-btn flat v-if="isAuthenticated" to="/summary">
+        <v-btn flat v-if="isAuthenticated" to="/summary">
           Summary
           <v-icon color="#fbe631">person</v-icon>
         </v-btn>
@@ -377,7 +404,11 @@
           CPE Devices
           <v-icon color="#fbe631">camera</v-icon>
         </v-btn>
-        <v-btn flat v-if="isAuthenticated && loggedInUser.role === 'admin'" to="/iam">
+        <v-btn
+          flat
+          v-if="isAuthenticated && loggedInUser.role === 'admin'"
+          to="/iam"
+        >
           Manage Users
           <v-icon color="#fbe631">supervisor_account</v-icon>
         </v-btn>
@@ -385,20 +416,28 @@
         <v-btn flat v-if="isAuthenticated" @click="dialog2 = true">
           <v-badge right>
             <template v-slot:badge>
-              <span>{{new_coms}}</span>
+              <span>{{ new_coms }}</span>
             </template>
             Notifications
             <v-icon color="#fbe631">mail</v-icon>
           </v-badge>
         </v-btn>
       </v-toolbar-items>
-      <v-toolbar-side-icon class="hidden-sm-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon
+        class="hidden-sm-and-up"
+        @click="drawer = !drawer"
+      ></v-toolbar-side-icon>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
-        <nuxt/>
-        <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
-          {{snaackbar_message}}
+        <nuxt />
+        <v-snackbar
+          v-model="snackbar"
+          :color="snackbar_type"
+          :timeout="timeout"
+          :top="true"
+        >
+          {{ snaackbar_message }}
           <v-btn dark flat @click="snackbar = false">Close</v-btn>
         </v-snackbar>
       </v-container>
@@ -412,11 +451,20 @@ import { async } from "q";
 
 export default {
   computed: {
-    ...mapGetters(["loggedInUser", "isAuthenticated","userGroups"])
+    ...mapGetters(["loggedInUser", "isAuthenticated", "userGroups"])
   },
   data() {
     return {
       nots: [],
+      selects: [
+        "General",
+        "Condominuium",
+        "Bus Complex",
+        "Real Estate",
+        "Housing Agency",
+        "Association",
+        "Apartment Building"
+      ],
       title: "Site Manager",
       dialog: false,
       dialog2: false,
@@ -434,7 +482,8 @@ export default {
         long: "",
         description: "",
         siteStat: "Site Identified",
-        files: ""
+        files: "",
+        site_type: ""
       },
       rules: {
         nameRules: [value => value.length > 0 || "Site name must not empty"],
@@ -465,8 +514,12 @@ export default {
       await this.$auth.logout();
       this.$router.push("/login");
     },
-    addSiteAuth(){
-      return (this.isAuthenticated) && (this.loggedInUser.role === "admin" || this.userGroups.includes("add_site"));
+    addSiteAuth() {
+      return (
+        this.isAuthenticated &&
+        (this.loggedInUser.role === "admin" ||
+          this.userGroups.includes("add_site"))
+      );
     },
     openNotDiag() {
       this.dialog2 = true;
@@ -482,6 +535,7 @@ export default {
         formdata.append("latitude", this.siteform.lat);
         formdata.append("longitude", this.siteform.long);
         formdata.append("status", this.siteform.siteStat);
+        formdata.append("site_type", this.siteform.site_type);
         formdata.append("description", this.siteform.description);
         for (var i = 0; i < this.siteform.files.length; i++) {
           let file = this.siteform.files[i];

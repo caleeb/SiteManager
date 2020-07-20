@@ -5,7 +5,11 @@
         <span>All sites</span>
         <v-spacer></v-spacer>
         <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization != 'EthioTel'">
-          <v-select :items="selects" label="Filter Sites" v-model="selectedCategory"></v-select>
+          <v-select
+            :items="selects"
+            label="Filter Sites"
+            v-model="selectedCategory"
+          ></v-select>
         </v-flex>
       </v-subheader>
       <v-data-table
@@ -20,38 +24,54 @@
           <tr>
             <td style="max-width:150px;">
               {{ props.item.name }}
-              <v-btn small color="red darken-4" v-if="props.item.postponed==1">PostPoned</v-btn>
+              <v-btn small color="red darken-4" v-if="props.item.postponed == 1"
+                >PostPoned</v-btn
+              >
             </td>
-            <td class="text-xs-left" style="max-width:280px;">{{ props.item.location }}</td>
+            <td class="text-xs-left" style="max-width:280px;">
+              {{ props.item.location }}
+            </td>
             <td
               class="text-xs-left font-weight-bold elevation-2"
               style="max-width:50px;"
               :class="getStatusColor(props.item.status)"
             >
               {{
-              props.item.is_dead == 0
-              ? props.item.status + " - No Go"
-              : props.item.status + " - Go" &&
-              props.item.status == "Ethio Telecom Provision"
-              ? "ET Provision In Progress"
-              : props.item.status
+                props.item.is_dead == 0
+                  ? props.item.status + " - No Go"
+                  : props.item.status + " - Go" &&
+                    props.item.status == "Ethio Telecom Provision"
+                  ? "ET Provision In Progress"
+                  : props.item.status
               }}
             </td>
-           
-            <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item) }}</td>
-             <td class="text-xs-left" style="max-width:70px;">{{props.item.username.username.split("@")[0]}}</td>
+
+            <td class="text-xs-left" style="max-width:100px;">
+              {{ calcTimeElapsed(props.item) }}
+            </td>
+            <td class="text-xs-left" style="max-width:70px;">
+              {{
+                props.item.username != null
+                  ? props.item.username.username.split("@")[0]
+                  : "Unkown"
+              }}
+            </td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
                 <v-flex sm2 xs12 v-if="buttonAuth(props.item, 'update')">
                   <v-tooltip slot="append" bottom>
-                    <v-icon small slot="activator" @click="openDialog(props.item)">
+                    <v-icon
+                      small
+                      slot="activator"
+                      @click="openDialog(props.item)"
+                    >
                       update
                       <!-- <v-icon color="teal lighten-2" dark></v-icon> -->
                     </v-icon>
                     <span>Update Status</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex sm2 v-if="buttonAuth(props.item,'edit_site')">
+                <v-flex sm2 v-if="buttonAuth(props.item, 'edit_site')">
                   <v-tooltip slot="append" bottom>
                     <v-icon
                       small
@@ -113,7 +133,8 @@
                       color="blue lighten-2"
                       slot="activator"
                       @click="openMouDialog(props.item)"
-                    >satellite</v-icon>
+                      >satellite</v-icon
+                    >
 
                     <span>Update MOU Status</span>
                   </v-tooltip>
@@ -121,7 +142,10 @@
 
                 <v-flex sm2 v-if="buttonAuth(props.item, 'view_report')">
                   <v-tooltip bottom slot="append">
-                    <a slot="activator" :href="'/siteReport/' + props.item.site_id">
+                    <a
+                      slot="activator"
+                      :href="'/siteReport/' + props.item.site_id"
+                    >
                       <v-icon small dark>assessment</v-icon>
                     </a>
                     <span>Site Report</span>
@@ -140,7 +164,10 @@
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
-            <v-toolbar-title class="white--text" v-text="currentModalSite.name" />
+            <v-toolbar-title
+              class="white--text"
+              v-text="currentModalSite.name"
+            />
             <v-spacer />
             <v-toolbar-side-icon @click="submitFiles(currentModalSite)">
               <v-icon>save</v-icon>
@@ -161,7 +188,11 @@
                       <v-subheader>Status</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field solo disabled :value="siteStatusUpdateForm.nextStat"></v-text-field>
+                      <v-text-field
+                        solo
+                        disabled
+                        :value="siteStatusUpdateForm.nextStat"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -169,7 +200,10 @@
                       <v-subheader>Status Update Date</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-date-picker reactive v-model="siteStatusUpdateForm.statusUpdateDate"></v-date-picker>
+                      <v-date-picker
+                        reactive
+                        v-model="siteStatusUpdateForm.statusUpdateDate"
+                      ></v-date-picker>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -219,7 +253,9 @@
               v-text="currentModalSite.name + '\t :- Marketing Analysis'"
             />
             <v-spacer />
-            <v-toolbar-side-icon @click="submitMarketingFiles(currentModalSite)">
+            <v-toolbar-side-icon
+              @click="submitMarketingFiles(currentModalSite)"
+            >
               <v-icon>save</v-icon>
             </v-toolbar-side-icon>
           </v-toolbar>
@@ -265,7 +301,10 @@
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field solo v-model="marketingForm.mobile"></v-text-field>
+                      <v-text-field
+                        solo
+                        v-model="marketingForm.mobile"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -372,7 +411,11 @@
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-layout row wrap v-if="buttonAuth(marketingForm,'site_feasible')">
+                  <v-layout
+                    row
+                    wrap
+                    v-if="buttonAuth(marketingForm, 'site_feasible')"
+                  >
                     <v-flex xs12 md6>
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
@@ -489,19 +532,27 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                  <v-flex xs12 md3 v-if="buttonAuth(site,'site_no_go')">
+                  <v-flex xs12 md3 v-if="buttonAuth(site, 'site_no_go')">
                     <v-subheader>is Site Ongoing</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-checkbox label value="1" v-model="site.is_dead"></v-checkbox>
+                    <v-checkbox
+                      label
+                      value="1"
+                      v-model="site.is_dead"
+                    ></v-checkbox>
                   </v-flex>
                 </v-layout>
-                <v-layout row wrap v-if="buttonAuth(site,'site_no_go')">
+                <v-layout row wrap v-if="buttonAuth(site, 'site_no_go')">
                   <v-flex xs12 md3>
                     <v-subheader>is Site Postponed</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-checkbox label value="1" v-model="site.postponed"></v-checkbox>
+                    <v-checkbox
+                      label
+                      value="1"
+                      v-model="site.postponed"
+                    ></v-checkbox>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -509,7 +560,11 @@
                     <v-subheader>Fiber Installation Type</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-select :items="fiber_types" label="Fiber Type" v-model="site.fiber_type"></v-select>
+                    <v-select
+                      :items="fiber_types"
+                      label="Fiber Type"
+                      v-model="site.fiber_type"
+                    ></v-select>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -517,7 +572,11 @@
                     <v-subheader>Site Description</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-textarea box v-model="site.description" label="Site status Description"></v-textarea>
+                    <v-textarea
+                      box
+                      v-model="site.description"
+                      label="Site status Description"
+                    ></v-textarea>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -557,7 +616,12 @@
                     <v-subheader>Site Name</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-text-field dark solo disabled :value="currentMouSite.name"></v-text-field>
+                    <v-text-field
+                      dark
+                      solo
+                      disabled
+                      :value="currentMouSite.name"
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -601,7 +665,12 @@
       </v-dialog>
       <!-- END of Mou Files -->
     </v-flex>
-    <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackbar_type"
+      :timeout="timeout"
+      :top="true"
+    >
       {{ snaackbar_message }}
       <v-btn dark flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -630,15 +699,15 @@ export default {
         );
       } else if (this.selectedCategory == "No-Go Sites") {
         let data = this.items.filter(
-           data => data.is_dead != 1 && data.status != "Ready For Service"
-
+          data => data.is_dead != 1 && data.status != "Ready For Service"
         );
         console.log(data);
         return data;
-      }else if(this.selectedCategory == "Postponed Sites"){
-        return this.items.filter(data => data.postponed == 1 && data.status != "Ready For Service")  
-      }
-      else
+      } else if (this.selectedCategory == "Postponed Sites") {
+        return this.items.filter(
+          data => data.postponed == 1 && data.status != "Ready For Service"
+        );
+      } else
         return this.items.filter(
           data => data.status === this.selectedCategory && data.is_dead == 1
         );
@@ -655,10 +724,9 @@ export default {
         },
         { text: "Site Location", value: "location" },
         { text: "Recent Site Status", value: "stat_id" },
-      
-        { text: "Time Elapsed", value: "", sortable: false },
-          { text: "Created By", value: "username" },
 
+        { text: "Time Elapsed", value: "", sortable: false },
+        { text: "Created By", value: "username" }
       ],
       pagination: {
         sortBy: "stat_id"
@@ -1160,7 +1228,9 @@ export default {
           switch (button_type) {
             case "update":
               let nextStatus = this.getNextStatus(site.status);
-              auth_result = this.userGroups.includes(this.getStatusGroups(nextStatus))
+              auth_result = this.userGroups.includes(
+                this.getStatusGroups(nextStatus)
+              );
               break;
             case "mark":
               auth_result = this.userGroups.includes("update_marketing_status");
@@ -1230,7 +1300,7 @@ export default {
       //   auth_result = false;
       // }
     },
-    getStatusGroups(status){
+    getStatusGroups(status) {
       let auth_group = "";
       switch (status) {
         case "Ws Survey Completion":
@@ -1258,7 +1328,7 @@ export default {
           auth_group = "";
           break;
       }
-    return auth_group;
+      return auth_group;
     },
     getStatusColor(siteStatus) {
       let status_color = "pink darken-2";
