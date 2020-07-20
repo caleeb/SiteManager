@@ -4,6 +4,7 @@
       <v-toolbar dense class="white">
         <v-toolbar-title>{{ site.name }}</v-toolbar-title>
         <v-spacer></v-spacer>
+
         <v-toolbar-items class="hidden-xs-only">
           <v-btn dark>{{ site.location }}</v-btn>
         </v-toolbar-items>

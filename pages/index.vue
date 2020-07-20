@@ -4,7 +4,17 @@
       <v-subheader>
         <span>All sites</span>
         <v-spacer></v-spacer>
+
         <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization != 'EthioTel'">
+          <v-flex md8 mr-3>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-flex>
           <v-select
             :items="selects"
             label="Filter Sites"
@@ -16,6 +26,7 @@
         :pagination.sync="pagination"
         :headers="headers"
         :items="filteredIems"
+        :search="search"
         dark
         class="elevation-11"
         :rows-per-page-items="rows_per_page_items"
@@ -53,8 +64,11 @@
               {{
                 props.item.username != null
                   ? props.item.username.username.split("@")[0]
-                  : "Unkown"
+                  : "Unknown"
               }}
+            </td>
+            <td class="text-xs-left" style="max-width:70px;">
+              {{ props.item.site_type }}
             </td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
@@ -532,6 +546,18 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Site Type</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-select
+                      :items="selects1"
+                      label="Site Type"
+                      v-model="site.site_type"
+                    ></v-select>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
                   <v-flex xs12 md3 v-if="buttonAuth(site, 'site_no_go')">
                     <v-subheader>is Site Ongoing</v-subheader>
                   </v-flex>
@@ -715,6 +741,16 @@ export default {
   },
   data() {
     return {
+      search: "",
+      selects1: [
+        "General",
+        "Condominuium",
+        "Bus Complex",
+        "Real Estate",
+        "Housing Agency",
+        "Association",
+        "Apartment Building"
+      ],
       headers: [
         {
           text: "Site Name",
@@ -725,8 +761,9 @@ export default {
         { text: "Site Location", value: "location" },
         { text: "Recent Site Status", value: "stat_id" },
 
-        { text: "Time Elapsed", value: "", sortable: false },
-        { text: "Created By", value: "username" }
+        { text: "Time Elapsed", value: "" },
+        { text: "Created By", value: "username" },
+        { text: "Type", value: "site_type" }
       ],
       pagination: {
         sortBy: "stat_id"
@@ -799,8 +836,8 @@ export default {
       ],
       fiber_types: ["Trenched", "Ducted", "Pole"],
       rows_per_page_items: [
-        10,
         25,
+        10,
         5,
         { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 }
       ],
@@ -834,6 +871,7 @@ export default {
         description: "",
         statusUpdateDate: new Date().toISOString().substr(0, 10)
       },
+
       rules: {
         nameRules: [
           value =>
@@ -885,6 +923,7 @@ export default {
         payment_processed_date: null,
         site_configuration_date: null,
         site_id: "",
+        site_type: "",
         status: "",
         survey_completed_date: null,
         survey_request_date: null,
@@ -1382,6 +1421,7 @@ export default {
         formdata.append("is_dead", this.site.is_dead == true ? 1 : 0);
         formdata.append("postponed", this.site.postponed == true ? 1 : 0);
         formdata.append("fiber_type", this.site.fiber_type);
+        formdata.append("site_type", this.site.site_type);
         formdata.append("description", this.site.description);
         for (var i = 0; i < this.files.length; i++) {
           let file = this.files[i];
