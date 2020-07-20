@@ -12,7 +12,7 @@ export const getters = {
     if (state.auth.user.group.length == 0) return groups;
     state.auth.user.group.forEach(element => {
       let cn = element.split("@")[0].split(".")
-      if (element.includes("grp.grp")) {
+      if (element.includes("sman.sman")) {
         cn = cn[2];
       }
       else cn = cn[1];
@@ -20,6 +20,7 @@ export const getters = {
       groups.push(cn)
     });
     return groups;
-  }
+  } 
+    
 
 }

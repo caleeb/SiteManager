@@ -35,24 +35,22 @@
                 v-if="loggedInUser.organization !='EthioTel'"
               >
                 <v-subheader>Attached Files</v-subheader>
-                <template v-for="item in site.files">
-                  <v-flex :key="item.file_id" md1 xs12>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{on}">
-                        <v-btn
-                          v-on="on"
-                          dark
-                          :href="'https://vispsites.websprix.com/api/getSiteFile/'+item.filename"
-                          target="_blank"
-                        >
-                          file
-                          <v-icon color="#fbe631">insert_drive_file</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>{{item.filename}}</span>
-                    </v-tooltip>
-                  </v-flex>
-                </template>
+                <v-carousel v-if="site.files.length > 0">
+                  <v-carousel-item
+                    v-for="(item, index) in site.files"
+                    :key="index"
+                  >
+                    <v-img
+                      :src="baseFILEURL+item.filename"
+                      class="grey lighten-2"
+                      v-if="isEmbeddableFile(item.filename)"
+                    ></v-img>
+                    <v-btn v-else dark :href="baseFILEURL+item.filename" target="_blank">
+                      {{item.filename}}
+                      <v-icon color="#fbe631">insert_drive_file</v-icon>
+                    </v-btn>
+                  </v-carousel-item>
+                </v-carousel>
               </v-layout>
               <div class="text-xs-center" v-if="site.files==0">
                 <span class="grey--text body-2">No attached files</span>
@@ -86,7 +84,7 @@
                                       solo
                                       label="Potential Customers"
                                       disabled
-                                      :value="marketingReport.no_potential_customers + ' Potential Customers'"
+                                      :value="marketingReport.no_potential_customers"
                                     ></v-text-field>
                                   </v-flex>
                                 </v-layout>
@@ -97,13 +95,13 @@
                                     <v-subheader class="black--text">Is Site Feasible?</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
-                                    <v-checkbox disabled :value="1==marketingReport.is_feasible"/>
+                                    <v-checkbox disabled :value="1==marketingReport.is_feasible" />
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-subheader class="black--text">Is Duct Available?</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
-                                    <v-checkbox disabled :value="1==marketingReport.duct"/>
+                                    <v-checkbox disabled :value="1==marketingReport.duct" />
                                   </v-flex>
                                 </v-layout>
                               </v-flex>
@@ -115,47 +113,47 @@
                                   <v-flex xs12 md3>
                                     <v-text-field
                                       disabled
-                                      :value="marketingReport.blocks + '\n Blocks'"
+                                      :value="marketingReport.blocks"
                                     />
                                   </v-flex>
                                   <v-flex xs12 md3>
-                                    <v-subheader class="black--text">Units</v-subheader>
+                                    <v-subheader class="black--text">Units (Customer Per Block)</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-text-field
                                       disabled
-                                      :value="marketingReport.units +' Per Block'"
+                                      :value="marketingReport.no_potential_customers / marketingReport.blocks"
                                     />
                                   </v-flex>
                                 </v-layout>
                                 <v-layout row wrap>
                                   <v-flex xs12 md3>
-                                    <v-subheader class="black--text">Occupancy Rate</v-subheader>
+                                    <v-subheader class="black--text">Occupancy Rate (Houses Occupied)</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-text-field
                                       disabled
-                                      :value="marketingReport.occupancy + '\n Houses Occupied'"
+                                      :value="marketingReport.occupancy"
                                     />
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-subheader class="black--text">Mobile Coverage</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
-                                    <v-text-field disabled :value="marketingReport.mobile"/>
+                                    <v-text-field disabled :value="marketingReport.mobile" />
                                   </v-flex>
                                 </v-layout>
                                 <v-layout row wrap>
                                   <v-flex xs12 md3>
-                                    <v-subheader class="black--text">Average Rental</v-subheader>
+                                    <v-subheader class="black--text">Average Rental (Birr)</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-text-field
                                       disabled
-                                      :value="marketingReport.rental + '\n Birr'"
+                                      :value="marketingReport.rental"
                                     />
                                   </v-flex>
-                                  <v-flex xs12 md3>
+                                  <!-- <v-flex xs12 md3>
                                     <v-subheader class="black--text">Suitability for FTTH Rating</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
@@ -163,24 +161,24 @@
                                       disabled
                                       :value="marketingReport.ftth + ' out of 10.'"
                                     />
-                                  </v-flex>
+                                  </v-flex> -->
                                 </v-layout>
                                 <v-layout row wrap>
                                   <v-flex xs12 md3>
                                     <v-subheader class="black--text">Percentage of Business Units</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
-                                    <v-text-field disabled :value="marketingReport.business + '%'"/>
+                                    <v-text-field disabled :value="marketingReport.business + '%'" />
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-subheader
                                       class="black--text"
-                                    >Average Density - (Units Per Km)</v-subheader>
+                                    >Average Area - (Per Square meters)</v-subheader>
                                   </v-flex>
                                   <v-flex xs12 md3>
                                     <v-text-field
                                       disabled
-                                      :value="marketingReport.density + ' units/km.'"
+                                      :value="marketingReport.density"
                                     />
                                   </v-flex>
                                 </v-layout>
@@ -203,18 +201,28 @@
                           <v-flex md6 class="mr-auto" xs12>
                             <v-subheader>Attached Files</v-subheader>
                             <v-layout row wrap>
-                              <template v-for="item in marketingReport.files">
-                                <v-flex :key="item.file_id" md4 xs12 lg12>
+                              <v-carousel v-if="marketingReport.files.length > 0">
+                                <v-carousel-item
+                                  v-for="(item, index) in marketingReport.files"
+                                  :key="index"
+                                >
+                                  <v-img
+                                    :src="baseFILEURL+item.filename"
+                                    class="grey lighten-2"
+                                    style="width:100%; height:100%;"
+                                    v-if="isEmbeddableFile(item.filename)"
+                                  ></v-img>
                                   <v-btn
+                                    v-else
                                     dark
-                                    :href="'https://vispsites.websprix.com/api/getMarketFile/'+item.filename"
+                                    :href="baseFILEURL+item.filename"
                                     target="_blank"
                                   >
                                     {{item.filename}}
                                     <v-icon color="#fbe631">insert_drive_file</v-icon>
                                   </v-btn>
-                                </v-flex>
-                              </template>
+                                </v-carousel-item>
+                              </v-carousel>
                             </v-layout>
                           </v-flex>
                         </v-layout>
@@ -278,18 +286,20 @@
                   <v-flex>
                     <v-layout row wrap justify-start v-if="loggedInUser.organization !='EthioTel'">
                       <v-subheader>Attached Files</v-subheader>
-                      <template v-for="item in modalSite.files">
-                        <v-flex :key="item.file_id" md1 xs12>
-                          <v-btn
-                            dark
-                            :href="'https://vispsites.websprix.com/api/getStatusFile/'+item.filename"
-                            target="_blank"
-                          >
+                      <v-carousel v-if="modalSite.files.length > 0">
+                        <v-carousel-item v-for="(item, index) in modalSite.files" :key="index">
+                          <v-img
+                            :src="baseFILEURL+item.filename"
+                            class="grey lighten-2"
+                            style="width:100%; height:100%;"
+                            v-if="isEmbeddableFile(item.filename)"
+                          ></v-img>
+                          <v-btn v-else dark :href="baseFILEURL+item.filename" target="_blank">
                             {{item.filename}}
                             <v-icon color="#fbe631">insert_drive_file</v-icon>
                           </v-btn>
-                        </v-flex>
-                      </template>
+                        </v-carousel-item>
+                      </v-carousel>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -372,15 +382,20 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"])
   },
-  asyncData({ params }) {
+  async asyncData({ app, params, _ }) {
+    let { data } = await app.$axios.post("single_site/" + params.id);
+    let marketingReport = await app.$axios.post(
+      "get_market_analysis/" + data.name.split(" ").join("_")
+    );
     return {
       id: params.id,
-      site: {},
+      site: data,
       dialog: false,
       snackbar: false,
       snackbar_type: "primary",
       snaackbar_message: "",
       timeout: 3000,
+      baseFILEURL: "https://vispsites.websprix.com/",
       saveProgressHidden: true,
       comments: [],
       headers: [
@@ -395,8 +410,8 @@ export default {
         { text: "Created By", value: "username" },
         { text: "", value: "", sortable: false }
       ],
-      modalSite: {},
-      marketingReport: [],
+      modalSite: { files: [] },
+      marketingReport: marketingReport.data[0],
       items: [],
       commentForm: {
         comments: "",
@@ -405,16 +420,6 @@ export default {
     };
   },
   mounted() {
-    this.$axios.post("single_site/" + this.id).then(result => {
-      this.site = result.data[0];
-
-      this.$axios
-        .post("get_market_analysis/" + this.site.name.split(" ").join("_"))
-        .then(data => {
-          this.marketingReport = data.data[0];
-        });
-      // }
-    });
     this.$axios.post("site_status/" + this.id).then(result => {
       let temp_data = result.data;
       temp_data.sort((obj1, obj2) => {
@@ -434,6 +439,16 @@ export default {
     },
     calcTimeElapsed(siteinfo) {
       return moment(siteinfo.dateVal).format("LL");
+    },
+    getEmbeddableFiles(files) {
+      return files.filter(data => {
+        let ext = data.filename.split(".")[1];
+        return ["png", "jpg", "jpeg"].includes(ext);
+      });
+    },
+    isEmbeddableFile(value) {
+      let ext = value.split(".")[1];
+      return ["png", "jpg", "jpeg"].includes(ext);
     },
     async postComments(status) {
       try {

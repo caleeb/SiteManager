@@ -4,13 +4,8 @@
       <v-subheader>
         <span>All sites</span>
         <v-spacer></v-spacer>
-
         <v-flex xs12 sm4 d-flex v-if="loggedInUser.organization != 'EthioTel'">
-          <v-select
-            :items="selects"
-            label="Filter Sites"
-            v-model="selectedCategory"
-          ></v-select>
+          <v-select :items="selects" label="Filter Sites" v-model="selectedCategory"></v-select>
         </v-flex>
       </v-subheader>
       <v-data-table
@@ -23,53 +18,40 @@
       >
         <template v-slot:items="props">
           <tr>
-            <td style="max-width:150px;">{{ props.item.name }}</td>
-            <td class="text-xs-left" style="max-width:380px;">
-              {{ props.item.location }}
+            <td style="max-width:150px;">
+              {{ props.item.name }}
+              <v-btn small color="red darken-4" v-if="props.item.postponed==1">PostPoned</v-btn>
             </td>
+            <td class="text-xs-left" style="max-width:280px;">{{ props.item.location }}</td>
             <td
               class="text-xs-left font-weight-bold elevation-2"
               style="max-width:50px;"
               :class="getStatusColor(props.item.status)"
             >
               {{
-                props.item.is_dead == 0
-                  ? props.item.status + " - No Go"
-                  : props.item.status + " - Go" &&
-                    props.item.status == "Ethio Telecom Provision"
-                  ? "ET Provision In Progress"
-                  : props.item.status
+              props.item.is_dead == 0
+              ? props.item.status + " - No Go"
+              : props.item.status + " - Go" &&
+              props.item.status == "Ethio Telecom Provision"
+              ? "ET Provision In Progress"
+              : props.item.status
               }}
             </td>
-            <td class="text-xs-left" style="max-width:100px;">
-              {{ calcTimeElapsed(props.item) }}
-            </td>
+           
+            <td class="text-xs-left" style="max-width:100px;">{{ calcTimeElapsed(props.item) }}</td>
+             <td class="text-xs-left" style="max-width:70px;">{{props.item.username.username.split("@")[0]}}</td>
             <td class="text-xs-left">
               <v-layout row wrap justify-space-around class="mb-2">
-                <v-flex
-                  sm2
-                  xs12
-                  v-if="
-                    checkAuthorization(props.item) &&
-                      props.item.status != 'Site Activated'
-                  "
-                >
+                <v-flex sm2 xs12 v-if="buttonAuth(props.item, 'update')">
                   <v-tooltip slot="append" bottom>
-                    <v-icon
-                      small
-                      v-if="
-                        buttonAuth(props.item, 'update') &&
-                          props.item.is_dead == 1
-                      "
-                      slot="activator"
-                      @click="openDialog(props.item)"
-                      >update
+                    <v-icon small slot="activator" @click="openDialog(props.item)">
+                      update
                       <!-- <v-icon color="teal lighten-2" dark></v-icon> -->
                     </v-icon>
                     <span>Update Status</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex sm2 v-if="checkAuthorization(props.item)">
+                <v-flex sm2 v-if="buttonAuth(props.item,'edit_site')">
                   <v-tooltip slot="append" bottom>
                     <v-icon
                       small
@@ -77,7 +59,8 @@
                       @click="editSiteDialog(props.item)"
                       dark
                       color="orange darken-2"
-                      >edit
+                    >
+                      edit
                       <!-- <v-icon color="black darken-2"></v-icon> -->
                     </v-icon>
                     <span>Edit Site</span>
@@ -101,40 +84,46 @@
                       color="blue darken-2"
                       dark
                       @click="getRoute(props.item.site_id)"
-                      >info
+                    >
+                      info
                       <!-- <v-icon color="white"></v-icon> -->
                     </v-icon>
                     <span>Open Site</span>
                   </v-tooltip>
                 </v-flex>
-                <v-flex sm2 v-if="checkAuthorization(props.item)">
+                <v-flex sm2 v-if="buttonAuth(props.item, 'mark')">
                   <v-tooltip slot="append" bottom>
                     <v-icon
                       small
                       color="blue lighten-2"
                       slot="activator"
-                      v-if="buttonAuth(props.item, 'mark')"
                       @click="openDialog(props.item, true)"
-                      >widgets
+                    >
+                      widgets
                       <!-- <v-icon color="black"></v-icon> -->
                     </v-icon>
 
                     <span>Update Report</span>
                   </v-tooltip>
                 </v-flex>
-
-                <v-flex sm2 v-if="loggedInUser.organization != 'EthioTel'">
-                  <v-tooltip bottom slot="append">
-                    <a
+                <v-flex sm2 v-if="buttonAuth(props.item, 'add_mou')">
+                  <v-tooltip slot="append" bottom>
+                    <v-icon
+                      small
+                      color="blue lighten-2"
                       slot="activator"
-                      :href="'/siteReport/' + props.item.site_id"
-                    >
-                      <v-icon small dark>
-                        <!-- <v-icon color="yellow darken-2" dark></v-icon> -->
-                        assessment
-                      </v-icon>
-                    </a>
+                      @click="openMouDialog(props.item)"
+                    >satellite</v-icon>
 
+                    <span>Update MOU Status</span>
+                  </v-tooltip>
+                </v-flex>
+
+                <v-flex sm2 v-if="buttonAuth(props.item, 'view_report')">
+                  <v-tooltip bottom slot="append">
+                    <a slot="activator" :href="'/siteReport/' + props.item.site_id">
+                      <v-icon small dark>assessment</v-icon>
+                    </a>
                     <span>Site Report</span>
                   </v-tooltip>
                 </v-flex>
@@ -151,10 +140,7 @@
             <v-toolbar-side-icon>
               <v-icon @click="dialog = false" color="white">close</v-icon>
             </v-toolbar-side-icon>
-            <v-toolbar-title
-              class="white--text"
-              v-text="currentModalSite.name"
-            />
+            <v-toolbar-title class="white--text" v-text="currentModalSite.name" />
             <v-spacer />
             <v-toolbar-side-icon @click="submitFiles(currentModalSite)">
               <v-icon>save</v-icon>
@@ -175,11 +161,7 @@
                       <v-subheader>Status</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field
-                        solo
-                        disabled
-                        :value="siteStatusUpdateForm.nextStat"
-                      ></v-text-field>
+                      <v-text-field solo disabled :value="siteStatusUpdateForm.nextStat"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -187,10 +169,7 @@
                       <v-subheader>Status Update Date</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-date-picker
-                        reactive
-                        v-model="siteStatusUpdateForm.statusUpdateDate"
-                      ></v-date-picker>
+                      <v-date-picker reactive v-model="siteStatusUpdateForm.statusUpdateDate"></v-date-picker>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap class="mt-3">
@@ -215,9 +194,9 @@
                         <input
                           class="d-block"
                           type="file"
-                          @change="handleFileUploads()"
-                          ref="files"
-                          id="files"
+                          @change="handleSiteUpdateUploads()"
+                          ref="statFiles"
+                          id="statFiles"
                           multiple
                         />
                       </v-input>
@@ -240,9 +219,7 @@
               v-text="currentModalSite.name + '\t :- Marketing Analysis'"
             />
             <v-spacer />
-            <v-toolbar-side-icon
-              @click="submitMarketingFiles(currentModalSite)"
-            >
+            <v-toolbar-side-icon @click="submitMarketingFiles(currentModalSite)">
               <v-icon>save</v-icon>
             </v-toolbar-side-icon>
           </v-toolbar>
@@ -288,10 +265,7 @@
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field
-                        solo
-                        v-model="marketingForm.mobile"
-                      ></v-text-field>
+                      <v-text-field solo v-model="marketingForm.mobile"></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -333,7 +307,7 @@
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-layout row wrap>
+                  <!-- <v-layout row wrap>
                     <v-flex xs12 md6>
                       <v-subheader>No of Units</v-subheader>
                     </v-flex>
@@ -345,7 +319,7 @@
                         v-model="marketingForm.units"
                       ></v-text-field>
                     </v-flex>
-                  </v-layout>
+                  </v-layout> -->
                   <v-layout row wrap>
                     <v-flex xs12 md6>
                       <v-subheader>Average Rental</v-subheader>
@@ -372,11 +346,9 @@
                       ></v-checkbox>
                     </v-flex>
                   </v-layout>
-                  <v-layout row wrap>
+                  <!-- <v-layout row wrap>
                     <v-flex xs12 md6>
-                      <v-subheader
-                        >Suitability for FTTH(Rating 1 - 10)</v-subheader
-                      >
+                      <v-subheader>Suitability for FTTH(Rating 1 - 10)</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-text-field
@@ -386,12 +358,10 @@
                         v-model="marketingForm.ftth"
                       ></v-text-field>
                     </v-flex>
-                  </v-layout>
+                  </v-layout> -->
                   <v-layout row wrap>
                     <v-flex xs12 md6>
-                      <v-subheader
-                        >Average Density (Units per Square KM.)</v-subheader
-                      >
+                      <v-subheader>Average Area (per Square M.)</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-text-field
@@ -402,16 +372,12 @@
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-layout row wrap>
+                  <v-layout row wrap v-if="buttonAuth(marketingForm,'site_feasible')">
                     <v-flex xs12 md6>
                       <v-subheader>Is Site Feasible?</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
                       <v-checkbox
-                        v-if="
-                          loggedInUser.is_admin == 1 &&
-                            loggedInUser.role == 'Marketing'
-                        "
                         value="1"
                         v-model="marketingForm.is_feasible"
                       ></v-checkbox>
@@ -523,15 +489,27 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
-                  <v-flex xs12 md3>
+                  <v-flex xs12 md3 v-if="buttonAuth(site,'site_no_go')">
                     <v-subheader>is Site Ongoing</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-checkbox
-                      label
-                      value="1"
-                      v-model="site.is_dead"
-                    ></v-checkbox>
+                    <v-checkbox label value="1" v-model="site.is_dead"></v-checkbox>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap v-if="buttonAuth(site,'site_no_go')">
+                  <v-flex xs12 md3>
+                    <v-subheader>is Site Postponed</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-checkbox label value="1" v-model="site.postponed"></v-checkbox>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Fiber Installation Type</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-select :items="fiber_types" label="Fiber Type" v-model="site.fiber_type"></v-select>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -539,11 +517,7 @@
                     <v-subheader>Site Description</v-subheader>
                   </v-flex>
                   <v-flex xs12 md3>
-                    <v-textarea
-                      box
-                      v-model="site.description"
-                      label="Site status Description"
-                    ></v-textarea>
+                    <v-textarea box v-model="site.description" label="Site status Description"></v-textarea>
                   </v-flex>
                 </v-layout>
                 <v-layout row wrap>
@@ -572,13 +546,62 @@
         </v-card>
       </v-dialog>
       <!-- End of Update Site -->
+      <!-- Update Mou Files -->
+      <v-dialog v-model="mou_dialog" max-width="fit_content">
+        <v-card>
+          <v-card-text>
+            <v-form ref="mouDialogForm">
+              <v-layout column>
+                <v-layout row wrap>
+                  <v-flex xs12 md3>
+                    <v-subheader>Site Name</v-subheader>
+                  </v-flex>
+                  <v-flex xs12 md3>
+                    <v-text-field dark solo disabled :value="currentMouSite.name"></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex xs6 md3>
+                    <v-subheader>MOU Statu</v-subheader>
+                  </v-flex>
+                  <v-flex xs6 md3>
+                    <v-select
+                      :items="mou_status"
+                      label="MOU Status"
+                      required
+                      @change="MoustatusSelectionListener"
+                      v-model="currentMouSite.mou_status"
+                    ></v-select>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap v-if="currentMouSite.show_upload">
+                  <v-flex xs6 md3>
+                    <v-subheader>Choose Files</v-subheader>
+                  </v-flex>
+                  <v-flex xs6 md3>
+                    <v-input class="mt-2 elevation-2">
+                      <input
+                        class="d-block"
+                        type="file"
+                        @change="handleMouFileUploads()"
+                        ref="mou_files"
+                        id="files"
+                        multiple
+                      />
+                    </v-input>
+                  </v-flex>
+                </v-layout>
+              </v-layout>
+              <v-flex xs12 md3 class="ml-auto mr-auto">
+                <v-btn @click="submitMOUStatus">Update</v-btn>
+              </v-flex>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <!-- END of Mou Files -->
     </v-flex>
-    <v-snackbar
-      v-model="snackbar"
-      :color="snackbar_type"
-      :timeout="timeout"
-      :top="true"
-    >
+    <v-snackbar v-model="snackbar" :color="snackbar_type" :timeout="timeout" :top="true">
       {{ snaackbar_message }}
       <v-btn dark flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -598,40 +621,26 @@ export default {
         return this.items.filter(
           data =>
             data.status != "Site Identified" &&
-            data.status != "Site Activated" &&
+            data.status != "Ready For Service" &&
             data.is_dead == 1
         );
       if (this.selectedCategory == "All Sites") {
         return this.items.filter(
-          data => data.is_dead == 1 && data.status != "Site Activated"
+          data => data.is_dead == 1 && data.status != "Ready For Service"
         );
       } else if (this.selectedCategory == "No-Go Sites") {
-        return this.items.filter(
-          data => data.is_dead != 1 && data.status != "Site Activated"
+        let data = this.items.filter(
+           data => data.is_dead != 1 && data.status != "Ready For Service"
+
         );
-      } else if (this.selectedCategory == "Activated Sites") {
-        return this.items.filter(data => data.status == "Site Activated");
-      } else if (this.selectedCategory == "Survey Requested Sites") {
+        console.log(data);
+        return data;
+      }else if(this.selectedCategory == "Postponed Sites"){
+        return this.items.filter(data => data.postponed == 1 && data.status != "Ready For Service")  
+      }
+      else
         return this.items.filter(
-          data => data.status == "Site Survey Requested"
-        );
-      } else if (this.selectedCategory == "Payment Made Sites") {
-        return this.items.filter(data => data.status == "Site Payment Made");
-      } else if (this.selectedCategory == "Survey Completed Sites") {
-        return this.items.filter(
-          data => data.status == "Site Survey Completed"
-        );
-      } else if (this.selectedCategory == "EthioTel Provisioned Sites") {
-        return this.items.filter(
-          data => data.status == "Ethio Telecom Provision"
-        );
-      } else if (this.selectedCategory == "Configured Sites") {
-        return this.items.filter(data => data.status == "Site Configuration");
-      } else if (this.selectedCategory == "Identified Sites") {
-        return this.items.filter(data => data.status == "Site Identified");
-      } else
-        return this.items.filter(
-          data => data.status != "Site Activated" && data.is_dead == 1
+          data => data.status === this.selectedCategory && data.is_dead == 1
         );
     }
   },
@@ -646,22 +655,81 @@ export default {
         },
         { text: "Site Location", value: "location" },
         { text: "Recent Site Status", value: "stat_id" },
-        { text: "Time Elapsed", value: "", sortable: false }
+      
+        { text: "Time Elapsed", value: "", sortable: false },
+          { text: "Created By", value: "username" },
+
       ],
       pagination: {
         sortBy: "stat_id"
       },
       selects: [
-        "All Sites",
-        "Identified Sites",
-        "Activated Sites",
-        "No-Go Sites",
-        "Survey Requested Sites",
-        "Payment Made Sites",
-        "Survey Completed Sites",
-        "EthioTel Provisioned Sites",
-        "Configured Sites"
+        {
+          text: "All Sites",
+          value: "All Sites"
+        },
+        {
+          text: "Identified Sites",
+          value: "Site Identified"
+        },
+        {
+          text: "Ready For Service Sites",
+          value: "Ready For Service"
+        },
+        {
+          text: "No-Go Sites",
+          value: "No-Go Sites"
+        },
+        {
+          text: "Postponed Sites",
+          value: "Postponed Sites"
+        },
+        {
+          text: "Survey Requested Sites",
+          value: "Site Survey Requested"
+        },
+        {
+          text: "Ws Survey Completed Sites",
+          value: "Ws Survey Completion"
+        },
+        {
+          text: "Partner Survey Completed Sites",
+          value: "Partner Survey Completion"
+        },
+        {
+          text: "Last Mile Infra Ready Sites",
+          value: "Last Mile Infra Ready"
+        },
+        {
+          text: "Feeder Fiber Sites",
+          value: "Feeder Fiber"
+        },
+        {
+          text: "Distribution Fiber Sites",
+          value: "Distribution Fiber"
+        },
+        {
+          text: "Test Completed Sites",
+          value: "Testing"
+        },
+        {
+          text: "Payment Made Sites",
+          value: "Site Payment Made"
+        },
+        {
+          text: "Survey Completed Sites",
+          value: "Site Survey Completed"
+        },
+        {
+          text: "EthioTel Provisioned Sites",
+          value: "Ethio Telecom Provision"
+        },
+        {
+          text: "Configured Sites",
+          value: "Site Configuration"
+        }
       ],
+      fiber_types: ["Trenched", "Ducted", "Pole"],
       rows_per_page_items: [
         10,
         25,
@@ -670,6 +738,7 @@ export default {
       ],
       dialog: false,
       edit_Dialog: false,
+      mou_dialog: false,
       na: false,
       snackbar: false,
       snackbar_type: "primary",
@@ -678,7 +747,9 @@ export default {
       saveProgressHidden: true,
       items: [],
       files: "",
+      mou_files: "",
       siteStat: "",
+      mou_status: ["Signed", "Un-Signed", "Not Applicable"],
       selectedCategory: "All Sites",
       siteStatusUpdateFormRules: {
         descriptionRules: [
@@ -729,6 +800,7 @@ export default {
       },
       curMar: {},
       currentModalSite: {},
+      currentMouSite: { show_upload: false },
       site: {
         activation_date: null,
         created_at: "",
@@ -810,9 +882,45 @@ export default {
             .replace("ago", "");
           break;
 
-        case "Site Activated":
+        case "Ready For Service":
           return moment
             .duration(moment(siteinfo.activation_date).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Ws Survey Completion":
+          return moment
+            .duration(moment(siteinfo.ws_survey).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Partner Survey Completion":
+          return moment
+            .duration(moment(siteinfo.partner_survey).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Last Mile Infra Ready":
+          return moment
+            .duration(moment(siteinfo.trench_date).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Feeder Fiber":
+          return moment
+            .duration(moment(siteinfo.fiber_inst_date).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Distribution Fiber":
+          return moment
+            .duration(moment(siteinfo.dist_date).diff(moment(new Date())))
+            .humanize(true)
+            .replace("ago", "");
+          break;
+        case "Testing":
+          return moment
+            .duration(moment(siteinfo.fiber_test_date).diff(moment(new Date())))
             .humanize(true)
             .replace("ago", "");
           break;
@@ -824,10 +932,32 @@ export default {
     getRoute(siteId) {
       this.$router.push("site/" + siteId);
     },
-    getNextStatus(siteStatus) {
-      switch (siteStatus) {
+    getNextStatus(site) {
+      switch (site.status) {
         case "Site Identified":
-          this.siteStatusUpdateForm.nextStat = "Site Survey Requested";
+          if (site.age == false)
+            this.siteStatusUpdateForm.nextStat = "Site Survey Requested";
+          else {
+            this.siteStatusUpdateForm.nextStat = "Ws Survey Completion";
+          }
+          break;
+        case "Site Feasible":
+          this.siteStatusUpdateForm.nextStat = "Ws Survey Completion";
+          break;
+        case "Ws Survey Completion":
+          this.siteStatusUpdateForm.nextStat = "Partner Survey Completion";
+          break;
+        case "Partner Survey Completion":
+          this.siteStatusUpdateForm.nextStat = "Last Mile Infra Ready";
+          break;
+        case "Last Mile Infra Ready":
+          this.siteStatusUpdateForm.nextStat = "Feeder Fiber";
+          break;
+        case "Feeder Fiber":
+          this.siteStatusUpdateForm.nextStat = "Distribution Fiber";
+          break;
+        case "Distribution Fiber":
+          this.siteStatusUpdateForm.nextStat = "Testing";
           break;
         case "Site Survey Requested":
           this.siteStatusUpdateForm.nextStat = "Site Survey Completed";
@@ -841,10 +971,11 @@ export default {
         case "Ethio Telecom Provision":
           this.siteStatusUpdateForm.nextStat = "Site Configuration";
           break;
+        case "Testing":
         case "Site Configuration":
-          this.siteStatusUpdateForm.nextStat = "Site Activated";
+          this.siteStatusUpdateForm.nextStat = "Ready For Service";
           break;
-        case "Site Activated":
+        case "Ready For Service":
           this.siteStatusUpdateForm.nextStat = "";
           break;
         default:
@@ -895,6 +1026,12 @@ export default {
     handleFileUploads() {
       this.files = this.$refs.files.files;
     },
+    handleMouFileUploads() {
+      this.mou_files = this.$refs.mou_files.files;
+    },
+    handleSiteUpdateUploads() {
+      this.files = this.$refs.statFiles.files;
+    },
     async submitMarketingFiles(site) {
       if (this.$refs.marketingForm.validate()) {
         let formData = new FormData();
@@ -902,7 +1039,7 @@ export default {
         formData.append("name", site.name);
         formData.append("potential", this.marketingForm.potential);
         formData.append("blocks", this.marketingForm.blocks);
-        formData.append("units", this.marketingForm.units);
+        formData.append("units", 0);
         formData.append("business", this.marketingForm.business);
         formData.append("mobile", this.marketingForm.mobile);
         formData.append("density", this.marketingForm.density);
@@ -910,7 +1047,7 @@ export default {
         formData.append("duct", this.marketingForm.duct == true ? 1 : 0);
 
         formData.append("occupancy", this.marketingForm.occupancy);
-        formData.append("ftth", this.marketingForm.ftth);
+        formData.append("ftth", 10);
         formData.append(
           "is_feasible",
           this.marketingForm.is_feasible == true ? 1 : 0
@@ -963,7 +1100,7 @@ export default {
         this.marketingForm.occupancy = data[0].occupancy;
       }
       if (site.market_analysis_done != 0) {
-        this.getNextStatus(site.status);
+        this.getNextStatus(site);
         this.dialog = true;
       }
       this.dialog = true;
@@ -1000,48 +1137,128 @@ export default {
       return authorizationResult;
     },
     buttonAuth(site, button_type = "update") {
-      let auth_result = true;
-      if (this.loggedInUser.role == "admin") {
-        switch (button_type) {
-          case "update":
-            site.market_analysis_done != 1 || site.is_dead == 0
-              ? (auth_result = false)
-              : (auth_result = true);
-            break;
-          case "mark":
-            auth_result = true;
-            break;
-          default:
-            auth_result = false;
-            break;
-        }
-      } else if (
-        this.loggedInUser.role == "Marketing" ||
-        this.userGroups.includes("marketing")
-      ) {
-        switch (button_type) {
-          case "update":
-            auth_result = false;
-            break;
-          case "mark":
-            auth_result = true;
-            break;
-          default:
-            auth_result = false;
-            break;
-        }
-      } else if (
-        this.loggedInUser.role == "Deployment" ||
-        this.userGroups.includes("deployment")
-      ) {
-        site.market_analysis_done != 1
-          ? (auth_result = false)
-          : (auth_result = true);
-      }
-      else{
-        auth_result = false;
+      let auth_result = false;
+      if (this.loggedInUser.organization === "EthioTel") return false;
+      switch (this.loggedInUser.role) {
+        case "admin":
+          switch (button_type) {
+            case "update":
+              auth_result = !(
+                site.market_analysis_done != 1 ||
+                site.is_dead == 0 ||
+                site.postponed == 1
+              );
+              break;
+            case "mark":
+              auth_result = true;
+              break;
+            default:
+              auth_result = true;
+          }
+          break;
+        default:
+          switch (button_type) {
+            case "update":
+              let nextStatus = this.getNextStatus(site.status);
+              auth_result = this.userGroups.includes(this.getStatusGroups(nextStatus))
+              break;
+            case "mark":
+              auth_result = this.userGroups.includes("update_marketing_status");
+              break;
+            case "edit_stie":
+              auth_result = this.userGroups.includes("edit_site");
+              break;
+            case "add_site":
+              auth_result = this.userGroups.includes("add_site");
+              break;
+            case "update_feasibility":
+              auth_result = this.userGroups.includes("update_feasibility");
+              break;
+            case "add_mou":
+              auth_result = this.userGroups.includes("add_mou");
+              break;
+            case "site_no_go":
+              auth_result = this.userGroups.includes("site_no_go");
+              break;
+            case "site_feasible":
+              auth_result = this.userGroups.includes("update_feasibility");
+              break;
+            case "view_report":
+              auth_result = true;
+            default:
+              auth_result = true;
+              break;
+          }
       }
       return auth_result;
+      // if (this.loggedInUser.role == "admin") {
+      //   switch (button_type) {
+      //     case "update":
+      //       site.market_analysis_done != 1 || site.is_dead == 0 || site.postponed == 1
+      //         ? (auth_result = false)
+      //         : (auth_result = true);
+      //       break;
+      //     case "mark":
+      //       auth_result = true;
+      //       break;
+      //     default:
+      //       auth_result = true;
+      //       break;
+      //   }
+      // } else if (
+      //   this.userGroups.includes("marketing")
+      // ) {
+      //   switch (button_type) {
+      //     case "update":
+      //       auth_result = false;
+      //       break;
+      //     case "mark":
+      //       auth_result = true;
+      //       break;
+      //     default:
+      //       auth_result = false;
+      //       break;
+      //   }
+      // } else if (
+      //   this.loggedInUser.role == "Deployment" ||
+      //   this.userGroups.includes("deployment")
+      // ) {
+      //   site.market_analysis_done != 1
+      //     ? (auth_result = false)
+      //     : (auth_result = true);
+      // } else {
+      //   auth_result = false;
+      // }
+    },
+    getStatusGroups(status){
+      let auth_group = "";
+      switch (status) {
+        case "Ws Survey Completion":
+          auth_group = "ws_survey";
+          break;
+        case "Partner Survey Completion":
+          auth_group = "partner_survey";
+          break;
+        case "Last Mile Infra Ready":
+          auth_group = "infra_ready";
+          break;
+        case "Feeder Fiber":
+          auth_group = "feeder_fiber";
+          break;
+        case "Distribution Fiber":
+          auth_group = "distribution_fiber";
+          break;
+        case "Testing":
+          auth_group = "test";
+          break;
+        case "Ready For Service":
+          auth_group = "site_activate";
+          break;
+        default:
+          auth_group = "";
+          break;
+      }
+    return auth_group;
     },
     getStatusColor(siteStatus) {
       let status_color = "pink darken-2";
@@ -1064,7 +1281,7 @@ export default {
         case "Site Configuration":
           status_color = "blue-grey darken-2";
           break;
-        case "Site Activated":
+        case "Ready For Service":
           status_color = "teal darken-2";
           break;
         default:
@@ -1076,6 +1293,14 @@ export default {
       this.site = site;
       this.edit_Dialog = true;
     },
+    openMouDialog(site) {
+      this.currentMouSite = { mou_staus: "", ...site };
+      this.mou_dialog = true;
+    },
+    closeMouDialog(site) {
+      this.currentMouSite = {};
+      this.mou_dialog = false;
+    },
     async submitEditedFiles() {
       if (this.$refs.editSite.validate()) {
         // console.log(this.site);
@@ -1085,6 +1310,8 @@ export default {
         formdata.append("latitude", this.site.latitude);
         formdata.append("longitude", this.site.longitude);
         formdata.append("is_dead", this.site.is_dead == true ? 1 : 0);
+        formdata.append("postponed", this.site.postponed == true ? 1 : 0);
+        formdata.append("fiber_type", this.site.fiber_type);
         formdata.append("description", this.site.description);
         for (var i = 0; i < this.files.length; i++) {
           let file = this.files[i];
@@ -1111,6 +1338,47 @@ export default {
           this.snackbar = true;
           // console.log(e);
         }
+      }
+    },
+    async submitMOUStatus() {
+      if (this.$refs.mouDialogForm.validate()) {
+        let formdata = new FormData();
+        formdata.append("mou_status", this.currentMouSite.mou_status);
+        for (var i = 0; i < this.mou_files.length; i++) {
+          let file = this.mou_files[i];
+          formdata.append("files[" + i + "]", file);
+          try {
+            await this.$axios.post(
+              "/update_mou/" + this.currentMouSite.site_id,
+              formdata,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data"
+                }
+              }
+            );
+            this.snaackbar_message = "Site Updated Succesfully";
+            this.snackbar_type = "success";
+            this.snackbar = true;
+            this.mou_dialog = false;
+          } catch (error) {
+            this.snaackbar_message = "There was some error";
+            this.snackbar_type = "error";
+            this.snackbar = true;
+          }
+        }
+      }
+    },
+    async MoustatusSelectionListener(value) {
+      console.log(value);
+      switch (value) {
+        case "Signed":
+          this.currentMouSite.show_upload = true;
+          break;
+        default:
+          this.currentMouSite.show_upload = false;
+          this.mou_files = [];
+          break;
       }
     }
   }

@@ -8,10 +8,10 @@
             <v-icon color="#fbe631">home</v-icon>
           </v-btn>
         </v-list-tile>
-        <v-list-tile>
-          <v-dialog v-model="dialog" fullscreen>
+        <v-list-tile v-if="addSiteAuth()">
+          <v-dialog v-model="dialog" fullscreen >
             <template v-slot:activator="{ on }">
-              <v-btn v-on="on" flat v-if="isAuthenticated && loggedInUser.organization=='Websprix'">
+              <v-btn v-on="on" flat >
                 newsite
                 <v-icon color="#fbe631">add</v-icon>
               </v-btn>
@@ -224,7 +224,11 @@
           home
           <v-icon color="#fbe631">home</v-icon>
         </v-btn>
-        <v-dialog v-model="dialog" fullscreen>
+         <!-- <v-btn flat v-if="isAuthenticated" to="/summary">
+          Summary
+          <v-icon color="#fbe631">add</v-icon>
+        </v-btn> -->
+        <v-dialog v-model="dialog" fullscreen v-if="addSiteAuth()">
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" flat v-if="isAuthenticated && loggedInUser.organization=='Websprix'">
               newsite
@@ -361,6 +365,10 @@
             </v-layout>
           </v-card>
         </v-dialog>
+         <v-btn flat v-if="isAuthenticated" to="/summary">
+          Summary
+          <v-icon color="#fbe631">person</v-icon>
+        </v-btn>
         <v-btn flat v-if="isAuthenticated" @click="logout">
           Signout
           <v-icon color="#fbe631">person</v-icon>
@@ -404,7 +412,7 @@ import { async } from "q";
 
 export default {
   computed: {
-    ...mapGetters(["loggedInUser", "isAuthenticated"])
+    ...mapGetters(["loggedInUser", "isAuthenticated","userGroups"])
   },
   data() {
     return {
@@ -456,6 +464,9 @@ export default {
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
+    },
+    addSiteAuth(){
+      return (this.isAuthenticated) && (this.loggedInUser.role === "admin" || this.userGroups.includes("add_site"));
     },
     openNotDiag() {
       this.dialog2 = true;
