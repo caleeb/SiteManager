@@ -315,10 +315,16 @@
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                      <v-text-field
+                       <v-select
+                            :items="mob_selects"
+                            label="Mobile Connection"
+                             v-model="marketingForm.mobile"
+                          >
+                        </v-select>
+                      <!-- <v-text-field
                         solo
                         v-model="marketingForm.mobile"
-                      ></v-text-field>
+                      ></v-text-field> -->
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -845,6 +851,7 @@ export default {
           value: "Site Configuration"
         }
       ],
+      mob_selects: ['Very Poor', 'Poor', 'Medium', 'Good', 'Very Good'],
       fiber_types: ["Trenched", "Ducted", "Pole"],
       rows_per_page_items: [
         25,

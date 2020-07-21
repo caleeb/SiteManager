@@ -169,6 +169,28 @@
         </v-flex>
       </v-layout>
     </v-flex>
+    <!-- <v-flex align-start>
+      <v-subheader class="">
+        <span
+          style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+        >
+          Summary based on Status - Graphical Summary
+        </span>
+      </v-subheader>
+      <v-layout row wrap>
+        <v-flex md4 >
+          <v-card
+            class="px-2 elevation-5 mr-2 mt-2"
+            flat
+            style="border-radius: 10px; background-color: #eeeeee"
+          >
+            <div class="container">
+              <LineChart :chartdata="report_data[0]" :options="options" />
+            </div>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-flex> -->
     <v-flex align-start>
       <v-subheader class="">
         <span
@@ -286,24 +308,38 @@
 
 <script>
 import { mapGetters } from "vuex";
+// import LineChart from "@/components/chart.vue";
 
 export default {
+  // name: "LineChartContainer",
   layout: "site_manager_layout",
   middleware: "authenticated",
+  // components: {
+  //   LineChart
+  // },
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser", "userGroups"])
   },
+
   async asyncData({ app, _, __ }) {
     let { data } = await app.$axios.post("report");
     let x = await app.$axios.post("overall");
     let y = await app.$axios.post("week");
     console.log(y.data);
     return {
+      // options: {
+      //   responsive: true,
+      //   maintainAspectRatio: false
+      // },
+
       baseFILEURL: "https://vispsites.websprix.com/",
       report_data: data,
       overall: x.data[0],
       week: y.data
     };
+  },
+  mounted() {
+    // this.renderChart(this.report_data[0], this.options);
   }
 };
 </script>
