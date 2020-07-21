@@ -723,7 +723,14 @@ export default {
         return this.items.filter(
           data => data.is_dead == 1 && data.status != "Ready For Service"
         );
-      } else if (this.selectedCategory == "No-Go Sites") {
+      
+      } 
+      else if (this.selectedCategory == "My Sites") {
+        return this.items.filter(
+          data => data.is_dead == 1 && data.username.username == this.loggedInUser.username
+        );
+      }
+      else if (this.selectedCategory == "No-Go Sites") {
         let data = this.items.filter(
           data => data.is_dead != 1 && data.status != "Ready For Service"
         );
@@ -769,6 +776,10 @@ export default {
         sortBy: "stat_id"
       },
       selects: [
+        {
+          text: "My Sites",
+          value: "My Sites"
+        },
         {
           text: "All Sites",
           value: "All Sites"
