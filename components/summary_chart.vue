@@ -24,13 +24,13 @@ export default {
       .getContext("2d")
       .createLinearGradient(0, 0, 0, 250);
 
-    this.gradient.addColorStop(0, "rgba(25, 25,0, 0.5)");
-    this.gradient.addColorStop(0.5, "rgba(56, 25, 0, 1.25)");
-    this.gradient.addColorStop(1, "rgba(56, 0, 25, .8)");
+    this.gradient.addColorStop(0, "rgba(255, 212, 0, 0.3)");
+    this.gradient.addColorStop(0.5, "rgba(255, 212, 0, 1.25)");
+    this.gradient.addColorStop(1, "rgba(0, 0, 10, .8)");
 
-    this.gradient2.addColorStop(0, "rgba(0, 23, 25, 0.9)");
-    this.gradient2.addColorStop(0.5, "rgba(0, 21, 20, 0.25)");
-    this.gradient2.addColorStop(1, "rgba(0, 11, 15, 0)");
+    this.gradient2.addColorStop(0, "rgba(0, 5, 5, 0.9)");
+    this.gradient2.addColorStop(0.5, "rgba(0, 12, 50, 0.25)");
+    this.gradient2.addColorStop(1, "rgba(0, 21, 15, 0)");
     this.renderChart({
       labels: this.labels,
       datasets: [

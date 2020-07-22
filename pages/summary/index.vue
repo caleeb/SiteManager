@@ -86,14 +86,14 @@
                       color: #fbe631 !important;
                      "
               >
-                {{ overall.Business + "%" }}
+                {{ Number(overall.Business).toPrecision(4) + "%" }}
               </h1>
             </v-card-title>
           </v-card>
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-flex align-start>
+    <!-- <v-flex align-start>
       <v-subheader class="">
         <span
           style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
@@ -135,21 +135,7 @@
                     >
                       {{ item.location }}
                     </div>
-                    <!-- <div
-                      style=" 
-                      display: flex;
-                      align-items: center;
-                      margin-top: 1px;
-                      font-size: 16px !important;
-                      font-family: Ubuntu !important;
-                      color: #FFF !important;
-                     "
-                    >
-                      <v-btn small dark outline round>Site Type</v-btn>
-                      <span>
-                        {{ " - " + item.site_type }}
-                      </span>
-                    </div> -->
+                 
                   </div>
                 </v-card-title>
               </v-flex>
@@ -169,138 +155,401 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <!-- <v-flex align-start>
+    -->
+    <v-flex align-start mt-2>
       <v-subheader class="">
         <span
-          style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+          style="font-size: 25px; 
+          font-family: Ubuntu !important; font-weight: 1000 !important;"
         >
-          Summary based on Status - Graphical Summary
+          Summary of The Last 7 Days
         </span>
       </v-subheader>
       <v-layout row wrap>
-        <v-flex md4 >
+        <v-flex md4>
+          <v-layout row wrap>
+            <v-flex md12>
+              <v-card
+                height="145"
+                class="mr-1"
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Identified Sites
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ siteArray[3] }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md12>
+              <v-card
+                height="145"
+                class="mr-1 mt-1"
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Total No. of Customers
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ ident.Customers }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md12>
+              <v-card
+                height="145"
+                class="mr-1 mt-1"
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Business Units
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ Number(ident.Business).toPrecision(4) + "%" }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex md4>
           <v-card
-            class="px-2 elevation-5 mr-2 mt-2"
-            flat
-            style="border-radius: 10px; background-color: #eeeeee"
+            dark
+            height="100%"
+            class="mr-1 elevation-20"
+            style="border-radius : 20px !important;"
           >
-            <div class="container">
-              <LineChart :chartdata="report_data[0]" :options="options" />
+            <v-toolbar height="40" color="#fbe631" dark>
+              <v-toolbar-title
+                style="color: black; font-size: 15px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+                >Identified Sites - Last 7 Days</v-toolbar-title
+              >
+
+              <v-spacer></v-spacer>
+
+              <v-btn icon>
+                <v-icon color="black" to="/">link</v-icon>
+              </v-btn>
+            </v-toolbar>
+
+            <v-list two-line>
+              <template v-for="(item, index) in week.slice(0, 4)">
+                <v-list-tile avatar tile dark :key="index">
+                  <v-list-tile-avatar>
+                    <img
+                      :src="
+                        item.files != null
+                          ? baseFILEURL + item.files[0].filename
+                          : baseFILEURL + 'ws.png'
+                      "
+                    />
+                  </v-list-tile-avatar>
+
+                  <v-list-tile-content>
+                    <v-list-tile-title
+                      class="lnash"
+                      v-html="item.name"
+                    ></v-list-tile-title>
+                    <v-list-tile-sub-title
+                      class="xlnash"
+                      v-html="item.location"
+                    ></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </template>
+            </v-list>
+            <v-card-actions class="justify-start">
+              <div class="text-xs-center">
+                <v-btn round color="#fbe631">
+                  <span class="black--text">Go to Sites</span>
+                  <v-icon right color="black">cloud_upload</v-icon>
+                </v-btn>
+              </div>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+        <v-flex md4>
+          <v-card height="100%" style="border-radius : 20px !important;">
+            <v-toolbar height="40" color="#fbe631" dark>
+              <v-toolbar-title
+                style="color: black; font-size: 15px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+              >
+                Site Identification Projections - [Over The Last 30
+                Days]</v-toolbar-title
+              >
+
+              <v-spacer></v-spacer>
+
+              <v-btn icon>
+                <v-icon dark to="/">link</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <div class="Chart__list">
+              <div class="Chart">
+                <LineC
+                  v-if="loaded"
+                  :siteArray="siteArray"
+                  :labels="labels"
+                  :siteName="'This Month'"
+                ></LineC>
+              </div>
             </div>
           </v-card>
         </v-flex>
       </v-layout>
-    </v-flex> -->
-    <v-flex align-start>
+      <!-- </v-container> -->
+    </v-flex>
+    <hr class="mt-2 mb-2" style="border-color: #fbe631 !important;" />
+    <v-flex align-start mt-2>
       <v-subheader class="">
         <span
-          style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+          style="font-size: 25px; 
+          font-family: Ubuntu !important; font-weight: 1000 !important;"
         >
-          Summary based on Status
+          Overall Summary based on Status
         </span>
       </v-subheader>
-      <v-layout row wrap align-space-between>
-        <template v-for="(item, index) in report_data">
-          <v-flex :key="index" md4>
-            <v-card
-              class="px-2 elevation-5 mr-2 mt-2"
-              flat
-              style="border-radius: 20px; background-color: #fff"
-            >
-              <v-toolbar flat height="30px" dark>
-                <v-toolbar-title class="nash black--text">{{
-                  item.status
-                }}</v-toolbar-title>
-              </v-toolbar>
-              <v-layout row wrap>
-                <v-flex mr-2 xs6 md3 mt-2 mb-2>
-                  <span
-                    depressed
-                    small
-                    class="nash2 black--text"
-                    style="color: #fbe631;font-weight: 1000 !important;"
-                  >
-                    Total No. of Potential Customers
-                  </span>
-                  <!-- <v-subheader>{{item.status}}</v-subheader> -->
-                </v-flex>
-                <v-flex xs12 md7 mt-2 mb-2>
-                  <v-text-field
-                    style="min-height: 35px !important; "
-                    single-line
-                    solo
-                    dark
-                    disabled
-                    :value="item.Customers"
-                  ></v-text-field
-                ></v-flex>
-                <v-flex mr-2 xs6 md3 mt-2 mb-2>
-                  <span
-                    depressed
-                    small
-                    class="nash2 black--text"
-                    style="font-weight: 1000 !important;"
-                  >
-                    Total No. of Blocks
-                  </span>
-                </v-flex>
-                <v-flex xs12 md7 mt-1 mb-1>
-                  <v-text-field
-                    style="min-height: 35px !important; "
-                    single-line
-                    solo
-                    dark
-                    disabled
-                    :value="item.Blocks"
-                  ></v-text-field
-                ></v-flex>
-                <v-flex mr-2 xs6 md3 mt-2 mb-2>
-                  <span
-                    depressed
-                    small
-                    class="nash2 black--text"
-                    style="font-weight: 1000 !important;"
-                  >
-                    Avg. Percentage of Business Units
-                  </span>
-                </v-flex>
-                <v-flex xs12 md7 mt-2 mb-2>
-                  <v-text-field
-                    style="min-height: 35px !important; "
-                    single-line
-                    solo
-                    dark
-                    disabled
-                    :value="item.Business"
-                  ></v-text-field
-                ></v-flex>
+      <v-layout justify-center row wrap>
+        <v-flex md4>
+          <v-select
+            :items="selects"
+            label="Filter Sites"
+            v-model="selectedCat"
+          ></v-select>
+        </v-flex>
+      </v-layout>
 
-                <v-flex mr-2 xs6 md3 mt-2 mb-2>
-                  <span
-                    depressed
-                    small
-                    class="nash2 black--text"
-                    style="font-weight: 1000 !important;"
+      <v-layout row wrap>
+        <template v-for="(item, index) in filteredItems">
+          <v-layout row wrap :key="index">
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Status Name
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 34px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
                   >
+                    {{ item.status }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    No. of Potential Customers
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ item.Customers }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Total No. of Blocks
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ item.Blocks }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Avg. Percentage of Business Units
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ Number(item.Business).toPrecision(4) + " %" }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
                     Avg. Occupancy Rate
-                  </span>
-                </v-flex>
-                <v-flex mr-2 xs12 md7 mt-2 mb-2>
-                  <v-text-field
-                    style="min-height: 35px !important; "
-                    single-line
-                    solo
-                    dark
-                    disabled
-                    :value="item.Occupancy"
-                  ></v-text-field
-                ></v-flex>
-              </v-layout>
-            </v-card>
-          </v-flex>
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ Number(item.Occupancy).toPrecision(4) + " %" }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+            <v-flex md4>
+              <v-card
+                height="180"
+                class="mr-1 mt-2"
+                flat
+                style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
+              >
+                <v-card-title primary-title class="cent">
+                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                    Total Number of Sites
+                  </h2>
+                  <h1
+                    mt-2
+                    class="headline nash-2"
+                    style=" 
+                      margin-top: 8px;
+                      font-size: 54px !important;
+                      font-family: Ubuntu !important;
+                      color: #fbe631 !important;
+                     "
+                  >
+                    {{ item.count }}
+                  </h1>
+                </v-card-title>
+              </v-card>
+            </v-flex>
+          </v-layout>
+          <!-- <v-layout mt-2 row wrap :key="index + 1">
+            <v-flex md4> </v-flex>
+            <v-flex md6>
+              <v-card height="100%" style="border-radius : 20px !important;">
+                <v-toolbar height="40" color="#fbe631" dark>
+                  <v-toolbar-title
+                    style="color: black; font-size: 15px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+                  >
+                    Site Identification Projections - [Overall]</v-toolbar-title
+                  >
+
+                  <v-spacer></v-spacer>
+
+                  <v-btn icon>
+                    <v-icon color="black" to="/">link</v-icon>
+                  </v-btn>
+                </v-toolbar>
+                <div class="Chart__list">
+                  <div class="Chart">
+                    <LineC
+                      v-if="loaded"
+                      :siteArray="by_status"
+                      :labels="by_label"
+                      :siteName="'Overall'"
+                    ></LineC>
+                  </div>
+                </div>
+              </v-card>
+            </v-flex>
+          </v-layout> -->
         </template>
       </v-layout>
+      <v-divider></v-divider>
+      <hr class="mt-4" style="border-color: #fbe631 !important;" />
+
+      <hr class="mt-4 mb-2" style="border-color: #fbe631 !important;" />
     </v-flex>
+
     <!-- </v-card> -->
     <!-- </v-flex> -->
   </v-layout>
@@ -308,24 +557,59 @@
 
 <script>
 import { mapGetters } from "vuex";
-// import LineChart from "@/components/chart.vue";
+import LineChart from "@/components/spark.vue";
+import LineC from "@/components/summary_chart.vue";
 
 export default {
   // name: "LineChartContainer",
   layout: "site_manager_layout",
   middleware: "authenticated",
-  // components: {
-  //   LineChart
-  // },
+  components: {
+    LineChart,
+    LineC
+  },
   computed: {
-    ...mapGetters(["isAuthenticated", "loggedInUser", "userGroups"])
+    ...mapGetters(["isAuthenticated", "loggedInUser", "userGroups"]),
+    filteredItems() {
+      return this.report_data.filter(data => data.status === this.selectedCat);
+    }
   },
 
   async asyncData({ app, _, __ }) {
     let { data } = await app.$axios.post("report");
     let x = await app.$axios.post("overall");
     let y = await app.$axios.post("week");
-    console.log(y.data);
+    let z = await app.$axios.post("countweek");
+    let r = await app.$axios.post("this_week");
+
+    let arr = z.data;
+    let array = [];
+    let identified = r.data;
+
+    let stats = [];
+    for (var i = 0; i < arr.length; i++) {
+      array.push(arr[i]);
+    }
+
+    let values = Object.keys(data[0]).map(function(key) {
+      return data[0][key];
+    });
+    let byStat = [];
+    console.log(values);
+    for (var i = 1; i < values.length; i++) {
+      byStat.push(values[i]);
+    }
+
+    // console.log(this.selectedCat);
+
+    data.forEach(function(x) {
+      stats.push(x.status);
+    });
+
+    // this.selects = stats;
+
+    array = array.reverse();
+    console.log(byStat);
     return {
       // options: {
       //   responsive: true,
@@ -333,9 +617,23 @@ export default {
       // },
 
       baseFILEURL: "https://vispsites.websprix.com/",
+      labels: ["4 Weeks Ago", "3 Weeks Ago", "2 Weeks Ago", "A Week Ago"],
+      loaded: true,
+      siteArray: array,
       report_data: data,
       overall: x.data[0],
-      week: y.data
+      ident: identified[0],
+      week: y.data,
+      by_status: byStat,
+      selects: stats,
+      by_label: [
+        "Site Count",
+        "No. of Potential Customers",
+        "No. of Blocks",
+        "% of Business Units",
+        "Occupancy Rate"
+      ],
+      selectedCat: "Site Identified"
     };
   },
   mounted() {
@@ -357,6 +655,17 @@ export default {
   font-family: Ubuntu !important;
   background-color: #ffffff !important;
 }
+.lnash {
+  font-family: Ubuntu !important;
+  font-size: 15px !important;
+  color: #fbe631 !important;
+  font-weight: 1000;
+}
+.xlnash {
+  font-family: Ubuntu !important;
+  font-size: 12px !important;
+  color: #fbe631 !important;
+}
 .cent {
   display: flex;
   flex-direction: column;
@@ -374,5 +683,11 @@ export default {
 .one-line {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.Chart {
+  background: #f7f7f7;
+  border-radius: 15px;
+  box-shadow: 0px 2px 15px rgba(2, 5, 25, 0.27);
+  height: 100% !important;
 }
 </style>

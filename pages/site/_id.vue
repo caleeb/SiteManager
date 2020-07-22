@@ -54,7 +54,23 @@
                           :src="baseFILEURL + item.filename"
                           class="grey lighten-2"
                           v-if="isEmbeddableFile(item.filename)"
-                        ></v-img>
+                        >
+                          <v-fab-transition>
+                            <v-btn
+                              style="margin-top: 30px;"
+                              color="#FBE631"
+                              fab
+                              dark
+                              small
+                              absolute
+                              top
+                              right
+                              @click="deleteImage(item.file_id)"
+                            >
+                              <v-icon color="black">close</v-icon>
+                            </v-btn>
+                          </v-fab-transition>
+                        </v-img>
 
                         <v-btn
                           v-else
@@ -668,6 +684,22 @@ export default {
         flagged: true
       };
       this.dialog = false;
+    },
+    async deleteImage(file_id){
+      try {
+          await this.$axios.post("/delete_image/" + file_id);
+          this.saveProgressHidden = true;
+          this.snaackbar_message = "Image Deleted Succesfully";
+          this.snackbar_type = "success";
+          this.snackbar = true;
+          this.dialog = false;
+      } catch (e) {
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Oops there was some error";
+        this.snackbar_type = "error";
+        this.snackbar = true;
+      }
+
     },
     async openModal(site, siteId, status) {
       let { data } = await this.$axios.post(
