@@ -146,8 +146,8 @@
                             <input
                               class="d-block"
                               type="file"
-                              @change="handleFileUploads()"
-                              ref="files"
+                              @change="drawerFileUploads()"
+                              ref="drawerFiles"
                               id="files"
                               multiple
                             />
@@ -385,7 +385,7 @@
                             class="d-block"
                             type="file"
                             @change="handleFileUploads()"
-                            ref="files"
+                            ref="siteFormFiles"
                             id="files"
                             multiple
                           />
@@ -575,7 +575,10 @@ export default {
       }
     },
     handleFileUploads() {
-      this.siteform.files = this.$refs.files.files;
+      this.siteform.files = this.$refs.siteFormFiles.files;
+    },
+    drawerFileUploads() {
+      this.siteform.files = this.$refs.drawerFiles.files;
     }
   }
 };

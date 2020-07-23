@@ -170,7 +170,7 @@
           <v-layout row wrap>
             <v-flex md12>
               <v-card
-                height="145"
+                height="151"
                 class="mr-1"
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
@@ -195,7 +195,7 @@
             </v-flex>
             <v-flex md12>
               <v-card
-                height="145"
+                height="151"
                 class="mr-1 mt-1"
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
@@ -220,7 +220,7 @@
             </v-flex>
             <v-flex md12>
               <v-card
-                height="145"
+                height="151"
                 class="mr-1 mt-1"
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
