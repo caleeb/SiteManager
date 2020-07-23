@@ -293,7 +293,7 @@
             </v-list>
             <v-card-actions class="justify-start">
               <div class="text-xs-center">
-                <v-btn round color="#fbe631">
+                <v-btn to="/" round color="#fbe631">
                   <span class="black--text">Go to Sites</span>
                   <v-icon right color="black">cloud_upload</v-icon>
                 </v-btn>
