@@ -315,12 +315,12 @@
                       <v-subheader>Mobile Connection</v-subheader>
                     </v-flex>
                     <v-flex xs12 md6>
-                       <v-select
-                            :items="mob_selects"
-                            label="Mobile Connection"
-                             v-model="marketingForm.mobile"
-                          >
-                        </v-select>
+                      <v-select
+                        :items="mob_selects"
+                        label="Mobile Connection"
+                        v-model="marketingForm.mobile"
+                      >
+                      </v-select>
                       <!-- <v-text-field
                         solo
                         v-model="marketingForm.mobile"
@@ -729,14 +729,13 @@ export default {
         return this.items.filter(
           data => data.is_dead == 1 && data.status != "Ready For Service"
         );
-      
-      } 
-      else if (this.selectedCategory == "My Sites") {
+      } else if (this.selectedCategory == "My Sites") {
         return this.items.filter(
-          data => data.is_dead == 1 && data.username.username == this.loggedInUser.username
+          data =>
+            data.is_dead == 1 &&
+            data.username.username == this.loggedInUser.username
         );
-      }
-      else if (this.selectedCategory == "No-Go Sites") {
+      } else if (this.selectedCategory == "No-Go Sites") {
         let data = this.items.filter(
           data => data.is_dead != 1 && data.status != "Ready For Service"
         );
@@ -851,7 +850,7 @@ export default {
           value: "Site Configuration"
         }
       ],
-      mob_selects: ['Very Poor', 'Poor', 'Medium', 'Good', 'Very Good'],
+      mob_selects: ["Very Poor", "Poor", "Medium", "Good", "Very Good"],
       fiber_types: ["Trenched", "Ducted", "Pole"],
       rows_per_page_items: [
         25,
@@ -968,9 +967,7 @@ export default {
           break;
         case "Site Feasible":
           return moment
-            .duration(
-              moment(siteinfo.feasible_date).diff(moment(new Date()))
-            )
+            .duration(moment(siteinfo.feasible_date).diff(moment(new Date())))
             .humanize(true)
             .replace("ago", "");
           break;

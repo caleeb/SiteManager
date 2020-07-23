@@ -55,7 +55,12 @@
                           class="grey lighten-2"
                           v-if="isEmbeddableFile(item.filename)"
                         >
-                          <v-fab-transition>
+                          <v-fab-transition
+                            v-if="
+                              isEmbeddableFile(item.filename) &&
+                                site.username.username == loggedInUser.username
+                            "
+                          >
                             <v-btn
                               style="margin-top: 30px;"
                               color="#FBE631"
@@ -71,16 +76,34 @@
                             </v-btn>
                           </v-fab-transition>
                         </v-img>
-
-                        <v-btn
-                          v-else
-                          dark
-                          :href="baseFILEURL + item.filename"
-                          target="_blank"
-                        >
-                          {{ item.filename }}
-                          <v-icon color="#fbe631">insert_drive_file</v-icon>
-                        </v-btn>
+                        <div v-else>
+                          <v-btn
+                            dark
+                            :href="baseFILEURL + item.filename"
+                            target="_blank"
+                          >
+                            {{ item.filename }}
+                            <v-icon color="#fbe631">insert_drive_file</v-icon>
+                          </v-btn>
+                          <v-fab-transition>
+                            <v-btn
+                              v-if="
+                                site.username.username == loggedInUser.username
+                              "
+                              style=" margin-top: 30px;"
+                              color="#FBE631"
+                              fab
+                              dark
+                              small
+                              absolute
+                              top
+                              right
+                              @click="deleteImage(item.file_id)"
+                            >
+                              <v-icon color="black">close</v-icon>
+                            </v-btn>
+                          </v-fab-transition>
+                        </div>
                       </v-responsive>
                     </v-carousel-item>
                   </v-carousel>
@@ -90,6 +113,121 @@
               <div class="text-xs-center" v-if="site.files == 0">
                 <span class="grey--text body-2">No attached files</span>
               </div>
+            </v-flex>
+            <v-flex
+              v-if="loggedInUser.organization != 'EthioTel' && site.omu != null"
+            >
+              <v-subheader>MOU Status Report</v-subheader>
+              <v-expansion-panel>
+                <v-expansion-panel-content>
+                  <template v-slot:header>
+                    <div>MOU Status</div>
+                  </template>
+                  <v-card>
+                    <v-card-text>
+                      <v-flex>
+                        <v-layout row class="elevation-3 pa-2" wrap>
+                          <v-flex md12 xs12>
+                            <v-layout row wrap>
+                              <v-flex xs12 md3>
+                                <v-subheader>MOU Status</v-subheader>
+                              </v-flex>
+                              <v-flex xs12 md3>
+                                <v-text-field
+                                  label="MOU Status"
+                                  disabled
+                                  :value="site.omu.status"
+                                ></v-text-field>
+                              </v-flex>
+                            </v-layout>
+                            <v-flex v-if="site.omu.status == 'Signed'">
+                              <v-layout
+                                row
+                                wrap
+                                justify-center
+                                class="mt-2"
+                                v-if="loggedInUser.organization != 'EthioTel'"
+                              >
+                                <v-flex md8>
+                                  <v-subheader>Attached Files</v-subheader>
+
+                                  <v-responsive
+                                    height="120"
+                                    :aspect-ratio="16 / 9"
+                                  >
+                                    <v-img
+                                      :aspect-ratio="16 / 9"
+                                      :src="baseFILEURL + site.omu.filename"
+                                      class="grey lighten-2"
+                                      v-if="isEmbeddableFile(site.omu.filename)"
+                                    >
+                                    </v-img>
+                                    <div v-else>
+                                      <v-btn
+                                        dark
+                                        :href="baseFILEURL + site.omu.filename"
+                                        target="_blank"
+                                      >
+                                        {{ site.omu.filename }}
+                                        <v-icon color="#fbe631"
+                                          >insert_drive_file</v-icon
+                                        >
+                                      </v-btn>
+                                    </div>
+                                  </v-responsive>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+
+                      <v-layout row wrap justify-center align-center>
+                        <v-flex md8 class="mr-auto" xs12>
+                          <v-subheader>Attached Files</v-subheader>
+                          <v-layout row wrap>
+                            <v-carousel
+                              height="480"
+                              v-if="marketingReport.files.length > 0"
+                            >
+                              <v-carousel-item
+                                :aspect-ratio="16 / 9"
+                                v-for="(item, index) in marketingReport.files"
+                                :key="index"
+                              >
+                                <v-responsive :aspect-ratio="16 / 9">
+                                  <v-img
+                                    :aspect-ratio="16 / 9"
+                                    height="480"
+                                    :src="baseFILEURL + item.filename"
+                                    class="grey lighten-2"
+                                    style="width:100%; height:100%;"
+                                    v-if="isEmbeddableFile(item.filename)"
+                                  ></v-img>
+                                  <v-btn
+                                    v-else
+                                    dark
+                                    :href="baseFILEURL + item.filename"
+                                    target="_blank"
+                                  >
+                                    {{ item.filename }}
+                                    <v-icon color="#fbe631"
+                                      >insert_drive_file</v-icon
+                                    >
+                                  </v-btn>
+                                </v-responsive>
+                              </v-carousel-item>
+                            </v-carousel>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-flex md12>
+                <v-divider class="indigo mt-3"></v-divider>
+              </v-flex>
             </v-flex>
             <v-flex md12>
               <v-divider class="indigo mt-3"></v-divider>
@@ -179,160 +317,6 @@
                                 <p>{{ marketingReport.description }}</p>
                               </v-flex>
                             </div>
-                            <!-- <v-layout column>
-                              <v-flex>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md6>
-                                    <v-subheader class="black--text"
-                                      >No of Potential Customers</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md6>
-                                    <v-text-field
-                                      solo
-                                      label="Potential Customers"
-                                      disabled
-                                      :value="
-                                        marketingReport.no_potential_customers
-                                      "
-                                    ></v-text-field>
-                                  </v-flex>
-                                </v-layout>
-                              </v-flex>
-                              <v-flex>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Is Site Feasible?</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-checkbox
-                                      disabled
-                                      :value="1 == marketingReport.is_feasible"
-                                    />
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Is Duct Available?</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-checkbox
-                                      disabled
-                                      :value="1 == marketingReport.duct"
-                                    />
-                                  </v-flex>
-                                </v-layout>
-                              </v-flex>
-                              <v-flex>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Blocks</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.blocks"
-                                    />
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Units (Customer Per Block)</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="
-                                        marketingReport.no_potential_customers /
-                                          marketingReport.blocks
-                                      "
-                                    />
-                                  </v-flex>
-                                </v-layout>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Occupancy Rate (Houses
-                                      Occupied)</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.occupancy"
-                                    />
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Mobile Coverage</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.mobile"
-                                    />
-                                  </v-flex>
-                                </v-layout>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Average Rental (Birr)</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.rental"
-                                    />
-                                  </v-flex>
-                                </v-layout>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Percentage of Business Units</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.business + '%'"
-                                    />
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-subheader class="black--text"
-                                      >Average Area - (Per Square
-                                      meters)</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md3>
-                                    <v-text-field
-                                      disabled
-                                      :value="marketingReport.density"
-                                    />
-                                  </v-flex>
-                                </v-layout>
-                                <v-layout row wrap>
-                                  <v-flex xs12 md6>
-                                    <v-subheader class="black--text"
-                                      >Marketing Status Description</v-subheader
-                                    >
-                                  </v-flex>
-                                  <v-flex xs12 md6>
-                                    <v-textarea
-                                      solo
-                                      label="Description"
-                                      disabled
-                                      :value="marketingReport.description"
-                                    ></v-textarea>
-                                  </v-flex>
-                                </v-layout>
-                              </v-flex>
-                            </v-layout> -->
                           </v-flex>
                         </v-layout>
                       </v-flex>
@@ -358,18 +342,60 @@
                                     class="grey lighten-2"
                                     style="width:100%; height:100%;"
                                     v-if="isEmbeddableFile(item.filename)"
-                                  ></v-img>
-                                  <v-btn
-                                    v-else
-                                    dark
-                                    :href="baseFILEURL + item.filename"
-                                    target="_blank"
                                   >
-                                    {{ item.filename }}
-                                    <v-icon color="#fbe631"
-                                      >insert_drive_file</v-icon
+                                    <v-fab-transition
+                                      v-if="
+                                        isEmbeddableFile(item.filename) &&
+                                          site.username.username ==
+                                            loggedInUser.username
+                                      "
                                     >
-                                  </v-btn>
+                                      <v-btn
+                                        style="margin-top: 30px;"
+                                        color="#FBE631"
+                                        fab
+                                        dark
+                                        small
+                                        absolute
+                                        top
+                                        right
+                                        @click="deletemImage(item.file_id)"
+                                      >
+                                        <v-icon color="black">close</v-icon>
+                                      </v-btn>
+                                    </v-fab-transition>
+                                  </v-img>
+                                  <div v-else>
+                                    <v-fab-transition>
+                                      <v-btn
+                                        v-if="
+                                          site.username.username ==
+                                            loggedInUser.username
+                                        "
+                                        style=" margin-top: 30px;"
+                                        color="#FBE631"
+                                        fab
+                                        dark
+                                        small
+                                        absolute
+                                        top
+                                        right
+                                        @click="deletemImage(item.file_id)"
+                                      >
+                                        <v-icon color="black">close</v-icon>
+                                      </v-btn>
+                                    </v-fab-transition>
+                                    <v-btn
+                                      dark
+                                      :href="baseFILEURL + item.filename"
+                                      target="_blank"
+                                    >
+                                      {{ item.filename }}
+                                      <v-icon color="#fbe631"
+                                        >insert_drive_file</v-icon
+                                      >
+                                    </v-btn>
+                                  </div>
                                 </v-responsive>
                               </v-carousel-item>
                             </v-carousel>
@@ -685,21 +711,35 @@ export default {
       };
       this.dialog = false;
     },
-    async deleteImage(file_id){
+    async deleteImage(file_id) {
       try {
-          await this.$axios.post("/delete_image/" + file_id);
-          this.saveProgressHidden = true;
-          this.snaackbar_message = "Image Deleted Succesfully";
-          this.snackbar_type = "success";
-          this.snackbar = true;
-          this.dialog = false;
+        await this.$axios.post("/delete_image/" + file_id);
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Image Deleted Succesfully";
+        this.snackbar_type = "success";
+        this.snackbar = true;
+        this.dialog = false;
       } catch (e) {
         this.saveProgressHidden = true;
         this.snaackbar_message = "Oops there was some error";
         this.snackbar_type = "error";
         this.snackbar = true;
       }
-
+    },
+    async deletemImage(file_id) {
+      try {
+        await this.$axios.post("/delete_image2/" + file_id);
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Image Deleted Succesfully";
+        this.snackbar_type = "success";
+        this.snackbar = true;
+        this.dialog = false;
+      } catch (e) {
+        this.saveProgressHidden = true;
+        this.snaackbar_message = "Oops there was some error";
+        this.snackbar_type = "error";
+        this.snackbar = true;
+      }
     },
     async openModal(site, siteId, status) {
       let { data } = await this.$axios.post(
