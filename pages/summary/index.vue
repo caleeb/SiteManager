@@ -314,7 +314,7 @@
               <v-spacer></v-spacer>
 
               <v-btn icon>
-                <v-icon dark to="/">link</v-icon>
+                <v-icon color="black" to="/">link</v-icon>
               </v-btn>
             </v-toolbar>
             <div class="Chart__list">
