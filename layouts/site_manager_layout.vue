@@ -3,7 +3,7 @@
     <v-navigation-drawer fixed app dark clipped :value="drawer">
       <v-list>
         <v-list-tile>
-          <v-btn flat v-if="isAuthenticated" to="/">
+          <v-btn flat v-if="isAuthenticated" href="/">
             home
             <v-icon color="#fbe631">home</v-icon>
           </v-btn>
@@ -249,7 +249,7 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat v-if="isAuthenticated" to="/">
+        <v-btn flat v-if="isAuthenticated" href="/">
           home
           <v-icon color="#fbe631">home</v-icon>
         </v-btn>

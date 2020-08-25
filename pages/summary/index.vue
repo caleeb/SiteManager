@@ -5,7 +5,7 @@
     <v-flex align-start>
       <v-subheader class="">
         <span
-          style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+          style="font-size: 25px; font-family: Ubuntu, Roboto, sans-serif !important; font-weight: 1000 !important;"
         >
           Overall Sites Summary
         </span>
@@ -19,7 +19,9 @@
             style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
           >
             <v-card-title primary-title class="cent">
-              <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+              <h2
+                style=" font-family: Ubuntu, Roboto, sans-serif !important; color: #fbe631;"
+              >
                 Sites
               </h2>
               <h1
@@ -28,7 +30,7 @@
                 style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu, Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
               >
@@ -46,7 +48,7 @@
             style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
           >
             <v-card-title primary-title class="cent">
-              <h2 style="color: #fbe631;  font-family: Ubuntu !important;">
+              <h2 style="color: #fbe631;  font-family: Ubuntu, Roboto, sans-serif !important;">
                 Potential Customers
               </h2>
               <h1
@@ -55,7 +57,7 @@
                 style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu, Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
               >
@@ -198,7 +200,7 @@
       <v-subheader class="">
         <span
           style="font-size: 25px; 
-          font-family: Ubuntu !important; font-weight: 1000 !important;"
+          font-family: Ubuntu, Roboto, sans-serif !important; font-weight: 1000 !important;"
         >
           Summary of The Last 7 Days
         </span>
@@ -771,7 +773,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .nash {
   font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 20px !important;
