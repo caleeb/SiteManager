@@ -73,7 +73,9 @@
             style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
           >
             <v-card-title primary-title class="cent">
-              <h2 style="color: #fbe631;  font-family: Ubuntu !important;">
+              <h2
+                style="color: #fbe631;  font-family: Ubuntu, Roboto, sans-serif !important;"
+              >
                 % of Business Units
               </h2>
               <h1
@@ -82,7 +84,7 @@
                 style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu, Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
               >
@@ -90,6 +92,42 @@
               </h1>
             </v-card-title>
           </v-card>
+        </v-flex>
+
+        <v-flex mt-4 md12>
+          <v-subheader
+            style="background-color: black; color: #fbe631 !important; 
+            font-size: 24px !important; 
+            font-family: Ubuntu, Roboto, sans-serif; font-weight: 1000 !important"
+            class="mt-1 mb-2"
+            >Overall Summary of Sites - Divided By Statuses (i.e. Site
+            Identified, Civil Work Complete,...)</v-subheader
+          >
+          <v-data-table
+            :headers="headers2"
+            dark
+            :items="byStatusOf"
+            light
+            class="elevation-11"
+          >
+            <template v-slot:items="props">
+              <tr>
+                <td>{{ props.item.status }}</td>
+                <td>
+                  {{ props.item.count }}
+                </td>
+
+                <td>
+                  <v-chip :color="getColor(props.item.Customers)" dark>{{
+                    props.item.Customers
+                  }}</v-chip>
+                </td>
+                <td>{{ Number(props.item.Business).toPrecision(4) + "%" }}</td>
+                <td>{{ Number(props.item.Occupancy).toPrecision(4) }}</td>
+                <td>{{ props.item.Blocks }}</td>
+              </tr>
+            </template>
+          </v-data-table>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -165,7 +203,44 @@
           Summary of The Last 7 Days
         </span>
       </v-subheader>
-      <v-layout row wrap>
+      <v-layout row wrap mb-4 mt-2>
+        <v-flex style="color: #fbe631 !important">
+          <v-subheader
+            style="background-color: black; color: #fbe631 !important; 
+            font-size: 24px !important; 
+            font-family: Ubuntu, Roboto, sans-serif; font-weight: 1000 !important"
+            class="mt-1 mb-2"
+            >Last 7 Days Summary - By Site Type (i.e. Condominium, Apartment
+            Building,...)</v-subheader
+          >
+          <v-data-table
+            :headers="headers"
+            dark
+            :items="thisWe"
+            light
+            class="elevation-11"
+          >
+            <template v-slot:items="props">
+              <tr>
+                <td>{{ props.item.site_type }}</td>
+                <td>
+                  {{ props.item.count }}
+                </td>
+
+                <td>
+                  <v-chip :color="getColor(props.item.Customers)" dark>{{
+                    props.item.Customers
+                  }}</v-chip>
+                </td>
+                <td>{{ Number(props.item.Business).toPrecision(4) + "%" }}</td>
+                <td>{{ Number(props.item.Occupancy).toPrecision(4) + "%" }}</td>
+                <td>{{ props.item.Blocks }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap mt-4>
         <v-flex md4>
           <v-layout row wrap>
             <v-flex md12>
@@ -175,7 +250,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Identified Sites
                   </h2>
                   <h1
@@ -184,7 +261,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -200,7 +277,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Total No. of Customers
                   </h2>
                   <h1
@@ -209,7 +288,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -225,7 +304,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Business Units
                   </h2>
                   <h1
@@ -234,7 +315,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -254,7 +335,7 @@
           >
             <v-toolbar height="40" color="#fbe631" dark>
               <v-toolbar-title
-                style="color: black; font-size: 15px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+                style="color: black; font-size: 15px; font-family: Ubuntu,Roboto, sans-serif !important; font-weight: 1000 !important;"
                 >Identified Sites - Last 7 Days</v-toolbar-title
               >
 
@@ -305,7 +386,7 @@
           <v-card height="100%" style="border-radius : 20px !important;">
             <v-toolbar height="40" color="#fbe631" dark>
               <v-toolbar-title
-                style="color: black; font-size: 15px; font-family: Ubuntu !important; font-weight: 1000 !important;"
+                style="color: black; font-size: 15px; font-family: Ubuntu,Roboto, sans-serif !important; font-weight: 1000 !important;"
               >
                 Site Identification Projections - [Over The Last 30
                 Days]</v-toolbar-title
@@ -337,7 +418,7 @@
       <v-subheader class="">
         <span
           style="font-size: 25px; 
-          font-family: Ubuntu !important; font-weight: 1000 !important;"
+          font-family: Ubuntu,Roboto, sans-serif !important; font-weight: 1000 !important;"
         >
           Overall Summary based on Status
         </span>
@@ -363,7 +444,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Status Name
                   </h2>
                   <h1
@@ -372,7 +455,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 34px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -389,7 +472,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     No. of Potential Customers
                   </h2>
                   <h1
@@ -398,7 +483,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -415,7 +500,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Total No. of Blocks
                   </h2>
                   <h1
@@ -424,7 +511,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -441,7 +528,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Avg. Percentage of Business Units
                   </h2>
                   <h1
@@ -450,7 +539,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -467,7 +556,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Avg. Occupancy Rate
                   </h2>
                   <h1
@@ -476,7 +567,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -493,7 +584,9 @@
                 style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
               >
                 <v-card-title primary-title class="cent">
-                  <h2 style=" font-family: Ubuntu !important; color: #fbe631;">
+                  <h2
+                    style=" font-family: Ubuntu,Roboto, sans-serif !important; color: #fbe631;"
+                  >
                     Total Number of Sites
                   </h2>
                   <h1
@@ -502,7 +595,7 @@
                     style=" 
                       margin-top: 8px;
                       font-size: 54px !important;
-                      font-family: Ubuntu !important;
+                      font-family: Ubuntu,Roboto, sans-serif !important;
                       color: #fbe631 !important;
                      "
                   >
@@ -581,12 +674,16 @@ export default {
     let y = await app.$axios.post("week");
     let z = await app.$axios.post("countweek");
     let r = await app.$axios.post("this_week");
+    let s = await app.$axios.post("overall2");
+    let t = await app.$axios.post("this_week2");
 
+    console.log(t.data);
     let arr = z.data;
     let array = [];
     let identified = r.data;
-
+    let overall2 = s.data;
     let stats = [];
+    let oves2 = [];
     for (var i = 0; i < arr.length; i++) {
       array.push(arr[i]);
     }
@@ -595,7 +692,7 @@ export default {
       return data[0][key];
     });
     let byStat = [];
-    console.log(values);
+    // console.log(values);
     for (var i = 1; i < values.length; i++) {
       byStat.push(values[i]);
     }
@@ -609,7 +706,7 @@ export default {
     // this.selects = stats;
 
     array = array.reverse();
-    console.log(byStat);
+    // console.log(byStat);
     return {
       // options: {
       //   responsive: true,
@@ -625,7 +722,33 @@ export default {
       ident: identified[0],
       week: y.data,
       by_status: byStat,
+      byStatusOf: overall2,
       selects: stats,
+      thisWe: t.data,
+      headers: [
+        {
+          text: "Site Type",
+          align: "left",
+          value: "status"
+        },
+        { text: "Site Count", value: "count" },
+        { text: "Potential Customers", value: "Customers" },
+        { text: "% of Business Units", value: "Business" },
+        { text: "Occupancy Rate", value: "Occupancy" },
+        { text: "Total No. of Blocks", value: "Blocks" }
+      ],
+      headers2: [
+        {
+          text: "Site Status",
+          align: "left",
+          value: "status"
+        },
+        { text: "Site Count", value: "count" },
+        { text: "Potential Customers", value: "Customers" },
+        { text: "% of Business Units", value: "Business" },
+        { text: "Occupancy Rate", value: "Occupancy" },
+        { text: "Total No. of Blocks", value: "Blocks" }
+      ],
       by_label: [
         "Site Count",
         "No. of Potential Customers",
@@ -638,31 +761,38 @@ export default {
   },
   mounted() {
     // this.renderChart(this.report_data[0], this.options);
+  },
+  methods: {
+    getColor(cust) {
+      if (cust <= 500) return "red";
+      else if (cust > 500 && cust < 1500) return "orange";
+      else return "green";
+    }
   }
 };
 </script>
-<style>
+<style scoped>
 .nash {
-  font-family: Ubuntu !important;
+  font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 20px !important;
   color: #fff !important;
 }
 .nash2 {
-  font-family: Ubuntu !important;
+  font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 12px !important;
 }
 .whole-card {
-  font-family: Ubuntu !important;
+  font-family: Ubuntu, "Roboto", sans-serif !important;
   background-color: #ffffff !important;
 }
 .lnash {
-  font-family: Ubuntu !important;
+  font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 15px !important;
   color: #fbe631 !important;
   font-weight: 1000;
 }
 .xlnash {
-  font-family: Ubuntu !important;
+  font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 12px !important;
   color: #fbe631 !important;
 }
@@ -689,5 +819,89 @@ export default {
   border-radius: 15px;
   box-shadow: 0px 2px 15px rgba(2, 5, 25, 0.27);
   height: 100% !important;
+}
+table.blueTable {
+  border: 1px solid #fbe631;
+  background-color: #eeeeee;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+table.blueTable td,
+table.blueTable th {
+  border: 1px solid #aaaaaa;
+  padding: 3px 2px;
+}
+table.blueTable tbody td {
+  font-size: 13px;
+}
+table.blueTable tr:nth-child(even) {
+  background: #d0e4f5;
+}
+table.blueTable thead {
+  background: #fbe631;
+  background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
+  background: -webkit-linear-gradient(
+    top,
+    #5592bb 0%,
+    #327cad 66%,
+    #1c6ea4 100%
+  );
+  background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1c6ea4 100%);
+  border-bottom: 2px solid #444444;
+}
+table.blueTable thead th {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ffffff;
+  border-left: 2px solid #d0e4f5;
+}
+table.blueTable thead th:first-child {
+  border-left: none;
+}
+table.v-table tbody tr {
+  font-family: Ubuntu, "Roboto", sans-serif !important;
+  color: #fbe631 !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+}
+table.v-table thead th {
+  font-family: Ubuntu, "Roboto", sans-serif !important;
+  color: #fbe631 !important;
+  font-size: 17px !important;
+  font-weight: 1000 !important;
+}
+
+table.v-table tbody td {
+  font-weight: 1000 !important;
+  font-size: 15px !important;
+}
+table.blueTable tfoot {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #d0e4f5;
+  background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #d0e4f5 100%);
+  background: -webkit-linear-gradient(
+    top,
+    #dcebf7 0%,
+    #d4e6f6 66%,
+    #d0e4f5 100%
+  );
+  background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #d0e4f5 100%);
+  border-top: 2px solid #444444;
+}
+table.blueTable tfoot td {
+  font-size: 14px;
+}
+table.blueTable tfoot .links {
+  text-align: right;
+}
+table.blueTable tfoot .links a {
+  display: inline-block;
+  background: #1c6ea4;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 5px;
 }
 </style>
