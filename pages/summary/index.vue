@@ -48,7 +48,9 @@
             style="border-radius: 20px; background-color: rgb(53, 52, 62) !important;"
           >
             <v-card-title primary-title class="cent">
-              <h2 style="color: #fbe631;  font-family: Ubuntu, Roboto, sans-serif !important;">
+              <h2
+                style="color: #fbe631;  font-family: Ubuntu, Roboto, sans-serif !important;"
+              >
                 Potential Customers
               </h2>
               <h1
@@ -114,19 +116,23 @@
           >
             <template v-slot:items="props">
               <tr>
-                <td>{{ props.item.status }}</td>
-                <td>
-                  {{ props.item.count }}
-                </td>
+                
+                  <td>{{ props.item.status }}</td>
+                  <td>
+                    {{ props.item.count }}
+                  </td>
 
-                <td>
-                  <v-chip :color="getColor(props.item.Customers)" dark>{{
-                    props.item.Customers
-                  }}</v-chip>
-                </td>
-                <td>{{ Number(props.item.Business).toPrecision(4) + "%" }}</td>
-                <td>{{ Number(props.item.Occupancy).toPrecision(4) }}</td>
-                <td>{{ props.item.Blocks }}</td>
+                  <td>
+                    <v-chip :color="getColor(props.item.Customers)" dark>{{
+                      props.item.Customers
+                    }}</v-chip>
+                  </td>
+                  <td>
+                    {{ Number(props.item.Business).toPrecision(4) + "%" }}
+                  </td>
+                  <td>{{ Number(props.item.Occupancy).toPrecision(4) }}</td>
+                  <td>{{ props.item.Blocks }}</td>
+               
               </tr>
             </template>
           </v-data-table>
@@ -773,7 +779,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .nash {
   font-family: Ubuntu, "Roboto", sans-serif !important;
   font-size: 20px !important;
