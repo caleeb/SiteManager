@@ -101,7 +101,7 @@
         <v-flex mt-4 md12>
           <v-subheader
             style="background-color: black; color: #fbe631 !important; 
-            font-size: 24px !important; 
+            font-size: 20px !important; 
             font-family: Ubuntu, Roboto, sans-serif; font-weight: 1000 !important"
             class="mt-1 mb-2"
             >Overall Summary of Sites - Divided By Statuses (i.e. Site
@@ -139,69 +139,7 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <!-- <v-flex align-start>
-      <v-subheader class="">
-        <span
-          style="font-size: 25px; font-family: Ubuntu !important; font-weight: 1000 !important;"
-        >
-          Identified Sites - This Week
-        </span>
-      </v-subheader>
-      <v-layout row wrap justify-center>
-        <v-flex md3 v-for="(item, i) in week" :key="i">
-          <v-card
-            height="150"
-            flat
-            style="border-radius: 0px; background-color: rgb(47, 25, 25) !important"
-            class="mr-1 mt-2 white--text"
-          >
-            <v-layout row>
-              <v-flex xs7>
-                <v-card-title primary-title>
-                  <div>
-                    <div
-                      class="one-line"
-                      style=" 
-                      margin-top: 4px;
-                      font-weight: 1000 !important;
-                      font-size: 20px !important;
-                      font-family: Ubuntu !important;
-                      color: #FFFFFF !important;
-                     "
-                    >
-                      {{ item.name }}
-                    </div>
-                    <div
-                      style=" 
-                      margin-top: 1px;
-                      font-size: 15px !important;
-                      font-family: Ubuntu !important;
-                      color: #FFF !important;
-                     "
-                    >
-                      {{ item.location }}
-                    </div>
-                 
-                  </div>
-                </v-card-title>
-              </v-flex>
-              <v-flex xs5>
-                <v-img
-                  :src="
-                    item.files != null
-                      ? baseFILEURL + item.files[0].filename
-                      : baseFILEURL + 'ws.png'
-                  "
-                  height="125px"
-                  contain
-                ></v-img>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    -->
+  
     <v-flex align-start mt-2>
       <v-subheader class="">
         <span
@@ -215,7 +153,7 @@
         <v-flex style="color: #fbe631 !important">
           <v-subheader
             style="background-color: black; color: #fbe631 !important; 
-            font-size: 24px !important; 
+            font-size: 20px !important; 
             font-family: Ubuntu, Roboto, sans-serif; font-weight: 1000 !important"
             class="mt-1 mb-2"
             >Last 7 Days Summary - By Site Type (i.e. Condominium, Apartment
@@ -422,7 +360,7 @@
       <!-- </v-container> -->
     </v-flex>
     <hr class="mt-2 mb-2" style="border-color: #fbe631 !important;" />
-    <v-flex align-start mt-2>
+    <v-flex align-start mt-2 mb-4>
       <v-subheader class="">
         <span
           style="font-size: 25px; 
@@ -645,10 +583,7 @@
           </v-layout> -->
         </template>
       </v-layout>
-      <v-divider></v-divider>
-      <hr class="mt-4" style="border-color: #fbe631 !important;" />
-
-      <hr class="mt-4 mb-2" style="border-color: #fbe631 !important;" />
+     
     </v-flex>
 
     <!-- </v-card> -->
