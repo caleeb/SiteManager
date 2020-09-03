@@ -363,6 +363,18 @@
                         ></v-text-field>
                       </v-flex>
                     </v-layout>
+                     <v-layout row wrap>
+                        <v-flex xs12 md6>
+                          <v-subheader>Site Type</v-subheader>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                          <v-select
+                            :items="selects"
+                            label="Site Type"
+                            v-model="siteform.site_type"
+                          ></v-select>
+                        </v-flex>
+                      </v-layout>
                     <v-layout row wrap class="mt-3">
                       <v-flex xs12 md6>
                         <v-subheader>Site Status Description</v-subheader>
